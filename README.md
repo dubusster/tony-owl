@@ -2,9 +2,11 @@
 
 ## Installation
 
-`$ npm install`
-`$ bower install`
-`$ grunt`
+``` bash
+$ npm install
+$ bower install
+$ grunt
+```
 
 ## keskonveutdanslejeu
 
