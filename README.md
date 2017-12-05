@@ -2,7 +2,7 @@
 
 ## Installation
 
-``` bash
+```bash
 $ npm install
 $ bower install
 $ grunt
@@ -10,12 +10,12 @@ $ grunt
 
 ## keskonveutdanslejeu
 
-gameplay:
-    * running game jusqu'au resto by fanny
-    * on contrôle le skate mais pas le hibou
-    * le hibou chie aléatoirement sur le skate
-    * des ennemis de la scène planquée attaque le skate
+### gameplay:
+* running game jusqu'au resto by fanny
+* on contrôle le skate mais pas le hibou
+* hibou chie aléatoirement sur le skate
+* ennemis de la scène planquée attaque le skate
 
-level design:
+### level design:
     * level 0:
     
