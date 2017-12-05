@@ -17,5 +17,5 @@ $ grunt
 * ennemis de la scène planquée attaque le skate
 
 ### level design:
-    * level 0:
+* level 0:
     
