@@ -1,0 +1,7 @@
+{
+  "name": "tony-owl",
+  "version": "0.0.0",
+  "dependencies": {
+    "phaser-official": "2.6.2"
+  }
+}
