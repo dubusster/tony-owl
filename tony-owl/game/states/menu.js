@@ -34,7 +34,8 @@ Menu.prototype = {
     
     this.game.add.tween(this.titleGroup).to({y:130}, 1000, Phaser.Easing.Linear.NONE, true, 0, 1000, true);
     
-    this.startButton = this.game.add.button(this.game.width/2, 3*this.game.height/4, 'startButton', this.startClick, this);
+    this.startButton = this.game.add.button(this.game.width/2, 3.5*this.game.height/4, 'startButton', this.startClick, this);
+    this.startButton.anchor.setTo(0.5,0.5);
     
   },
   update: function() {
