@@ -96,6 +96,8 @@ Menu.prototype = {
     this.titleGroup.setAll('anchor.y', 0.5);
     this.titleGroup.x = this.world.width/2;
     this.titleGroup.y = this.world.height/4;
+    
+    this.game.add.tween(this.titleGroup).to({y:130}, 1000, Phaser.Easing.Linear.NONE, true, 0, 1000, true);
   },
   update: function() {
     
