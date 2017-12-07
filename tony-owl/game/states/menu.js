@@ -33,10 +33,18 @@ Menu.prototype = {
     this.titleGroup.y = this.world.height/4;
     
     this.game.add.tween(this.titleGroup).to({y:130}, 1000, Phaser.Easing.Linear.NONE, true, 0, 1000, true);
+    
+    this.startButton = this.game.add.button(this.game.width/2, 3*this.game.height/4, 'startButton', this.startClick, this);
+    
   },
   update: function() {
     
-  }
+  },
+  startClick: function() {
+	    // start button click handler
+	    // start the 'play' state
+	    this.game.state.start('play');
+	  }
 };
 
 module.exports = Menu;
