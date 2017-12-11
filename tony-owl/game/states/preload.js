@@ -22,7 +22,7 @@ Preload.prototype = {
     
     this.load.image('sky', 'assets/sky.png');
     this.load.image('background', 'assets/city.png');
-    this.load.image('ground', 'assets/ground.png');
+    this.load.image('ground', 'assets/platform.png');
     this.load.image('title', 'assets/title.png');
     this.load.image('startButton', 'assets/start-button.png');
     
