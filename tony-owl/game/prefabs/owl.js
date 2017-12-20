@@ -9,6 +9,12 @@ var Owl = function(game, x, y, frame) {
 	this.game.physics.arcade.enableBody(this);
 	this.jumping = false;
 	this.walking_speed = 200;
+	this.jumping_height = 300;
+	
+	// animations
+	this.animations.add('left', [0, 1, 2, 3], 10, true);
+	this.animations.add('right', [5, 6, 7, 8], 10, true);
+	
 	this.weapon = this.game.add.deathguitar(5, 'wave');
 	this.weapon.trackSprite(this, 0, 0);
 
@@ -19,43 +25,20 @@ Owl.prototype.constructor = Owl;
 
 Owl.prototype.update = function() {
 
-	// checking whether the player is midair or not.
-	if (this.body.touching.down) {
-		this.jumping = false;
-	} else {
-		this.jumping = true
-	}
-	// Player moves
-	if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-		this.move("UP");
-	} else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-		this.move("RIGHT");
-	} else if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-		this.move("LEFT");
-	} else {
-		this.move(null);
-	}
-
-};
-
-Owl.prototype.flap = function() {
-	if (!this.jumping) {
-		this.body.velocity.y = -300;
-	}
 };
 
 Owl.prototype.move = function(direction) {
 	if (direction == "RIGHT") {
-		// TODO: put animation here
 		this.body.velocity.x = this.walking_speed;
+		this.animations.play('right');
 	}
-	if (direction == "LEFT") {
-		// TODO: put animation here
+	else if (direction == "LEFT") {
 		this.body.velocity.x = -this.walking_speed;
+		this.animations.play('left');
+		
 	}
 	if (direction == "UP") {
-		// TODO: put animation here
-		this.flap();
+		this.body.velocity.y = -this.jumping_height;
 	}
 	if (direction == null) {
 		this.body.velocity.x = 0;
