@@ -9,7 +9,9 @@ Play.prototype = {
 	create : function() {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.game.physics.arcade.gravity.y = 800;
-
+		
+		
+		
 		this.background = this.add.tileSprite(0, 0, this.game.width,
 				this.game.height, 'background');
 		// this.background.autoScroll(-100, 0);
@@ -44,7 +46,24 @@ Play.prototype = {
 
 	},
 	update : function() {
-		this.game.physics.arcade.collide(this.owl, this.ground);
+		var hit_platform = this.game.physics.arcade.collide(this.owl, this.ground);
+		
+		// Player moves
+		this.owl.move(null);
+		var cursors = this.game.input.keyboard.createCursorKeys();
+		
+		if (cursors.right.isDown) {
+			this.owl.move("RIGHT");
+		} else if (cursors.left.isDown) {
+			this.owl.move("LEFT");
+		} else {
+			this.owl.animations.stop();
+			this.owl.frame=4;
+		}
+		if (cursors.up.isDown && this.owl.body.touching.down && hit_platform) {
+			this.owl.move("UP");
+		}
+
 	},
 };
 
