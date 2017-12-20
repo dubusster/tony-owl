@@ -15,7 +15,140 @@ window.onload = function () {
 
   game.state.start('boot');
 };
-},{"./states/boot":2,"./states/gameover":3,"./states/menu":4,"./states/play":5,"./states/preload":6}],2:[function(require,module,exports){
+},{"./states/boot":5,"./states/gameover":6,"./states/menu":7,"./states/play":8,"./states/preload":9}],2:[function(require,module,exports){
+'use strict';
+
+var Ground = function(game, x, y, width, height) {  
+	Phaser.TileSprite.call(this, game, x, y, width, height, 'ground');
+  // start scrolling our ground
+  //this.autoScroll(-200,0);
+   
+  // enable physics on the ground sprite
+  // this is needed for collision detection
+  this.game.physics.arcade.enableBody(this);
+ 
+  // we don't want the ground's body
+  // to be affected by gravity or external forces
+  this.body.allowGravity = false;
+  this.body.immovable = true;
+};
+
+Ground.prototype = Object.create(Phaser.TileSprite.prototype);  
+Ground.prototype.constructor = Ground;
+
+Ground.prototype.update = function() {  
+  // write your prefab's specific update code here  
+};
+
+module.exports = Ground
+},{}],3:[function(require,module,exports){
+'use strict';
+
+var DeathGuitar = require('../prefabs/weapon.js')
+
+var Owl = function(game, x, y, frame) {
+	Phaser.Sprite.call(this, game, x, y, 'owl', frame);
+
+	// initialize your prefab here
+	this.game.physics.arcade.enableBody(this);
+	this.jumping = false;
+	this.walking_speed = 200;
+	this.weapon = this.game.add.deathguitar(5, 'wave');
+	this.weapon.trackSprite(this, 0, 0);
+
+};
+
+Owl.prototype = Object.create(Phaser.Sprite.prototype);
+Owl.prototype.constructor = Owl;
+
+Owl.prototype.update = function() {
+
+	// checking whether the player is midair or not.
+	if (this.body.touching.down) {
+		this.jumping = false;
+	} else {
+		this.jumping = true
+	}
+	// Player moves
+	if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+		this.move("UP");
+	} else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+		this.move("RIGHT");
+	} else if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+		this.move("LEFT");
+	} else {
+		this.move(null);
+	}
+
+};
+
+Owl.prototype.flap = function() {
+	if (!this.jumping) {
+		this.body.velocity.y = -300;
+	}
+};
+
+Owl.prototype.move = function(direction) {
+	if (direction == "RIGHT") {
+		// TODO: put animation here
+		this.body.velocity.x = this.walking_speed;
+	}
+	if (direction == "LEFT") {
+		// TODO: put animation here
+		this.body.velocity.x = -this.walking_speed;
+	}
+	if (direction == "UP") {
+		// TODO: put animation here
+		this.flap();
+	}
+	if (direction == null) {
+		this.body.velocity.x = 0;
+	}
+};
+
+Owl.prototype.shoot = function() {
+	console.log('fire!');
+	this.weapon.fire();
+};
+
+module.exports = Owl;
+
+},{"../prefabs/weapon.js":4}],4:[function(require,module,exports){
+'use strict';
+
+var DeathGuitar = function(game) {
+
+	Phaser.Weapon.call(this, game, game.plugins);
+
+	this.bulletSpeed = 1000;
+	this.bulletKillType = Phaser.Weapon.KILL_DISTANCE;
+	this.bulletKillDistance = 200
+	this.fireAngle = Phaser.ANGLE_RIGHT;
+
+	this.bulletGravity.y = -game.physics.arcade.gravity.y;
+
+};
+
+DeathGuitar.prototype = Object.create(Phaser.Weapon.prototype);
+DeathGuitar.prototype.constructor = DeathGuitar;
+
+DeathGuitar.prototype.update = Phaser.Weapon.update;
+
+// you need to add the weapon to the plugin manager
+
+Phaser.GameObjectFactory.prototype.deathguitar = function(quantity, key, frame,
+		group) {
+
+	var deathguitar = this.game.plugins.add(DeathGuitar);
+
+	deathguitar.createBullets(quantity, key, frame, group);
+
+	return deathguitar;
+};
+
+// module.exports = DeathGuitar;
+
+},{}],5:[function(require,module,exports){
 
 'use strict';
 
@@ -34,7 +167,7 @@ Boot.prototype = {
 
 module.exports = Boot;
 
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 
 'use strict';
 function GameOver() {}
@@ -62,7 +195,7 @@ GameOver.prototype = {
 };
 module.exports = GameOver;
 
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 
 'use strict';
 function Menu() {}
@@ -115,34 +248,60 @@ Menu.prototype = {
 
 module.exports = Menu;
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+'use strict';
 
-  'use strict';
-  function Play() {}
-  Play.prototype = {
-    create: function() {
-      this.game.physics.startSystem(Phaser.Physics.ARCADE);
-      this.sprite = this.game.add.sprite(this.game.width/2, this.game.height/2, 'yeoman');
-      this.sprite.inputEnabled = true;
-      
-      this.game.physics.arcade.enable(this.sprite);
-      this.sprite.body.collideWorldBounds = true;
-      this.sprite.body.bounce.setTo(1,1);
-      this.sprite.body.velocity.x = this.game.rnd.integerInRange(-500,500);
-      this.sprite.body.velocity.y = this.game.rnd.integerInRange(-500,500);
+var Ground = require('../prefabs/ground.js')
+var Owl = require('../prefabs/owl.js')
 
-      this.sprite.events.onInputDown.add(this.clickListener, this);
-    },
-    update: function() {
+function Play() {
+}
+Play.prototype = {
+	create : function() {
+		this.game.physics.startSystem(Phaser.Physics.ARCADE);
+		this.game.physics.arcade.gravity.y = 800;
 
-    },
-    clickListener: function() {
-      this.game.state.start('gameover');
-    }
-  };
-  
-  module.exports = Play;
-},{}],6:[function(require,module,exports){
+		this.background = this.add.tileSprite(0, 0, this.game.width,
+				this.game.height, 'background');
+		// this.background.autoScroll(-100, 0);
+
+		// adding ground to game
+		var ground_height = 50;
+		this.ground = new Ground(this.game, 0,
+				this.game.height - ground_height, this.game.width,
+				ground_height);
+		this.game.add.existing(this.ground);
+
+		// adding owl (player) to game
+		this.owl = new Owl(this.game, 100, this.game.height - ground_height
+				- 100)
+		this.game.add.existing(this.owl);
+
+		// keep the spacebar from propogating up to the browser
+		this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR,
+				Phaser.Keyboard.UP ]);
+
+		// add keyboard controls
+		var shootKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+		shootKey.onDown.add(this.owl.shoot, this.owl);
+		// rightKey.onDown.add(this.owl.going_right, this.owl);
+		// leftKey.onDown.add(this.owl.go_left, this.owl);
+
+		// add mouse/touch controls
+		// this.input.onDown.add(this.owl.flap, this.owl);
+
+		// this.game.input.keyboard.isDown()
+
+	},
+	update : function() {
+		this.game.physics.arcade.collide(this.owl, this.ground);
+	},
+};
+
+module.exports = Play;
+
+},{"../prefabs/ground.js":2,"../prefabs/owl.js":3}],9:[function(require,module,exports){
 
 'use strict';
 
@@ -165,9 +324,16 @@ Preload.prototype = {
     
     this.load.image('logo', 'assets/logo5_small.png');
     
+    var bg_folder = "assets/cyberpunk-street-files/cyberpunk-street-files/PNG/layers/";
+    
+    this.load.image('back-buildings', bg_folder+'back-buildings.png');
+    this.load.image('foreground', bg_folder+'foreground.png');
+    this.load.image('far-buildings', bg_folder+'far-buildings.png');
+    
+    
     this.load.image('sky', 'assets/sky.png');
     this.load.image('background', 'assets/city.png');
-    this.load.image('ground', 'assets/ground.png');
+    this.load.image('ground', 'assets/platform.png');
     this.load.image('title', 'assets/title.png');
     this.load.image('startButton', 'assets/start-button.png');
     
