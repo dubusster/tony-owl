@@ -10,6 +10,7 @@ var Owl = function(game, x, y, frame) {
   this.jumping = false;
   this.walking_speed = 200;
   this.weapon = this.game.add.deathguitar(5, 'wave');
+  this.weapon.trackSprite(this,0,0);
   
   
   
@@ -70,6 +71,7 @@ Owl.prototype.move = function(direction) {
 };
 
 Owl.prototype.shoot = function() {
+	console.log('fire!');
 	this.weapon.fire();
 };
 

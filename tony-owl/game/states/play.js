@@ -29,8 +29,7 @@
 
       // add keyboard controls
       var shootKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-      var rightKey = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-      var leftKey = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+      
       
       
       shootKey.onDown.add(this.owl.shoot, this.owl);
