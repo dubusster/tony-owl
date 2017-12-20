@@ -2,38 +2,53 @@
   'use strict';
   
   var Ground = require('../prefabs/ground.js')
+  var Owl = require('../prefabs/owl.js')
   
   function Play() {}
   Play.prototype = {
     create: function() {
       this.game.physics.startSystem(Phaser.Physics.ARCADE);
-      this.game.physics.arcade.gravity.y = 500;
+      this.game.physics.arcade.gravity.y = 800;
       
       this.background = this.add.tileSprite(0, 0,this.game.width, this.game.height, 'background');
-      this.background.autoScroll(-100, 0);
+      //this.background.autoScroll(-100, 0);
       
       // adding ground to game
       var ground_height = 50;
       this.ground = new Ground(this.game, 0, this.game.height-ground_height, this.game.width, ground_height);
       this.game.add.existing(this.ground);
       
-//      this.sprite = this.game.add.sprite(this.game.width/2, this.game.height/2, 'yeoman');
-//      this.sprite.inputEnabled = true;
-//      
-//      this.game.physics.arcade.enable(this.sprite);
-//      this.sprite.body.collideWorldBounds = true;
-//      this.sprite.body.bounce.setTo(1,1);
-//      this.sprite.body.velocity.x = this.game.rnd.integerInRange(-500,500);
-//      this.sprite.body.velocity.y = this.game.rnd.integerInRange(-500,500);
-//
-//      this.sprite.events.onInputDown.add(this.clickListener, this);
-    },
-    update: function() {
+      
+      // adding owl (player) to game
+      this.owl = new Owl(this.game, 100, this.game.height-ground_height-100)
+      this.game.add.existing(this.owl);
+      
+      
+      // keep the spacebar from propogating up to the browser
+      this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR, Phaser.Keyboard.UP ]);
+
+      // add keyboard controls
+      var shootKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+      var rightKey = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+      var leftKey = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+      
+      
+      shootKey.onDown.add(this.owl.shoot, this.owl);
+//      rightKey.onDown.add(this.owl.going_right, this.owl);
+//      leftKey.onDown.add(this.owl.go_left, this.owl);
+
+
+      // add mouse/touch controls
+      // this.input.onDown.add(this.owl.flap, this.owl);
+      
+      //this.game.input.keyboard.isDown()
+      
 
     },
-    clickListener: function() {
-      this.game.state.start('gameover');
-    }
+    update: function() {
+    	this.game.physics.arcade.collide(this.owl, this.ground);
+    },
   };
   
   module.exports = Play;
+  
