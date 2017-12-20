@@ -6,7 +6,7 @@ var DeathGuitar = function(game) {
 
 	this.bulletSpeed = 1000;
 	this.bulletKillType = Phaser.Weapon.KILL_DISTANCE;
-	this.bulletKillDistance = 200
+	this.bulletKillDistance = 50;
 	this.fireAngle = Phaser.ANGLE_RIGHT;
 
 	this.bulletGravity.y = -game.physics.arcade.gravity.y;
@@ -27,7 +27,7 @@ Phaser.GameObjectFactory.prototype.deathguitar = function(quantity, key, frame,
 
 	deathguitar.createBullets(quantity, key, frame, group);
 
-	return deathguitar;
+	return deathguitar; 
 };
 
 // module.exports = DeathGuitar;
