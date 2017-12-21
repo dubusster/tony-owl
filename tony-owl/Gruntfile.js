@@ -56,7 +56,28 @@ module.exports = function (grunt) {
         src: ['game/main.js'],
         dest: 'dist/js/game.js'
       }
+    },
+  buildcontrol: {
+    options: {
+      dir: 'dist',
+      commit: true,
+      push: true,
+      message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
+    },
+    production: {
+      options: {
+        remote: 'git@45.63.114.86:tony-owl',
+        branch: 'master',
+        // tag: pkg.version
+      }
+    },
+    local: {
+      options: {
+        remote: '../',
+        branch: 'build'
+      }
     }
+  }
   });
   
   grunt.registerTask('build', ['buildBootstrapper', 'browserify','copy']);
