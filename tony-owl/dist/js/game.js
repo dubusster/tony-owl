@@ -18,26 +18,26 @@ window.onload = function () {
 },{"./states/boot":5,"./states/gameover":6,"./states/menu":7,"./states/play":8,"./states/preload":9}],2:[function(require,module,exports){
 'use strict';
 
-var Ground = function(game, x, y, width, height) {  
+var Ground = function(game, x, y, width, height) {
 	Phaser.TileSprite.call(this, game, x, y, width, height, 'ground');
-  // start scrolling our ground
-  //this.autoScroll(-200,0);
-   
-  // enable physics on the ground sprite
-  // this is needed for collision detection
-  this.game.physics.arcade.enableBody(this);
- 
-  // we don't want the ground's body
-  // to be affected by gravity or external forces
-  this.body.allowGravity = false;
-  this.body.immovable = true;
+	// start scrolling our ground
+	// this.autoScroll(-200,0);
+
+	// enable physics on the ground sprite
+	// this is needed for collision detection
+	this.game.physics.arcade.enableBody(this);
+
+	// we don't want the ground's body
+	// to be affected by gravity or external forces
+	this.body.allowGravity = false;
+	this.body.immovable = true;
 };
 
-Ground.prototype = Object.create(Phaser.TileSprite.prototype);  
+Ground.prototype = Object.create(Phaser.TileSprite.prototype);
 Ground.prototype.constructor = Ground;
 
-Ground.prototype.update = function() {  
-  // write your prefab's specific update code here  
+Ground.prototype.update = function() {
+	// write your prefab's specific update code here
 };
 
 module.exports = Ground
@@ -53,6 +53,12 @@ var Owl = function(game, x, y, frame) {
 	this.game.physics.arcade.enableBody(this);
 	this.jumping = false;
 	this.walking_speed = 200;
+	this.jumping_height = 300;
+	
+	// animations
+	this.animations.add('left', [0, 1, 2, 3], 10, true);
+	this.animations.add('right', [5, 6, 7, 8], 10, true);
+	
 	this.weapon = this.game.add.deathguitar(5, 'wave');
 	this.weapon.trackSprite(this, 0, 0);
 
@@ -63,43 +69,20 @@ Owl.prototype.constructor = Owl;
 
 Owl.prototype.update = function() {
 
-	// checking whether the player is midair or not.
-	if (this.body.touching.down) {
-		this.jumping = false;
-	} else {
-		this.jumping = true
-	}
-	// Player moves
-	if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-		this.move("UP");
-	} else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-		this.move("RIGHT");
-	} else if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-		this.move("LEFT");
-	} else {
-		this.move(null);
-	}
-
-};
-
-Owl.prototype.flap = function() {
-	if (!this.jumping) {
-		this.body.velocity.y = -300;
-	}
 };
 
 Owl.prototype.move = function(direction) {
 	if (direction == "RIGHT") {
-		// TODO: put animation here
 		this.body.velocity.x = this.walking_speed;
+		this.animations.play('right');
 	}
-	if (direction == "LEFT") {
-		// TODO: put animation here
+	else if (direction == "LEFT") {
 		this.body.velocity.x = -this.walking_speed;
+		this.animations.play('left');
+		
 	}
 	if (direction == "UP") {
-		// TODO: put animation here
-		this.flap();
+		this.body.velocity.y = -this.jumping_height;
 	}
 	if (direction == null) {
 		this.body.velocity.x = 0;
@@ -122,7 +105,7 @@ var DeathGuitar = function(game) {
 
 	this.bulletSpeed = 1000;
 	this.bulletKillType = Phaser.Weapon.KILL_DISTANCE;
-	this.bulletKillDistance = 200
+	this.bulletKillDistance = 50;
 	this.fireAngle = Phaser.ANGLE_RIGHT;
 
 	this.bulletGravity.y = -game.physics.arcade.gravity.y;
@@ -143,7 +126,7 @@ Phaser.GameObjectFactory.prototype.deathguitar = function(quantity, key, frame,
 
 	deathguitar.createBullets(quantity, key, frame, group);
 
-	return deathguitar;
+	return deathguitar; 
 };
 
 // module.exports = DeathGuitar;
@@ -234,6 +217,7 @@ Menu.prototype = {
     
     this.startButton = this.game.add.button(this.game.width/2, 3.5*this.game.height/4, 'startButton', this.startClick, this);
     this.startButton.anchor.setTo(0.5,0.5);
+//    this.startButton.scale.setTo(0.5);
     
   },
   update: function() {
@@ -260,7 +244,9 @@ Play.prototype = {
 	create : function() {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.game.physics.arcade.gravity.y = 800;
-
+		
+		
+		
 		this.background = this.add.tileSprite(0, 0, this.game.width,
 				this.game.height, 'background');
 		// this.background.autoScroll(-100, 0);
@@ -295,7 +281,24 @@ Play.prototype = {
 
 	},
 	update : function() {
-		this.game.physics.arcade.collide(this.owl, this.ground);
+		var hit_platform = this.game.physics.arcade.collide(this.owl, this.ground);
+		
+		// Player moves
+		this.owl.move(null);
+		var cursors = this.game.input.keyboard.createCursorKeys();
+		
+		if (cursors.right.isDown) {
+			this.owl.move("RIGHT");
+		} else if (cursors.left.isDown) {
+			this.owl.move("LEFT");
+		} else {
+			this.owl.animations.stop();
+			this.owl.frame=4;
+		}
+		if (cursors.up.isDown && this.owl.body.touching.down && hit_platform) {
+			this.owl.move("UP");
+		}
+
 	},
 };
 
@@ -324,18 +327,11 @@ Preload.prototype = {
     
     this.load.image('logo', 'assets/logo5_small.png');
     
-    var bg_folder = "assets/cyberpunk-street-files/cyberpunk-street-files/PNG/layers/";
-    
-    this.load.image('back-buildings', bg_folder+'back-buildings.png');
-    this.load.image('foreground', bg_folder+'foreground.png');
-    this.load.image('far-buildings', bg_folder+'far-buildings.png');
-    
-    
     this.load.image('sky', 'assets/sky.png');
     this.load.image('background', 'assets/city.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('title', 'assets/title.png');
-    this.load.image('startButton', 'assets/start-button.png');
+    this.load.image('startButton', 'assets/start_button.png');
     
     this.load.spritesheet('owl', 'assets/owl.png', 32, 48, 9);
 
