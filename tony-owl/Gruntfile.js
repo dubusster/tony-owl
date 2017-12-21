@@ -66,7 +66,7 @@ module.exports = function (grunt) {
     },
     production: {
       options: {
-        remote: 'git@45.63.114.86:tony-owl',
+        remote: 'git@45.63.114.86:tony-owl.git',
         branch: 'master',
         // tag: pkg.version
       }
