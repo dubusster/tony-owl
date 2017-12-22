@@ -41,6 +41,7 @@ Owl.prototype.move = function(direction) {
 	}
 	if (direction == "UP") {
 		this.body.velocity.y = -this.jumping_height;
+		console.log('jump!');
 	}
 	if (direction == null) {
 		this.body.velocity.x = 0;

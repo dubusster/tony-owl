@@ -12,21 +12,25 @@ Play.prototype = {
 		
 		
 		
-		this.background = this.add.tileSprite(0, 0, this.game.width,
-				this.game.height, 'background');
+		//this.background = this.add.tileSprite(0, 0, this.game.width,
+			//	this.game.height, 'background');
 		// this.background.autoScroll(-100, 0);
 
-		// adding ground to game
 		var ground_height = 50;
-		this.ground = new Ground(this.game, 0,
-				this.game.height - ground_height, this.game.width,
-				ground_height);
-		this.game.add.existing(this.ground);
-
+		// adding map
+		var map = this.game.add.tilemap('map');
+		map.addTilesetImage('roguelikeCity_transparent', 'tiles');
+		map.setCollisionBetween(1, 100, true, 'World1');
+		this.layer = map.createLayer('World1');
+		this.game.add.existing(this.layer);
+		this.layer.resizeWorld();
+		
+		
 		// adding owl (player) to game
 		this.owl = new Owl(this.game, 100, this.game.height - ground_height
 				- 100)
 		this.game.add.existing(this.owl);
+		this.game.camera.follow(this.owl); 
 
 		// keep the spacebar from propogating up to the browser
 		this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR,
@@ -46,7 +50,7 @@ Play.prototype = {
 
 	},
 	update : function() {
-		var hit_platform = this.game.physics.arcade.collide(this.owl, this.ground);
+		var hit_platform = this.game.physics.arcade.collide(this.owl, this.layer);
 		
 		// Player moves
 		this.owl.move(null);
@@ -60,7 +64,8 @@ Play.prototype = {
 			this.owl.animations.stop();
 			this.owl.frame=4;
 		}
-		if (cursors.up.isDown && this.owl.body.touching.down && hit_platform) {
+		
+		if (cursors.up.isDown && this.owl.body.blocked.down) {
 			this.owl.move("UP");
 		}
 

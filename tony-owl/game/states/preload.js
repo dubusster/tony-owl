@@ -26,6 +26,10 @@ Preload.prototype = {
     this.load.image('title', 'assets/title.png');
     this.load.image('startButton', 'assets/start_button.png');
     
+    // map
+    this.load.tilemap('map', 'assets/maps/tilemaps/tilemap.json',null, Phaser.Tilemap.TILED_JSON);
+    this.load.image('tiles', 'assets/maps/tilesets/roguelikeCity_transparent.png');
+    
     this.load.spritesheet('owl', 'assets/owl.png', 32, 48, 9);
 
   },
