@@ -18,13 +18,12 @@ Preload.prototype = {
     this.asset.anchor.setTo(0.5, 0.5);
     this.load.setPreloadSprite(this.asset);
     
-    this.load.image('logo', 'assets/logo5_small.png');
+    this.load.image('logo', 'assets/images/logo5_small.png');
     
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('background', 'assets/city.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('title', 'assets/title.png');
-    this.load.image('startButton', 'assets/start_button.png');
+    this.load.image('background', 'assets/images/city.png');
+    this.load.image('ground', 'assets/images/platform.png');
+    this.load.image('title', 'assets/images/title.png');
+    this.load.image('startButton', 'assets/images/start_button.png');
     
     // map
     this.load.tilemap('map', 'assets/maps/tilemaps/tilemap.json',null, Phaser.Tilemap.TILED_JSON);
