@@ -12,8 +12,8 @@ var Owl = function(game, x, y, frame) {
 	this.jumping_height = 300;
 	
 	// animations
-	this.animations.add('left', [0, 1, 2, 3], 10, true);
-	this.animations.add('right', [5, 6, 7, 8], 10, true);
+	this.animations.add('left', [0], 10, true);
+	this.animations.add('right', [1], 10, true);
 	
 	// player weapon
 	this.weapon = this.game.add.deathguitar(5, 'wave');
@@ -46,6 +46,7 @@ Owl.prototype.move = function(direction) {
 	}
 	if (direction == null) {
 		this.body.velocity.x = 0;
+		this.animations.play('right');
 	}
 };
 

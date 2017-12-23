@@ -29,7 +29,7 @@ Preload.prototype = {
     this.load.tilemap('map', 'assets/maps/tilemaps/tilemap.json',null, Phaser.Tilemap.TILED_JSON);
     this.load.image('tiles', 'assets/maps/tilesets/roguelikeCity_transparent.png');
     
-    this.load.spritesheet('owl', 'assets/owl.png', 32, 48, 9);
+    this.load.spritesheet('owl', 'assets/images/tony-owl-sheet.png', 64, 64, 2);
 
   },
   create: function() {
