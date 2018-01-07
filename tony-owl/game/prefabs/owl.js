@@ -8,12 +8,12 @@ var Owl = function(game, x, y, frame) {
 	// initialize your prefab here
 	this.game.physics.arcade.enableBody(this);
 	this.jumping = false;
-	this.walking_speed = 200;
+	this.walking_speed = 300;
 	this.jumping_height = 300;
 	
 	// animations
-	this.animations.add('left', [0], 10, true);
-	this.animations.add('right', [1], 10, true);
+	this.animations.add('left', [0,1], 5, true);
+	this.animations.add('right', [3,4], 5, true);
 	
 	// player weapon
 	this.weapon = this.game.add.deathguitar(5, 'wave');
@@ -35,7 +35,9 @@ Owl.prototype.move = function(direction) {
 		this.weapon.fireAngle = Phaser.ANGLE_RIGHT;
 	}
 	else if (direction == "LEFT") {
+		
 		this.body.velocity.x = -this.walking_speed;
+		
 		this.animations.play('left');
 		this.weapon.fireAngle = Phaser.ANGLE_LEFT;
 		
@@ -46,7 +48,8 @@ Owl.prototype.move = function(direction) {
 	}
 	if (direction == null) {
 		this.body.velocity.x = 0;
-		this.animations.play('right');
+		this.animations.stop();
+		this.frame=2;
 	}
 };
 

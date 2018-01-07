@@ -12,18 +12,19 @@ Play.prototype = {
 		
 		
 		
-		//this.background = this.add.tileSprite(0, 0, this.game.width,
-			//	this.game.height, 'background');
-		// this.background.autoScroll(-100, 0);
+		this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'background');
+		this.background.autoScroll(-100, 0);
 
 		var ground_height = 50;
+		this.ground = new Ground(this.game, 0, this.game.height-ground_height, this.game.width, ground_height);
+		this.game.add.existing(this.ground);
 		// adding map
-		var map = this.game.add.tilemap('map');
-		map.addTilesetImage('roguelikeCity_transparent', 'tiles');
-		map.setCollisionBetween(1, 100, true, 'World1');
-		this.layer = map.createLayer('World1');
-		this.game.add.existing(this.layer);
-		this.layer.resizeWorld();
+//		var map = this.game.add.tilemap('map');
+//		map.addTilesetImage('roguelikeCity_transparent', 'tiles');
+//		map.setCollisionBetween(1, 100, true, 'World1');
+//		this.layer = map.createLayer('World1');
+//		this.game.add.existing(this.layer);
+//		this.layer.resizeWorld();
 		
 		
 		// adding owl (player) to game
@@ -50,19 +51,23 @@ Play.prototype = {
 
 	},
 	update : function() {
-		var hit_platform = this.game.physics.arcade.collide(this.owl, this.layer);
+		var hit_platform = this.game.physics.arcade.collide(this.owl, this.ground);
 		
 		// Player moves
 		this.owl.move(null);
+		this.background.autoScroll(0, 0);
 		var cursors = this.game.input.keyboard.createCursorKeys();
 		
 		if (cursors.right.isDown) {
 			this.owl.move("RIGHT");
+			this.background.autoScroll(-100, 0);
 		} else if (cursors.left.isDown) {
-			this.owl.move("LEFT");
+			if (this.owl.body.position.x >= 0) {		
+				this.owl.move("LEFT");
+			}
 		} else {
-			this.owl.animations.stop();
-			this.owl.frame=4;
+//			this.owl.move(null);
+			
 		}
 		
 		if (cursors.up.isDown && this.owl.body.blocked.down) {
