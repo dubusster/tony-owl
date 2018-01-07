@@ -9,8 +9,13 @@ Menu.prototype = {
   create: function() {
 	
     // add the background sprite
-    this.background = this.add.tileSprite(0, 0,this.game.width, this.game.height, 'background');
-    this.background.autoScroll(-100, 0);
+	this.background_group = this.game.add.group();
+	this.sky = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'sky');
+    this.buildings = this.add.tileSprite(0, 0,this.game.width, this.game.height, 'background');
+    this.sky.autoScroll(-50, 0);
+    this.buildings.autoScroll(-100, 0);
+    this.background_group.add(this.sky);
+    this.background_group.add(this.buildings);
 	  
 	this.titleGroup = this.game.add.group();
     

@@ -21,13 +21,10 @@ Preload.prototype = {
     this.load.image('logo', 'assets/images/logo5_small.png');
     
     this.load.image('background', 'assets/images/city.png');
+    this.load.image('sky', 'assets/images/sky.png');
     this.load.image('ground', 'assets/images/platform.png');
     this.load.image('title', 'assets/images/title.png');
     this.load.image('startButton', 'assets/images/start_button.png');
-    
-    // map
-    this.load.tilemap('map', 'assets/maps/tilemaps/tilemap.json',null, Phaser.Tilemap.TILED_JSON);
-    this.load.image('tiles', 'assets/maps/tilesets/roguelikeCity_transparent.png');
     
     this.load.spritesheet('owl', 'assets/images/tony-owl-sheet.png', 64, 76, 5);
 
