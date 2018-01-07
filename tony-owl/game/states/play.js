@@ -10,7 +10,7 @@ Play.prototype = {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.game.physics.arcade.gravity.y = 800;
 		
-		this.autoscroll_speed = 50;
+		this.autoscroll_speed = 30;
 		
 		this.sky = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'sky');
 		this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'background');
@@ -59,8 +59,8 @@ Play.prototype = {
 		}
 		
 		// Player moves
-		this.owl.move(null);
-		this.background.autoScroll(-50, 0);
+		
+		
 		var cursors = this.game.input.keyboard.createCursorKeys();
 		
 		if (cursors.right.isDown) {
@@ -70,6 +70,8 @@ Play.prototype = {
 		} else if (cursors.left.isDown) {		
 				this.owl.move("LEFT");
 		} else {
+			this.background.autoScroll(-50, 0);
+			this.owl.move(null);
 			this.owl.body.velocity.x = -this.autoscroll_speed;
 			
 		}
