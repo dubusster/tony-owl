@@ -8,16 +8,19 @@ function Play() {
 Play.prototype = {
 	create : function() {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-		this.game.physics.arcade.gravity.y = 800;
+		this.game.physics.arcade.gravity.y = 1500;
+		this.game.world.setBounds(0, 0, 2000, 600);
 		
 		this.autoscroll_speed = 30;
 		
-		this.sky = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'sky');
-		this.background = this.add.tileSprite(0, 0, this.game.width, this.game.height, 'background');
+		this.sky = this.add.tileSprite(0, 0, this.game.world.width, this.game.height, 'sky');
+		this.background = this.add.tileSprite(0, 0, this.game.world.width, this.game.height, 'background');
 		this.sky.autoScroll(-30, 0);
+		
+		var level_width = 10000;
 
 		var ground_height = 50;
-		this.ground = new Ground(this.game, 0, this.game.height-ground_height, this.game.width, ground_height);
+		this.ground = new Ground(this.game, 0, this.game.height-ground_height, level_width, ground_height);
 		this.game.add.existing(this.ground);
 		// adding map
 //		var map = this.game.add.tilemap('map');
@@ -41,7 +44,7 @@ Play.prototype = {
 		// add keyboard controls
 		var shootKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-		shootKey.onDown.add(this.owl.shoot, this.owl);
+		shootKey.onDown.add(this.owl.trick, this.owl);
 		// rightKey.onDown.add(this.owl.going_right, this.owl);
 		// leftKey.onDown.add(this.owl.go_left, this.owl);
 
@@ -52,10 +55,14 @@ Play.prototype = {
 
 	},
 	update : function() {
+		this.game.camera.x += 10;
 		var hit_platform = this.game.physics.arcade.collide(this.owl, this.ground);
 		
 		if (this.owl.body.position.x < 0) {		
 			this.owl.body.position.x = 0;
+		}
+		else if (this.owl.body.position.x > this.game.world.width-this.owl.body.width) {
+			this.owl.body.position.x = this.game.world.width-this.owl.body.width;
 		}
 		
 		// Player moves
@@ -65,14 +72,14 @@ Play.prototype = {
 		
 		if (cursors.right.isDown) {
 			this.owl.move("RIGHT");
-			this.background.autoScroll(-100, 0);
-			this.sky.autoScroll(-50, 0);
+//			this.background.autoScroll(-100, 0);
+//			this.sky.autoScroll(-50, 0);
 		} else if (cursors.left.isDown) {		
 				this.owl.move("LEFT");
 		} else {
-			this.background.autoScroll(-50, 0);
+//			this.background.autoScroll(-50, 0);
 			this.owl.move(null);
-			this.owl.body.velocity.x = -this.autoscroll_speed;
+//			this.owl.body.velocity.x = -this.autoscroll_speed;
 			
 		}
 		
