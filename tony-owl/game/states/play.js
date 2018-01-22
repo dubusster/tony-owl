@@ -2,6 +2,8 @@
 
 var Ground = require('../prefabs/ground.js')
 var Owl = require('../prefabs/owl.js')
+var Guitar = require('../prefabs/guitar.js')
+var Ampli = require('../prefabs/ampli.js')
 
 function Play() {
 }
@@ -22,14 +24,6 @@ Play.prototype = {
 		var ground_height = 50;
 		this.ground = new Ground(this.game, 0, this.game.height-ground_height, level_width, ground_height);
 		this.game.add.existing(this.ground);
-		// adding map
-//		var map = this.game.add.tilemap('map');
-//		map.addTilesetImage('roguelikeCity_transparent', 'tiles');
-//		map.setCollisionBetween(1, 100, true, 'World1');
-//		this.layer = map.createLayer('World1');
-//		this.game.add.existing(this.layer);
-//		this.layer.resizeWorld();
-		
 		
 		// adding owl (player) to game
 		this.owl = new Owl(this.game, 100, this.game.height - ground_height
@@ -37,7 +31,7 @@ Play.prototype = {
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl); 
 
-		// keep the spacebar from propogating up to the browser
+		// keep the spacebar from propagating up to the browser
 		this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR,
 				Phaser.Keyboard.UP ]);
 
@@ -45,13 +39,6 @@ Play.prototype = {
 		var shootKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 		shootKey.onDown.add(this.owl.trick, this.owl);
-		// rightKey.onDown.add(this.owl.going_right, this.owl);
-		// leftKey.onDown.add(this.owl.go_left, this.owl);
-
-		// add mouse/touch controls
-		// this.input.onDown.add(this.owl.flap, this.owl);
-
-		// this.game.input.keyboard.isDown()
 
 	},
 	update : function() {
