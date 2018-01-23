@@ -4,23 +4,24 @@ var Ground = require('../prefabs/ground.js')
 var Owl = require('../prefabs/owl.js')
 var Guitar = require('../prefabs/guitar.js')
 var Ampli = require('../prefabs/ampli.js')
+var Negaowl = require('../prefabs/negaowl.js')
 
 function Play() {
 }
 Play.prototype = {
 	create : function() {
+		// Generating world and physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.game.physics.arcade.gravity.y = 1500;
-		this.game.world.setBounds(0, 0, 2000, 600);
-		
+		var level_width = 2000;
+		this.game.world.setBounds(0, 0, level_width, 600);
 		this.autoscroll_speed = 30;
 		
+		// Generating backgrounds and landscape
 		this.sky = this.add.tileSprite(0, 0, this.game.world.width, this.game.height, 'sky');
 		this.background = this.add.tileSprite(0, 0, this.game.world.width, this.game.height, 'background');
 		this.sky.autoScroll(-30, 0);
 		
-		var level_width = 10000;
-
 		var ground_height = 50;
 		this.ground = new Ground(this.game, 0, this.game.height-ground_height, level_width, ground_height);
 		this.game.add.existing(this.ground);
@@ -37,8 +38,11 @@ Play.prototype = {
 
 		// add keyboard controls
 		var shootKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
 		shootKey.onDown.add(this.owl.trick, this.owl);
+		
+		// add boss at the end of the map
+		this.boss = new Negaowl(this.game, this.game.world.width-100, this.game.height - 100);
+		this.game.add.existing(this.boss);
 
 	},
 	update : function() {

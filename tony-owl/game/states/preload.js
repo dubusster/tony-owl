@@ -27,6 +27,8 @@ Preload.prototype = {
     this.load.image('startButton', 'assets/images/start_button.png');
     
     this.load.spritesheet('owl', 'assets/images/tony-owl-sheet.png', 64, 76, 5);
+//    this.load.image('negaowl', 'assets/images/negaowl.png');
+    this.load.spritesheet('negaowl', 'assets/images/tony-owl-sheet.png', 64, 76, 5);
 
   },
   create: function() {
