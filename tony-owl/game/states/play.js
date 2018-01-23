@@ -27,8 +27,7 @@ Play.prototype = {
 		this.game.add.existing(this.ground);
 		
 		// adding owl (player) to game
-		this.owl = new Owl(this.game, 100, this.game.height - ground_height
-				- 100)
+		this.owl = new Owl(this.game, 100, this.game.height - 150);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl); 
 
@@ -41,13 +40,17 @@ Play.prototype = {
 		shootKey.onDown.add(this.owl.trick, this.owl);
 		
 		// add boss at the end of the map
-		this.boss = new Negaowl(this.game, this.game.world.width-100, this.game.height - 100);
+		this.boss = new Negaowl(this.game, this.game.world.width-100, this.game.height - 200);
 		this.game.add.existing(this.boss);
+//		
+		
 
 	},
 	update : function() {
-		this.game.camera.x += 10;
+		
 		var hit_platform = this.game.physics.arcade.collide(this.owl, this.ground);
+		this.game.physics.arcade.collide(this.boss, this.ground);
+		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
 		
 		if (this.owl.body.position.x < 0) {		
 			this.owl.body.position.x = 0;
@@ -56,9 +59,8 @@ Play.prototype = {
 			this.owl.body.position.x = this.game.world.width-this.owl.body.width;
 		}
 		
+		
 		// Player moves
-		
-		
 		var cursors = this.game.input.keyboard.createCursorKeys();
 		
 		if (cursors.right.isDown) {
@@ -80,5 +82,15 @@ Play.prototype = {
 
 	},
 };
+
+function touchingBoss(player, enemy) {
+	if (player.body.touching.right || player.body.touching.left)
+    {
+        // player is dead
+		console.log('WIIIIIN');
+        player.game.state.start('win');
+    }
+	
+}
 
 module.exports = Play;

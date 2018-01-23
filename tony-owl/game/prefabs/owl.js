@@ -15,10 +15,6 @@ var Owl = function(game, x, y, frame) {
 	this.animations.add('left', [0,1], 5, true);
 	this.animations.add('right', [3,4], 5, true);
 	// TODO: add trick animation
-	
-//	// player weapon
-//	this.weapon = this.game.add.deathguitar(5, 'wave'); 
-//	this.weapon.trackSprite(this, 0, 0);
 
 };
 

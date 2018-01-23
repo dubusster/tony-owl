@@ -5,7 +5,7 @@ var Negaowl = function(game, x, y, frame) {
 
   // TODO: add boss animation
   
-  
+  this.game.physics.arcade.enableBody(this);
   
 };
 
