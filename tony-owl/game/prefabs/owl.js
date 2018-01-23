@@ -29,14 +29,10 @@ Owl.prototype.move = function(direction) {
 	if (direction == "RIGHT") {
 		this.body.velocity.x = this.walking_speed;
 		this.animations.play('right');
-//		this.weapon.fireAngle = Phaser.ANGLE_RIGHT;
 	}
 	else if (direction == "LEFT") {
-		
 		this.body.velocity.x = -this.walking_speed;
-		
 		this.animations.play('left');
-//		this.weapon.fireAngle = Phaser.ANGLE_LEFT;
 		
 	}
 	if (direction == "UP") {
@@ -51,8 +47,10 @@ Owl.prototype.move = function(direction) {
 };
 
 Owl.prototype.trick = function() {
+	if (!this.body.touching.down) {		
 	console.log('trick!');
 	this.animations.play('trick');
+	}
 };
 
 module.exports = Owl;
