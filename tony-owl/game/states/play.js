@@ -6,6 +6,8 @@ var Guitar = require('../prefabs/guitar.js')
 var Ampli = require('../prefabs/ampli.js')
 var Negaowl = require('../prefabs/negaowl.js')
 
+var on_animation = true;
+
 function Play() {
 }
 Play.prototype = {
@@ -46,16 +48,16 @@ Play.prototype = {
 		this.boss = new Negaowl(this.game, this.game.world.width - 100,
 				this.game.height - 200);
 		this.game.add.existing(this.boss);
-		
+
+		this.start_animation();
+
 		var MIN_THROWING_DELAY = 3000;
 		var MAX_THROWING_DELAY = 5000;
 
 		// Send another thing soon
 
-
 	},
 	update : function() {
-
 		var hit_platform = this.game.physics.arcade.collide(this.owl,
 				this.ground);
 		this.game.physics.arcade.collide(this.boss, this.ground);
@@ -70,28 +72,58 @@ Play.prototype = {
 		}
 
 		// Player moves
-		var cursors = this.game.input.keyboard.createCursorKeys();
+		if (!on_animation) {
+			var cursors = this.game.input.keyboard.createCursorKeys();
 
-		if (cursors.right.isDown) {
-			this.owl.move("RIGHT");
-		} else if (cursors.left.isDown) {
-			this.owl.move("LEFT");
-		} else {
-			this.owl.move(null);
+			if (cursors.right.isDown) {
+				this.owl.move("RIGHT");
+			} else if (cursors.left.isDown) {
+				this.owl.move("LEFT");
+			} else {
+				this.owl.move(null);
+
+			}
+
+			if (cursors.up.isDown && this.owl.body.touching.down) {
+				this.owl.move("UP");
+			}
 
 		}
-
-		if (cursors.up.isDown && this.owl.body.touching.down) {
-			this.owl.move("UP");
-		}
-		
-		
 
 	},
+	
+	start_animation : function(){
+		// TODO: do the animation
+		
+		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss, this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 3, this.focus_on_player, this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 3.5, this.back_to_game, this);
+		
+	},
+	
+	focus_on_boss : function(){
+		
+		this.game.camera.follow(this.boss, 0, 0.05);
+		
+	},
+	
+	focus_on_player : function(){
+		this.game.camera.follow(this.owl, 0, 0.05);
+		
+	},
+	
+	back_to_game : function(){
+		this.game.camera.unfollow();
+		this.game.camera.follow(this.owl);
+		
+		on_animation = false;
+	},
+	
 };
 
 function touchingBoss(player, enemy) {
-	if (player.body.touching.right || player.body.touching.left || player.body.touching.up) {
+	if (player.body.touching.right || player.body.touching.left
+			|| player.body.touching.up) {
 		// boss is dead
 		console.log('WIIIIIN');
 		player.game.state.start('win');
