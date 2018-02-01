@@ -51,10 +51,12 @@ Play.prototype = {
 
 		this.start_animation();
 
-		var MIN_THROWING_DELAY = 3000;
-		var MAX_THROWING_DELAY = 5000;
+		var MIN_THROWING_DELAY = 0.5 * Phaser.Timer.SECOND;
+		var MAX_THROWING_DELAY = 2 * Phaser.Timer.SECOND;
 
 		// Send another thing soon
+		var guitar = new Guitar(100,this.game, this.boss.body.position.x, 300);
+		this.game.add.existing(guitar);
 
 	},
 	update : function() {

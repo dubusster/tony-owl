@@ -1,6 +1,6 @@
 'use strict';
 
-var Guitar = function(game, x, y, frame) {
+var Guitar = function(velocity, game, x, y, frame) {
   Phaser.Sprite.call(this, game, x, y, 'guitar', frame);
 
   	//enable physics on the enemy sprite
@@ -8,6 +8,7 @@ var Guitar = function(game, x, y, frame) {
 	this.game.physics.arcade.enableBody(this);
 	// Guitars just flow through the screen as motherfucking shurikens
 	this.body.allowGravity = false;
+	this.body.velocity.x = -Math.abs(velocity);
   
 };
 
