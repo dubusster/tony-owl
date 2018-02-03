@@ -50,13 +50,13 @@ Play.prototype = {
 		this.game.add.existing(this.boss);
 
 		this.start_animation();
+//		on_animation = false // DEBUG
 
 		var MIN_THROWING_DELAY = 0.5 * Phaser.Timer.SECOND;
 		var MAX_THROWING_DELAY = 2 * Phaser.Timer.SECOND;
 
 		// Send another thing soon
-		var guitar = new Guitar(100,this.game, this.boss.body.position.x, 300);
-		this.game.add.existing(guitar);
+		throwingStuffs(this);
 
 	},
 	update : function() {
@@ -131,6 +131,11 @@ function touchingBoss(player, enemy) {
 		player.game.state.start('win');
 	}
 
+}
+
+function throwingStuffs(context){
+	var guitar = new Guitar(200,context.game, context.boss.body.position.x, 300);
+	context.game.add.existing(guitar);
 }
 
 module.exports = Play;
