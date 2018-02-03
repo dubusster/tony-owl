@@ -49,14 +49,18 @@ Play.prototype = {
 				this.game.height - 200);
 		this.game.add.existing(this.boss);
 
-		this.start_animation();
-//		on_animation = false // DEBUG
+//		this.start_animation();
+		on_animation = false // DEBUG
 
 		var MIN_THROWING_DELAY = 0.5 * Phaser.Timer.SECOND;
 		var MAX_THROWING_DELAY = 2 * Phaser.Timer.SECOND;
 
 		// Send another thing soon
-		throwingStuffs(this);
+		// create a new looping TimerEvent on the default game timer and return it
+		this.loopTimer = this.game.time.events.loop(1000, throwingStuffs, this, -200);
+		// we can now modify its delay
+		this.loopTimer.delay = 500;
+		
 
 	},
 	update : function() {
@@ -133,9 +137,13 @@ function touchingBoss(player, enemy) {
 
 }
 
-function throwingStuffs(context){
-	var guitar = new Guitar(200,context.game, context.boss.body.position.x, 300);
-	context.game.add.existing(guitar);
+function throwingStuffs(velocity){
+	
+	var THROWING_HEIGHT_MIN = this.game.height/4;
+	var THROWING_HEIGHT_MAX = 3*this.game.height/4;
+	var throwing_height = this.game.rnd.integerInRange(THROWING_HEIGHT_MIN, THROWING_HEIGHT_MAX);
+	var guitar = new Guitar(velocity,this.game, this.boss.body.position.x, throwing_height);
+	this.game.add.existing(guitar);
 }
 
 module.exports = Play;
