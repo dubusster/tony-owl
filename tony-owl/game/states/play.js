@@ -9,12 +9,16 @@ var Negaowl = require('../prefabs/negaowl.js')
 var on_animation = true;
 
 var GAME_HEIGHT = 600;
+var GROUND_HEIGHT = 50;
 
 var THROWING_HEIGHT_MIN = GAME_HEIGHT/4;
-var THROWING_HEIGHT_MAX = 3*GAME_HEIGHT/4;
+var THROWING_HEIGHT_MAX = GAME_HEIGHT-GROUND_HEIGHT;
 
-var THROWING_VELOCITY_MIN = -100;
-var THROWING_VELOCITY_MAX = -300;
+var THROWING_VELOCITY_GUITAR_MIN = -100;
+var THROWING_VELOCITY_GUITAR_MAX = -300;
+
+var THROWING_VELOCITY_AMPLI_MIN = -300;
+var THROWING_VELOCITY_AMPLI_MAX = -800;
 
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
@@ -37,9 +41,9 @@ Play.prototype = {
 				this.game.height, 'background');
 		this.sky.autoScroll(-30, 0);
 
-		var ground_height = 50;
+		
 		this.ground = new Ground(this.game, 0,
-				this.game.height - ground_height, level_width, ground_height);
+				this.game.height - GROUND_HEIGHT, level_width, GROUND_HEIGHT);
 		this.game.add.existing(this.ground);
 
 		// adding owl (player) to game
@@ -63,13 +67,13 @@ Play.prototype = {
 //		this.start_animation();
 		on_animation = false // DEBUG
 
-		var MIN_THROWING_DELAY = 0.5 * Phaser.Timer.SECOND;
-		var MAX_THROWING_DELAY = 2 * Phaser.Timer.SECOND;
-
+		
+		this.ampliGroup = this.game.add.group();
+		
 		// Send another thing soon
-		// create a new looping TimerEvent on the default game timer and return it
-		this.loopTimer = this.game.time.events.loop(1000, throwingStuffs, this);
-		// we can now modify its delay
+		this.guitarLoopTimer = this.game.time.events.loop(1000, throwingGuitars, this);
+		this.ampliLoopTimer = this.game.time.events.loop(1000, throwingAmplis, this);
+		
 		
 		
 
@@ -78,6 +82,7 @@ Play.prototype = {
 		var hit_platform = this.game.physics.arcade.collide(this.owl,
 				this.ground);
 		this.game.physics.arcade.collide(this.boss, this.ground);
+		this.game.physics.arcade.collide(this.ampliGroup, this.ground);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
 
 		if (this.owl.body.position.x < 0) {
@@ -148,15 +153,28 @@ function touchingBoss(player, enemy) {
 
 }
 
-function throwingStuffs(){
+function throwingGuitars(){
 	
-	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_MIN, THROWING_VELOCITY_MAX);
+	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MIN);
 	var throwing_height = this.game.rnd.integerInRange(THROWING_HEIGHT_MIN, THROWING_HEIGHT_MAX);
 	
 	var guitar = new Guitar(velocity,this.game, this.boss.body.position.x, throwing_height);
 	this.game.add.existing(guitar);
 	
-	this.loopTimer.delay = this.game.rnd.integerInRange(THROWING_DELAY_MIN, THROWING_DELAY_MAX);;
+	this.guitarLoopTimer.delay = this.game.rnd.integerInRange(THROWING_DELAY_MIN, THROWING_DELAY_MAX);
+}
+
+function throwingAmplis(){
+	
+	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_AMPLI_MIN, THROWING_VELOCITY_AMPLI_MAX);
+	var throwing_height = this.game.rnd.integerInRange(THROWING_HEIGHT_MIN, THROWING_HEIGHT_MAX);
+	
+	var ampli = new Ampli(velocity,this.game, this.boss.body.position.x, throwing_height);
+	console.log(this.ground);
+	this.game.add.existing(ampli);
+	this.ampliGroup.add(ampli);
+	
+	this.ampliLoopTimer.delay = this.game.rnd.integerInRange(THROWING_DELAY_MIN, THROWING_DELAY_MAX);
 }
 
 module.exports = Play;
