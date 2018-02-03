@@ -5,7 +5,8 @@ Win.prototype = {
 	preload : function() {
 		// Override this method to add some load operations.
 		// If you need to use the loader, you may need to use them here.
-		this.title = this.add.image('win_title', 'assets/images/win_title.png');
+		// this.title = this.add.image('win_title',
+		// 'assets/images/win_title.png');
 
 	},
 	create : function() {
@@ -13,6 +14,19 @@ Win.prototype = {
 		// states.
 		// Feel free to add any setup code here (do not load anything here,
 		// override preload() instead).
+		var style = {
+			font : "65px Arial",
+			fill : "#ff0044",
+			align : "center",
+			boundsAlignH : "center",
+			boundsAlignV : "middle"
+		};
+		var text = this.game.add.text(0, 0,
+				"Tu as battu\nl'impérialisme capitaliste!\n\n\nBien ouej", style);
+		// We'll set the bounds to be from x0, y100 and be 800px wide by 100px
+		// high
+		text.setTextBounds(0, 100, 800, 400);
+		
 	},
 	update : function() {
 		// state update code
