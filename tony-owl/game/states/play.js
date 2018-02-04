@@ -142,10 +142,13 @@ function touchingBoss(player, enemy) {
 
 }
 
+<<<<<<< HEAD
 function onAmpliCollision(ampli, obj) {
 	obj.body.velocity.x *= 0.9;
 }
 
+=======
+>>>>>>> code cleaning
 function throwingGuitars() {
 
 	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_GUITAR_MIN,
@@ -170,7 +173,11 @@ function throwingAmplis() {
 
 	var ampli = new Ampli(velocity, this.game, this.boss.body.position.x,
 			throwing_height);
+<<<<<<< HEAD
 //	console.log(this.ground);
+=======
+	console.log(this.ground);
+>>>>>>> code cleaning
 	this.game.add.existing(ampli);
 	this.ampliGroup.add(ampli);
 
