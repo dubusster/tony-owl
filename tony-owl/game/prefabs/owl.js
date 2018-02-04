@@ -9,7 +9,7 @@ var Owl = function(game, x, y, frame) {
 	this.game.physics.arcade.enableBody(this);
 	this.jumping = false;
 	this.walking_speed = 500;
-	this.jumping_height = 800;
+	this.jumping_height = 1800;
 	
 	// animations
 	this.animations.add('left', [0,1], 5, true);
