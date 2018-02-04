@@ -15,13 +15,13 @@ var THROWING_HEIGHT_MIN = GAME_HEIGHT / 4;
 var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 
 var THROWING_VELOCITY_GUITAR_MIN = -100;
-var THROWING_VELOCITY_GUITAR_MAX = -300;
+var THROWING_VELOCITY_GUITAR_MAX = -500;
 
 var THROWING_VELOCITY_AMPLI_MIN = -300;
 var THROWING_VELOCITY_AMPLI_MAX = -800;
 
-var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
-var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
+var THROWING_DELAY_MIN = 1 * Phaser.Timer.SECOND;
+var THROWING_DELAY_MAX = 4 * Phaser.Timer.SECOND;
 
 function Play() {
 }
@@ -29,7 +29,7 @@ Play.prototype = {
 	create : function() {
 		// Generating world and physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-		this.game.physics.arcade.gravity.y = 1500;
+		this.game.physics.arcade.gravity.y = 8000;
 		var level_width = 2000;
 		this.game.world.setBounds(0, 0, level_width, 600);
 		this.autoscroll_speed = 30;
@@ -63,10 +63,11 @@ Play.prototype = {
 				this.game.height - 200);
 		this.game.add.existing(this.boss);
 
-		// this.start_animation();
-		on_animation = false // DEBUG
+		this.start_animation();
+//		on_animation = false // DEBUG
 
 		this.ampliGroup = this.game.add.group();
+		this.guitarGroup = this.game.add.group();
 
 		// Send another thing soon
 		this.guitarLoopTimer = this.game.time.events.loop(1000,
@@ -80,6 +81,7 @@ Play.prototype = {
 				this.ground);
 		this.game.physics.arcade.collide(this.boss, this.ground);
 		this.game.physics.arcade.collide(this.ampliGroup, this.ground, onAmpliCollision);
+		this.game.physics.arcade.collide(this.owl, this.guitarGroup, onThrowableCollision);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
 		this.game.physics.arcade.collide(this.owl, this.ampliGroup, onThrowableCollision);
 
@@ -134,12 +136,10 @@ Play.prototype = {
 };
 
 function touchingBoss(player, enemy) {
-	if (player.body.touching.right || player.body.touching.left
-			|| player.body.touching.up) {
-		// boss is dead
+	
 		console.log('WIIIIIN');
 		player.game.state.start('win');
-	}
+	
 
 }
 
@@ -161,6 +161,7 @@ function throwingGuitars() {
 	var guitar = new Guitar(velocity, this.game, this.boss.body.position.x,
 			throwing_height);
 	this.game.add.existing(guitar);
+	this.guitarGroup.add(guitar);
 
 	this.guitarLoopTimer.delay = this.game.rnd.integerInRange(
 			THROWING_DELAY_MIN, THROWING_DELAY_MAX);
