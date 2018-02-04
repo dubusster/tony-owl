@@ -189,6 +189,14 @@ Play.prototype = {
 			this.pausedText.visible = false;
 		}
 
+	start_animation : function() {
+		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss,
+				this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 3,
+				this.focus_on_player, this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 3.5, this.back_to_game,
+				this);
+
 	},
 
 	render : function() {
