@@ -9,7 +9,7 @@ var Ampli = function(velocity, game, x, y, frame) {
 	this.body.allowGravity = true;
 	this.body.velocity.x = -Math.abs(velocity);
 	this.body.velocity.y = -300;
-	
+	this.lifespan = 5 * Phaser.Timer.SECOND;
   
 };
 

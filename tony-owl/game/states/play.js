@@ -11,8 +11,8 @@ var on_animation = true;
 var GAME_HEIGHT = 600;
 var GROUND_HEIGHT = 50;
 
-var THROWING_HEIGHT_MIN = GAME_HEIGHT/4;
-var THROWING_HEIGHT_MAX = GAME_HEIGHT-GROUND_HEIGHT;
+var THROWING_HEIGHT_MIN = GAME_HEIGHT / 4;
+var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 
 var THROWING_VELOCITY_GUITAR_MIN = -100;
 var THROWING_VELOCITY_GUITAR_MAX = -300;
@@ -41,7 +41,6 @@ Play.prototype = {
 				this.game.height, 'background');
 		this.sky.autoScroll(-30, 0);
 
-		
 		this.ground = new Ground(this.game, 0,
 				this.game.height - GROUND_HEIGHT, level_width, GROUND_HEIGHT);
 		this.game.add.existing(this.ground);
@@ -64,25 +63,23 @@ Play.prototype = {
 				this.game.height - 200);
 		this.game.add.existing(this.boss);
 
-//		this.start_animation();
+		// this.start_animation();
 		on_animation = false // DEBUG
 
-		
 		this.ampliGroup = this.game.add.group();
-		
+
 		// Send another thing soon
-		this.guitarLoopTimer = this.game.time.events.loop(1000, throwingGuitars, this);
-		this.ampliLoopTimer = this.game.time.events.loop(1000, throwingAmplis, this);
-		
-		
-		
+		this.guitarLoopTimer = this.game.time.events.loop(1000,
+				throwingGuitars, this);
+		this.ampliLoopTimer = this.game.time.events.loop(1000, throwingAmplis,
+				this);
 
 	},
 	update : function() {
 		var hit_platform = this.game.physics.arcade.collide(this.owl,
 				this.ground);
 		this.game.physics.arcade.collide(this.boss, this.ground);
-		this.game.physics.arcade.collide(this.ampliGroup, this.ground);
+		this.game.physics.arcade.collide(this.ampliGroup, this.ground, onAmpliCollision);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
 
 		if (this.owl.body.position.x < 0) {
@@ -96,51 +93,43 @@ Play.prototype = {
 		// Player moves
 		if (!on_animation) {
 			var cursors = this.game.input.keyboard.createCursorKeys();
-
 			if (cursors.right.isDown) {
 				this.owl.move("RIGHT");
 			} else if (cursors.left.isDown) {
 				this.owl.move("LEFT");
 			} else {
 				this.owl.move(null);
-
 			}
-
 			if (cursors.up.isDown && this.owl.body.touching.down) {
 				this.owl.move("UP");
 			}
-
 		}
+	},
+
+	start_animation : function() {
+		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss,
+				this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 3,
+				this.focus_on_player, this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 3.5, this.back_to_game,
+				this);
 
 	},
-	
-	start_animation : function(){
-		// TODO: do the animation
-		
-		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 3, this.focus_on_player, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 3.5, this.back_to_game, this);
-		
-	},
-	
-	focus_on_boss : function(){
-		
+
+	focus_on_boss : function() {
 		this.game.camera.follow(this.boss, 0, 0.05);
-		
 	},
-	
-	focus_on_player : function(){
+
+	focus_on_player : function() {
 		this.game.camera.follow(this.owl, 0, 0.05);
-		
 	},
-	
-	back_to_game : function(){
+
+	back_to_game : function() {
 		this.game.camera.unfollow();
 		this.game.camera.follow(this.owl);
-		
+
 		on_animation = false;
 	},
-	
 };
 
 function touchingBoss(player, enemy) {
@@ -153,28 +142,40 @@ function touchingBoss(player, enemy) {
 
 }
 
-function throwingGuitars(){
-	
-	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MIN);
-	var throwing_height = this.game.rnd.integerInRange(THROWING_HEIGHT_MIN, THROWING_HEIGHT_MAX);
-	
-	var guitar = new Guitar(velocity,this.game, this.boss.body.position.x, throwing_height);
-	this.game.add.existing(guitar);
-	
-	this.guitarLoopTimer.delay = this.game.rnd.integerInRange(THROWING_DELAY_MIN, THROWING_DELAY_MAX);
+function onAmpliCollision(ampli, obj) {
+	obj.body.velocity.x *= 0.9;
 }
 
-function throwingAmplis(){
-	
-	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_AMPLI_MIN, THROWING_VELOCITY_AMPLI_MAX);
-	var throwing_height = this.game.rnd.integerInRange(THROWING_HEIGHT_MIN, THROWING_HEIGHT_MAX);
-	
-	var ampli = new Ampli(velocity,this.game, this.boss.body.position.x, throwing_height);
-	console.log(this.ground);
+function throwingGuitars() {
+
+	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_GUITAR_MIN,
+			THROWING_VELOCITY_GUITAR_MIN);
+	var throwing_height = this.game.rnd.integerInRange(THROWING_HEIGHT_MIN,
+			THROWING_HEIGHT_MAX);
+
+	var guitar = new Guitar(velocity, this.game, this.boss.body.position.x,
+			throwing_height);
+	this.game.add.existing(guitar);
+
+	this.guitarLoopTimer.delay = this.game.rnd.integerInRange(
+			THROWING_DELAY_MIN, THROWING_DELAY_MAX);
+}
+
+function throwingAmplis() {
+
+	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_AMPLI_MIN,
+			THROWING_VELOCITY_AMPLI_MAX);
+	var throwing_height = this.game.rnd.integerInRange(THROWING_HEIGHT_MIN,
+			THROWING_HEIGHT_MAX);
+
+	var ampli = new Ampli(velocity, this.game, this.boss.body.position.x,
+			throwing_height);
+//	console.log(this.ground);
 	this.game.add.existing(ampli);
 	this.ampliGroup.add(ampli);
-	
-	this.ampliLoopTimer.delay = this.game.rnd.integerInRange(THROWING_DELAY_MIN, THROWING_DELAY_MAX);
+
+	this.ampliLoopTimer.delay = this.game.rnd.integerInRange(
+			THROWING_DELAY_MIN, THROWING_DELAY_MAX);
 }
 
 module.exports = Play;
