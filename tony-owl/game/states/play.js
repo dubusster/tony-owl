@@ -81,6 +81,7 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.boss, this.ground);
 		this.game.physics.arcade.collide(this.ampliGroup, this.ground, onAmpliCollision);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
+		this.game.physics.arcade.collide(this.owl, this.ampliGroup, onThrowableCollision);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -142,8 +143,12 @@ function touchingBoss(player, enemy) {
 
 }
 
-function onAmpliCollision(ampli, obj) {
-	obj.body.velocity.x *= 0.9;
+function onAmpliCollision(obj, ampli) {
+	ampli.body.velocity.x *= 0.9;
+}
+
+function onThrowableCollision(player, obj) {
+	player.game.state.start('gameover');
 }
 
 function throwingGuitars() {
