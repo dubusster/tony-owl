@@ -60,13 +60,13 @@ Play.prototype = {
 		trickKey.onDown.add(this.owl.trick, this.owl);
 
 		// add boss at the end of the map
-		this.boss = new Negaowl(this.game, this.game.world.width - 100,
-				this.game.height - 200);
+		this.boss = new Negaowl(this.game, this.game.world.width - 379,
+				0); 
 		this.game.add.existing(this.boss);
 
 		// level animation
 		this.start_animation();
-		// on_animation = false // DEBUG
+//		 on_animation = false // DEBUG
 
 		this.ampliGroup = this.game.add.group();
 		this.guitarGroup = this.game.add.group();
