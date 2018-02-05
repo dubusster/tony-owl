@@ -55,8 +55,8 @@ Play.prototype = {
 				Phaser.Keyboard.UP ]);
 
 		// add keyboard controls
-		var shootKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		shootKey.onDown.add(this.owl.trick, this.owl);
+		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		trickKey.onDown.add(this.owl.trick, this.owl);
 
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 100,
@@ -154,7 +154,7 @@ function onThrowableCollision(player, obj) {
 function throwingGuitars() {
 
 	var velocity = this.game.rnd.integerInRange(THROWING_VELOCITY_GUITAR_MIN,
-			THROWING_VELOCITY_GUITAR_MIN);
+			THROWING_VELOCITY_GUITAR_MAX);
 	var throwing_height = this.game.rnd.integerInRange(THROWING_HEIGHT_MIN,
 			THROWING_HEIGHT_MAX);
 
