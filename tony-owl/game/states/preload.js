@@ -30,13 +30,14 @@ Preload.prototype = {
     this.load.image('ampli', 'assets/images/ampli.png');
     
     // characters
-    this.load.spritesheet('owl', 'assets/images/tony-owl-sheet.png', 64, 76, 5);
-//    this.load.image('negaowl', 'assets/images/negaowl.png');
-    this.load.spritesheet('negaowl', 'assets/images/tony-owl-sheet.png', 64, 76, 5);
+    this.load.spritesheet('owl', 'assets/images/tony-owl-sheet-sheet.png', 78, 76, -1);
+    this.load.spritesheet('negaowl', 'assets/images/negaowl.png', 379, 500, 9);
+    
     
     
     // Audio
     this.load.audio('menu', 'assets/audio/music/menu.ogg');
+    this.load.audio('entering', 'assets/audio/music/entering.ogg');
     this.load.audio('gameover', 'assets/audio/music/gameover.ogg');
     this.load.audio('win', 'assets/audio/music/win.ogg');
     this.load.audio('play', 'assets/audio/music/play.ogg');
