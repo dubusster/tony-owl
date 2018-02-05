@@ -30,7 +30,7 @@ Preload.prototype = {
     this.load.image('ampli', 'assets/images/ampli.png');
     
     // characters
-    this.load.spritesheet('owl', 'assets/images/tony-owl-sheet-sheet.png', 78, 76, -1);
+    this.load.spritesheet('owl', 'assets/images/tony-owl-sheet.png', 78, 76, -1);
     this.load.spritesheet('negaowl', 'assets/images/negaowl.png', 379, 500, 9);
     
     
