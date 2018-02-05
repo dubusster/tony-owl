@@ -35,9 +35,9 @@ Preload.prototype = {
     
     
     // Audio
-    this.load.audio('menu', 'assets/audio/music/menu.mp3');
-    this.load.audio('gameover', 'assets/audio/music/gameover.mp3');
-    this.load.audio('play', 'assets/audio/music/play.mp3');
+    this.load.audio('menu', 'assets/audio/music/menu.ogg');
+    this.load.audio('gameover', 'assets/audio/music/gameover.ogg');
+    this.load.audio('play', 'assets/audio/music/play.ogg');
     
 
   },

@@ -138,7 +138,7 @@ Play.prototype = {
 
 		on_animation = false;
 		music.stop();
-		music = this.game.add.audio('play');
+		music = this.game.add.audio('play', 1, true);
 		music.play();
 	},
 };

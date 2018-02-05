@@ -33,7 +33,7 @@ GameOver.prototype = {
 					fill : '#ffffff',
 					align : 'center'
 				});
-		this.instructionText.anchor.setTo(0.5, 0.5);
+		this.instructionText.anchor.setTo(0.5, 0.5); 
 
 		music = this.game.add.audio('gameover');
 		music.play();
