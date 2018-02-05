@@ -1,4 +1,5 @@
 'use strict';
+var music;
 function Win() {
 }
 Win.prototype = {
@@ -26,7 +27,8 @@ Win.prototype = {
 		// We'll set the bounds to be from x0, y100 and be 800px wide by 100px
 		// high
 		text.setTextBounds(0, 100, 800, 400);
-		
+		music = this.game.add.audio('win');
+		music.play();
 	},
 	update : function() {
 		// state update code

@@ -144,7 +144,7 @@ Play.prototype = {
 };
 
 function touchingBoss(player, enemy) {
-	
+		music.stop();
 		console.log('WIIIIIN');
 		player.game.state.start('win');
 	
