@@ -64,10 +64,9 @@ Play.prototype = {
 				this.game.height - 200);
 		this.game.add.existing(this.boss);
 
-		
 		// level animation
 		this.start_animation();
-//		on_animation = false // DEBUG
+		// on_animation = false // DEBUG
 
 		this.ampliGroup = this.game.add.group();
 		this.guitarGroup = this.game.add.group();
@@ -83,10 +82,13 @@ Play.prototype = {
 		var hit_platform = this.game.physics.arcade.collide(this.owl,
 				this.ground);
 		this.game.physics.arcade.collide(this.boss, this.ground);
-		this.game.physics.arcade.collide(this.ampliGroup, this.ground, onAmpliCollision);
-		this.game.physics.arcade.collide(this.owl, this.guitarGroup, onThrowableCollision);
+		this.game.physics.arcade.collide(this.ampliGroup, this.ground,
+				onAmpliCollision);
+		this.game.physics.arcade.collide(this.owl, this.guitarGroup,
+				onThrowableCollision);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
-		this.game.physics.arcade.collide(this.owl, this.ampliGroup, onThrowableCollision);
+		this.game.physics.arcade.collide(this.owl, this.ampliGroup,
+				onThrowableCollision);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -113,6 +115,7 @@ Play.prototype = {
 	},
 
 	start_animation : function() {
+
 		music = this.game.add.audio('entering');
 		music.play();
 		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss,
@@ -144,15 +147,14 @@ Play.prototype = {
 };
 
 function touchingBoss(player, enemy) {
-	
-		console.log('WIIIIIN');
-		player.game.state.start('win');
-	
+	music.stop();
+	console.log('WIIIIIN');
+	player.game.state.start('win');
 
 }
 
 function onAmpliCollision(obj, ampli) {
-	
+
 	ampli.body.velocity.x *= 0.9;
 }
 

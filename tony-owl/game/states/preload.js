@@ -25,6 +25,7 @@ Preload.prototype = {
     this.load.image('ground', 'assets/images/platform.png');
     this.load.image('title', 'assets/images/title.png');
     this.load.image('startButton', 'assets/images/start_button.png');
+    this.load.spritesheet('muteButton', 'assets/images/mute_button.png', 125, 125, 2);
     this.load.image('guitar', 'assets/images/guitar.png');
     this.load.image('ampli', 'assets/images/ampli.png');
     
@@ -37,6 +38,7 @@ Preload.prototype = {
     // Audio
     this.load.audio('menu', 'assets/audio/music/menu.ogg');
     this.load.audio('gameover', 'assets/audio/music/gameover.ogg');
+    this.load.audio('win', 'assets/audio/music/win.ogg');
     this.load.audio('play', 'assets/audio/music/play.ogg');
     
 

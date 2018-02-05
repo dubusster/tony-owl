@@ -45,8 +45,10 @@ Menu.prototype = {
     this.startButton = this.game.add.button(this.game.width/2, 3.5*this.game.height/4, 'startButton', this.startClick, this);
     this.startButton.anchor.setTo(0.5,0.5);
     
-    music = this.game.add.audio('menu');
-    music.play();
+    this.muteButton = this.game.add.button(this.game.width-125, this.game.height-125, 'muteButton', this.muteClick, this);
+    
+    music = this.game.add.audio('menu', 0.6, true);
+    music.play(); 
 //    this.startButton.scale.setTo(0.5);
     
   },
@@ -58,7 +60,13 @@ Menu.prototype = {
 	    // start the 'play' state
 	  	music.stop();
 	    this.game.state.start('play');
-	  }
+	  },
+  
+  muteClick: function(){
+	  var toggle = + !this.game.sound.mute;
+	  this.game.sound.mute = toggle;
+	  this.muteButton.frame = toggle;
+  }
 };
 
 module.exports = Menu;
