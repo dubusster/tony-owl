@@ -26,12 +26,12 @@ Preload.prototype = {
     this.load.image('title', 'assets/images/title.png');
     this.load.image('startButton', 'assets/images/start_button.png');
     this.load.spritesheet('muteButton', 'assets/images/mute_button.png', 125, 125, 2);
-    this.load.image('guitar', 'assets/images/guitar.png');
+    this.load.spritesheet('guitar', 'assets/images/guitar-sheet.png', 40, 40, -1);
     this.load.image('ampli', 'assets/images/ampli.png');
     
     // characters
     this.load.spritesheet('owl', 'assets/images/tony-owl-sheet.png', 78, 76, -1);
-    this.load.spritesheet('negaowl', 'assets/images/negaowl.png', 379, 500, 9);
+    this.load.spritesheet('negaowl', 'assets/images/negaowl-sheet.png', 379, 500, -1);
     
     
     

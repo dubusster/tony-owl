@@ -7,8 +7,10 @@ var Guitar = function(velocity, game, x, y, frame) {
 	// this is needed for collision detection.
 	this.game.physics.arcade.enableBody(this);
 	// Guitars just flow through the screen as motherfucking shurikens
+	this.animations.add('fly', null, 60, true);
 	this.body.allowGravity = false;
 	this.body.velocity.x = -Math.abs(velocity);
+	this.animations.play('fly');
   
 };
 
