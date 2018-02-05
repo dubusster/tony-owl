@@ -28,9 +28,17 @@ Preload.prototype = {
     this.load.image('guitar', 'assets/images/guitar.png');
     this.load.image('ampli', 'assets/images/ampli.png');
     
+    // characters
     this.load.spritesheet('owl', 'assets/images/tony-owl-sheet.png', 64, 76, 5);
 //    this.load.image('negaowl', 'assets/images/negaowl.png');
     this.load.spritesheet('negaowl', 'assets/images/tony-owl-sheet.png', 64, 76, 5);
+    
+    
+    // Audio
+    this.load.audio('menu', 'assets/audio/music/menu.ogg');
+    this.load.audio('gameover', 'assets/audio/music/gameover.ogg');
+    this.load.audio('play', 'assets/audio/music/play.ogg');
+    
 
   },
   create: function() {

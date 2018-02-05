@@ -7,6 +7,7 @@ var Ampli = require('../prefabs/ampli.js')
 var Negaowl = require('../prefabs/negaowl.js')
 
 var on_animation = true;
+var music;
 
 var GAME_HEIGHT = 600;
 var GROUND_HEIGHT = 50;
@@ -63,6 +64,8 @@ Play.prototype = {
 				this.game.height - 200);
 		this.game.add.existing(this.boss);
 
+		
+		// level animation
 		this.start_animation();
 //		on_animation = false // DEBUG
 
@@ -110,6 +113,8 @@ Play.prototype = {
 	},
 
 	start_animation : function() {
+		music = this.game.add.audio('entering');
+		music.play();
 		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss,
 				this);
 		this.game.time.events.add(Phaser.Timer.SECOND * 3,
@@ -132,6 +137,9 @@ Play.prototype = {
 		this.game.camera.follow(this.owl);
 
 		on_animation = false;
+		music.stop();
+		music = this.game.add.audio('play', 1, true);
+		music.play();
 	},
 };
 
@@ -144,10 +152,12 @@ function touchingBoss(player, enemy) {
 }
 
 function onAmpliCollision(obj, ampli) {
+	
 	ampli.body.velocity.x *= 0.9;
 }
 
 function onThrowableCollision(player, obj) {
+	music.stop();
 	player.game.state.start('gameover');
 }
 
