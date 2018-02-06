@@ -25,21 +25,26 @@ Play.prototype = {
 	create : function() {
 		// Generating world and physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-		this.game.physics.arcade.gravity.y = 8000;
-		var level_width = 2000;
-		this.game.world.setBounds(0, 0, level_width, 600);
-		this.autoscroll_speed = 30;
+//		this.game.physics.arcade.gravity.y = 8000;
+//		var level_width = 2000;
+//		this.game.world.setBounds(0, 0, level_width, 600);
+//		this.autoscroll_speed = 30;
+		
+		this.map = this.game.add.tilemap('level1');
+		this.map.addTilesetImage('tiles32', 'tiles');
+		this.layer = this.map.createLayer('Calque1');
+		this.layer.resizeWorld();
 
 		// Generating backgrounds and landscape
-		this.sky = this.add.tileSprite(0, 0, this.game.world.width,
-				this.game.height, 'sky');
-		this.background = this.add.tileSprite(0, 0, this.game.world.width,
-				this.game.height, 'background');
-		this.sky.autoScroll(-30, 0);
+//		this.sky = this.add.tileSprite(0, 0, this.game.world.width,
+//				this.game.height, 'sky');
+//		this.background = this.add.tileSprite(0, 0, this.game.world.width,
+//				this.game.height, 'background');
+//		this.sky.autoScroll(-30, 0);
 
-		this.ground = new Ground(this.game, 0,
-				this.game.height - GROUND_HEIGHT, level_width, GROUND_HEIGHT);
-		this.game.add.existing(this.ground);
+//		this.ground = new Ground(this.game, 0,
+//				this.game.height - GROUND_HEIGHT, level_width, GROUND_HEIGHT);
+//		this.game.add.existing(this.ground);
 
 		// adding owl (player) to game
 		this.owl = new Owl(this.game, 100, this.game.height - 150);
@@ -76,17 +81,17 @@ Play.prototype = {
 
 	},
 	update : function() {
-		var hit_platform = this.game.physics.arcade.collide(this.owl,
-				this.ground);
-		this.game.physics.arcade.collide(this.boss, this.ground);
-		this.game.physics.arcade.collide(this.ampliEmitter, this.ground,
-				onAmpliCollision);
-		
-		collideGroup(this.game, this.guitarGroup, this.owl, onThrowableCollision);
-		
-		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
-		this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
-				onThrowableCollision);
+//		var hit_platform = this.game.physics.arcade.collide(this.owl,
+//				this.ground);
+//		this.game.physics.arcade.collide(this.boss, this.ground);
+//		this.game.physics.arcade.collide(this.ampliEmitter, this.ground,
+//				onAmpliCollision);
+//		
+//		collideGroup(this.game, this.guitarGroup, this.owl, onThrowableCollision);
+//		
+//		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
+//		this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
+//				onThrowableCollision);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
