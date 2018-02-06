@@ -8,6 +8,7 @@ var Negaowl = require('../prefabs/negaowl.js')
 
 var on_animation = true;
 var music;
+var gameover_music;
 
 var GAME_HEIGHT = 600;
 var GROUND_HEIGHT = 50;
@@ -23,6 +24,8 @@ var THROWING_VELOCITY_AMPLI_MAX = -800;
 
 var THROWING_DELAY_MIN = 1 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 4 * Phaser.Timer.SECOND;
+
+var first_try = true;
 
 function Play() {
 }
@@ -65,9 +68,15 @@ Play.prototype = {
 		this.game.add.existing(this.boss);
 
 		// level animation
-		this.start_animation();
+		if (first_try) {
+			this.start_animation();	
+//			music = this.game.add.audio('play', 1, true);
+//			music.play();
+		}
+		else {
+		}
 //		 on_animation = false // DEBUG
-
+		gameover_music = this.game.add.audio('gameover');
 		this.ampliGroup = this.game.add.group();
 		this.guitarGroup = this.game.add.group();
 
@@ -163,8 +172,11 @@ function onAmpliCollision(obj, ampli) {
 }
 
 function onThrowableCollision(player, obj) {
-	music.stop();
-	player.game.state.start('gameover');
+//	music.stop();
+	first_try = false;
+	
+	gameover_music.play();
+	player.game.state.start('play');
 }
 
 function throwingGuitars() {
