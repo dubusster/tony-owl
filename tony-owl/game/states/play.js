@@ -25,14 +25,21 @@ Play.prototype = {
 	create : function() {
 		// Generating world and physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-//		this.game.physics.arcade.gravity.y = 8000;
+		this.game.physics.arcade.gravity.y = 1250;
 //		var level_width = 2000;
 //		this.game.world.setBounds(0, 0, level_width, 600);
 //		this.autoscroll_speed = 30;
 		
 		this.map = this.game.add.tilemap('level1');
 		this.map.addTilesetImage('tiles32', 'tiles');
+		
+		// settings collision with certain tiles of tilesets.
+		this.map.setCollisionBetween(0,5);
+		
+		
+		
 		this.layer = this.map.createLayer('Calque1');
+//		this.layer.debug=true;
 		this.layer.resizeWorld();
 
 		// Generating backgrounds and landscape
@@ -47,7 +54,7 @@ Play.prototype = {
 //		this.game.add.existing(this.ground);
 
 		// adding owl (player) to game
-		this.owl = new Owl(this.game, 100, this.game.height - 150);
+		this.owl = new Owl(this.game, 200, this.game.height - 150);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl);
 
@@ -92,6 +99,9 @@ Play.prototype = {
 //		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
 //		this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
 //				onThrowableCollision);
+		this.game.physics.arcade.collide(this.boss, this.layer);
+		this.game.physics.arcade.collide(this.owl, this.layer);
+		collideGroup(this.game, this.boss.guitarGroup, this.owl, onThrowableCollision);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -111,7 +121,7 @@ Play.prototype = {
 			} else {
 				this.owl.move(null);
 			}
-			if (cursors.up.isDown && this.owl.body.touching.down) {
+			if (cursors.up.isDown && this.owl.body.blocked.down) {
 				this.owl.move("UP");
 			}
 		}
