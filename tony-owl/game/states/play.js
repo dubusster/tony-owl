@@ -16,7 +16,7 @@ var THROWING_HEIGHT_MIN = GAME_HEIGHT / 4;
 var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 
 var THROWING_VELOCITY_GUITAR_MIN = -100;
-var THROWING_VELOCITY_GUITAR_MAX = -500;
+var THROWING_VELOCITY_GUITAR_MAX = -300;
 
 var THROWING_VELOCITY_AMPLI_MIN = -300;
 var THROWING_VELOCITY_AMPLI_MAX = -800;
@@ -116,13 +116,14 @@ Play.prototype = {
 
 	start_animation : function() {
 
-		music = this.game.add.audio('entering');
-		music.play();
-		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss,
+		
+		this.game.time.events.add(Phaser.Timer.SECOND * 0.5, this.focus_on_boss,
 				this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 3,
+		this.game.time.events.add(Phaser.Timer.SECOND * 2, this.play_music,
+				this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 4,
 				this.focus_on_player, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 3.5, this.back_to_game,
+		this.game.time.events.add(Phaser.Timer.SECOND * 5, this.back_to_game,
 				this);
 
 	},
@@ -138,10 +139,13 @@ Play.prototype = {
 	back_to_game : function() {
 		this.game.camera.unfollow();
 		this.game.camera.follow(this.owl);
-
-		on_animation = false;
-		music.stop();
+//		music.stop();
 		music = this.game.add.audio('play', 1, true);
+		music.play();
+		on_animation = false;
+	},
+	play_music : function(){
+		music = this.game.add.audio('entering');
 		music.play();
 	},
 };
