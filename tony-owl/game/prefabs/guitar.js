@@ -7,7 +7,7 @@ var Guitar = function(min_speed, max_speed, game, x, y, maxParticles, frame) {
 //	this.game.physics.arcade.enableBody(this);
 	this.emitter = this.game.add.emitter(x, y, maxParticles);
 	// Guitars just flow through the screen as motherfucking shurikens
-	this.emitter.height = 50;
+	this.emitter.height = 5;
 	this.emitter.makeParticles('guitar',0,maxParticles, true);
 
 	this.emitter.minParticleSpeed.set(min_speed, 0);
