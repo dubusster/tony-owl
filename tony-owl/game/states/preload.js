@@ -18,7 +18,7 @@ Preload.prototype = {
     this.asset.anchor.setTo(0.5, 0.5);
     this.load.setPreloadSprite(this.asset);
     
-    this.load.image('logo', 'assets/images/logo5_small.png');
+    this.load.image('logo', 'assets/images/logo.png');
     
     this.load.image('background', 'assets/images/city.png');
     this.load.image('sky', 'assets/images/sky.png');
