@@ -84,6 +84,11 @@ Play.prototype = {
 	    this.guitarDown.emitter.start(false, 10000, this.game.rnd.integerInRange(
 	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));
 	    
+	    this.guitarGroup = this.game.add.group();
+	    this.guitarGroup.add(this.guitarUp.emitter);
+	    this.guitarGroup.add(this.guitarMiddle.emitter);
+	    this.guitarGroup.add(this.guitarDown.emitter);
+	    
 	    // ampli emitter
 	    this.ampliEmitter = this.game.add.emitter(this.boss.position.x, 2*this.boss.height/3, 10);
 	    this.ampliEmitter.height = 100;
@@ -121,8 +126,14 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.boss, this.ground);
 		this.game.physics.arcade.collide(this.ampliEmitter, this.ground,
 				onAmpliCollision);
-		this.game.physics.arcade.collide(this.owl, this.guitarEmitter,
-				onThrowableCollision);
+		
+		// enabling gameover callback for all guitars.
+		for (var i = 0; i < this.guitarGroup.children.length; i++) {
+			var guitar = this.guitarGroup.children[i];
+			this.game.physics.arcade.collide(this.owl, guitar,
+					onThrowableCollision);	
+		}
+		
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
 		this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
 				onThrowableCollision);
