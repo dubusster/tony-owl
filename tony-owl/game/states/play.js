@@ -94,19 +94,10 @@ Play.prototype = {
 				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
 		// level animation
 		if (first_try) {
-			this.start_animation();	
-// music = this.game.add.audio('play', 1, true);
-// music.play();
+			this.start_animation();
 		}
-		else {
-		}
-// on_animation = false // DEBUG
+
 		gameover_music = this.game.add.audio('gameover');
-//		this.ampliGroup = this.game.add.group();
-//		this.guitarGroup = this.game.add.group();
-//		this.throwableGroup = this.game.add.group();
-//		this.throwableGroup.add(this.ampliGroup);
-//		this.throwableGroup.add(this.guitarGroup);
 
 		// Send another thing soon
 		
@@ -114,8 +105,6 @@ Play.prototype = {
 				randomEmitterFrequency, this, this.guitarEmitter);
 		this.ampliLoopTimer = this.game.time.events.loop(1000,
 				randomEmitterFrequency, this, this.ampliEmitter);
-//		this.ampliLoopTimer = this.game.time.events.loop(1000, throwingAmplis,
-//				this);
 
 	},
 	update : function() {
@@ -179,7 +168,6 @@ Play.prototype = {
 	back_to_game : function() {
 		this.game.camera.unfollow();
 		this.game.camera.follow(this.owl);
-// music.stop();
 		music = this.game.add.audio('play', 1, true);
 		music.play();
 		on_animation = false;
@@ -207,7 +195,6 @@ function onAmpliCollision(obj, ampli) {
 }
 
 function onThrowableCollision(player, obj) {
-// music.stop();
 	first_try = false;
 	
 	gameover_music.play();
