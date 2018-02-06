@@ -16,16 +16,7 @@ var GROUND_HEIGHT = 50;
 var THROWING_HEIGHT_MIN = GAME_HEIGHT / 4;
 var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 
-var THROWING_VELOCITY_GUITAR_MIN = -100;
-var THROWING_VELOCITY_GUITAR_MAX = -300;
 
-var GUITAR_PER_ROW_MAX = 5;
-
-var THROWING_GUITAR_DELAY_MIN = 2 * Phaser.Timer.SECOND;
-var THROWING_GUITAR_DELAY_MAX = 4 * Phaser.Timer.SECOND;
-
-var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
-var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
 var first_try = true;
 
@@ -65,32 +56,12 @@ Play.prototype = {
 		trickKey.onDown.add(this.owl.trick, this.owl);
 
 		// add boss at the end of the map
-		this.boss = new Negaowl(this.game, this.game.world.width - 379,
-				0); 
+		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0); 
 		this.game.add.existing(this.boss);
-		// particles emitter
 		
-		this.guitarUp = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 100, GUITAR_PER_ROW_MAX);
-		this.guitarMiddle = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 250, GUITAR_PER_ROW_MAX);
-		this.guitarDown = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 400, GUITAR_PER_ROW_MAX);
-
-	    this.guitarUp.emitter.start(false, 10000, this.game.rnd.integerInRange(
-	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));
-	    this.guitarMiddle.emitter.start(false, 10000, this.game.rnd.integerInRange(
-	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));
-	    this.guitarDown.emitter.start(false, 10000, this.game.rnd.integerInRange(
-	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));
-	    
-	    this.guitarGroup = this.game.add.group();
-	    this.guitarGroup.add(this.guitarUp.emitter);
-	    this.guitarGroup.add(this.guitarMiddle.emitter);
-	    this.guitarGroup.add(this.guitarDown.emitter);
-	    
 	    // ampli emitter
 	    this.ampliEmitter = this.boss.ampliEmitter; 
 	    
-		this.ampliEmitter.start(false, 5000, this.game.rnd.integerInRange(
-				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
 		// level animation
 		if (first_try) {
 			this.start_animation();

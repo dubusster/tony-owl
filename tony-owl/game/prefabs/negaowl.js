@@ -5,6 +5,18 @@ var PARTICLES_AMPLI = 15;
 var THROWING_VELOCITY_AMPLI_MIN = -300;
 var THROWING_VELOCITY_AMPLI_MAX = -800;
 
+
+var THROWING_VELOCITY_GUITAR_MIN = -100;
+var THROWING_VELOCITY_GUITAR_MAX = -300;
+
+var GUITAR_PER_ROW_MAX = 5;
+
+var THROWING_GUITAR_DELAY_MIN = 2 * Phaser.Timer.SECOND;
+var THROWING_GUITAR_DELAY_MAX = 4 * Phaser.Timer.SECOND;
+
+var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
+var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
+
 var Negaowl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'negaowl', frame);
 
@@ -23,16 +35,34 @@ var Negaowl = function(game, x, y, frame) {
 	this.ampliEmitter.gravity = 1200;
 	this.ampliEmitter.minRotation = 0;
     this.ampliEmitter.maxRotation = 0;
+    
+    this.guitarUp = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 100, GUITAR_PER_ROW_MAX);
+	this.guitarMiddle = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 250, GUITAR_PER_ROW_MAX);
+	this.guitarDown = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 400, GUITAR_PER_ROW_MAX);
 
+	this.guitarGroup = this.game.add.group();
+    this.guitarGroup.add(this.guitarUp.emitter);
+    this.guitarGroup.add(this.guitarMiddle.emitter);
+    this.guitarGroup.add(this.guitarDown.emitter);
+    
+    
 };
 
 Negaowl.prototype = Object.create(Phaser.Sprite.prototype);
 Negaowl.prototype.constructor = Negaowl;
 
-var MIN_THROWING_DELAY = 5000;
-var MAX_THROWING_DELAY = 10000;
 Negaowl.prototype.update = function() {
 	
 };
+
+Negaowl.prototype.release_hell = function(){
+	for (var i = 0; i < this.guitarGroup.children.length; i++) {
+		var item = this.guitarGroup.children[i];
+		item.emitter.start(false, 10000, this.game.rnd.integerInRange(
+	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));	
+	}
+	this.ampliEmitter.start(false, 5000, this.game.rnd.integerInRange(
+			THROWING_DELAY_MIN, THROWING_DELAY_MAX));
+}
 
 module.exports = Negaowl;
