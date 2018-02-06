@@ -22,8 +22,8 @@ var THROWING_VELOCITY_GUITAR_MAX = -300;
 var THROWING_VELOCITY_AMPLI_MIN = -300;
 var THROWING_VELOCITY_AMPLI_MAX = -800;
 
-var THROWING_DELAY_MIN = 1 * Phaser.Timer.SECOND;
-var THROWING_DELAY_MAX = 4 * Phaser.Timer.SECOND;
+var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
+var THROWING_DELAY_MAX = 1 * Phaser.Timer.SECOND;
 
 var first_try = true;
 
@@ -67,9 +67,9 @@ Play.prototype = {
 				0); 
 		this.game.add.existing(this.boss);
 		// particles emitter
-		this.emitter = this.game.add.emitter(this.boss.position.x, this.game.height/2, 15);
+		this.emitter = this.game.add.emitter(this.boss.position.x, this.boss.height/2, 100);
 		this.emitter.height = 400;
-		this.emitter.makeParticles('guitar');
+		this.emitter.makeParticles('guitar',0,50, true);
 
 		this.emitter.minParticleSpeed.set(THROWING_VELOCITY_GUITAR_MIN, 0);
 		this.emitter.maxParticleSpeed.set(THROWING_VELOCITY_GUITAR_MAX, 0);
@@ -111,7 +111,7 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.boss, this.ground);
 		this.game.physics.arcade.collide(this.ampliGroup, this.ground,
 				onAmpliCollision);
-		this.game.physics.arcade.collide(this.owl, this.guitarGroup,
+		this.game.physics.arcade.collide(this.owl, this.emitter,
 				onThrowableCollision);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
 		this.game.physics.arcade.collide(this.owl, this.ampliGroup,
