@@ -2,8 +2,6 @@
 
 var Ground = require('../prefabs/ground.js')
 var Owl = require('../prefabs/owl.js')
-var Guitar = require('../prefabs/guitar.js')
-var Ampli = require('../prefabs/ampli.js')
 var Negaowl = require('../prefabs/negaowl.js')
 
 var on_animation = true;
@@ -16,7 +14,8 @@ var GROUND_HEIGHT = 50;
 var THROWING_HEIGHT_MIN = GAME_HEIGHT / 4;
 var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 
-
+var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
+var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
 var first_try = true;
 
@@ -60,8 +59,9 @@ Play.prototype = {
 		this.game.add.existing(this.boss);
 		
 	    // ampli emitter
-	    this.ampliEmitter = this.boss.ampliEmitter; 
-	    
+	    this.ampliEmitter = this.boss.ampliEmitter;
+	    this.guitarGroup = this.boss.guitarGroup;
+
 		// level animation
 		if (first_try) {
 			this.start_animation();
@@ -69,16 +69,10 @@ Play.prototype = {
 
 		gameover_music = this.game.add.audio('gameover');
 
-		// Send another thing soon
+		// Boss starts to attack.
+		this.boss.release_hell()
+		this.boss.change_emitters_frequencies(THROWING_DELAY_MIN, THROWING_DELAY_MAX);
 		
-		this.guitarUpLoopTimer = this.game.time.events.loop(1000,
-				randomEmitterFrequency, this, this.guitarUp.emitter);
-		this.guitarMiddleLoopTimer = this.game.time.events.loop(1000,
-				randomEmitterFrequency, this, this.guitarMiddle.emitter);
-		this.guitarDownLoopTimer = this.game.time.events.loop(1000,
-				randomEmitterFrequency, this, this.guitarDown.emitter);
-		this.ampliLoopTimer = this.game.time.events.loop(1000,
-				randomEmitterFrequency, this, this.ampliEmitter);
 
 	},
 	update : function() {
@@ -161,11 +155,6 @@ function collideGroup(game, group, other, callback) {
 		game.physics.arcade.collide(other, item,
 				callback);	
 	}
-}
-
-function randomEmitterFrequency(emitter) {
-	emitter.frequency = this.game.rnd.integerInRange(
-			THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX);
 }
 
 function touchingBoss(player, enemy) {

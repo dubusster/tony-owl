@@ -8,7 +8,6 @@ var PARTICLES_AMPLI = 15;
 var THROWING_VELOCITY_AMPLI_MIN = -300;
 var THROWING_VELOCITY_AMPLI_MAX = -800;
 
-
 var THROWING_VELOCITY_GUITAR_MIN = -100;
 var THROWING_VELOCITY_GUITAR_MAX = -300;
 
@@ -16,9 +15,6 @@ var GUITAR_PER_ROW_MAX = 5;
 
 var THROWING_GUITAR_DELAY_MIN = 2 * Phaser.Timer.SECOND;
 var THROWING_GUITAR_DELAY_MAX = 4 * Phaser.Timer.SECOND;
-
-var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
-var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
 var Negaowl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'negaowl', frame);
@@ -64,8 +60,7 @@ Negaowl.prototype.release_hell = function(){
 		guitar.start(false, 10000, this.game.rnd.integerInRange(
 	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));	
 	}
-	this.ampliEmitter.start(false, 5000, this.game.rnd.integerInRange(
-			THROWING_DELAY_MIN, THROWING_DELAY_MAX));
+	this.ampliEmitter.start(false, 5000, 2000);
 };
 
 Negaowl.prototype.change_emitters_frequencies = function(min_speed, max_speed){
