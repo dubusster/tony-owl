@@ -1,6 +1,6 @@
 'use strict';
 
-var music;
+var gameover_music;
 
 function GameOver() {
 }
@@ -35,8 +35,8 @@ GameOver.prototype = {
 //				});
 //		this.instructionText.anchor.setTo(0.5, 0.5); 
 
-		music = this.game.add.audio('gameover');
-		music.play();
+		gameover_music = this.game.add.audio('gameover');
+		gameover_music.play();
 		this.game.state.start('play');
 	},
 	update : function() {

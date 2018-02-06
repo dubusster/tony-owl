@@ -8,6 +8,7 @@ var Negaowl = require('../prefabs/negaowl.js')
 
 var on_animation = true;
 var music;
+var gameover_music;
 
 var GAME_HEIGHT = 600;
 var GROUND_HEIGHT = 50;
@@ -69,13 +70,13 @@ Play.prototype = {
 		// level animation
 		if (first_try) {
 			this.start_animation();	
+//			music = this.game.add.audio('play', 1, true);
+//			music.play();
 		}
 		else {
-			music = this.game.add.audio('play', 1, true);
-			music.play();
 		}
 //		 on_animation = false // DEBUG
-
+		gameover_music = this.game.add.audio('gameover');
 		this.ampliGroup = this.game.add.group();
 		this.guitarGroup = this.game.add.group();
 
@@ -171,9 +172,11 @@ function onAmpliCollision(obj, ampli) {
 }
 
 function onThrowableCollision(player, obj) {
-	music.stop();
+//	music.stop();
 	first_try = false;
-	player.game.state.start('gameover');
+	
+	gameover_music.play();
+	player.game.state.start('play');
 }
 
 function throwingGuitars() {
