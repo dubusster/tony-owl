@@ -1,7 +1,6 @@
 'use strict';
 
 var Guitar = require('../prefabs/guitar.js')
-var Ampli = require('../prefabs/ampli.js')
 
 var PARTICLES_AMPLI = 15;
 
