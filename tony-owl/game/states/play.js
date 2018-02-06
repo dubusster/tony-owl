@@ -66,25 +66,43 @@ Play.prototype = {
 		this.boss = new Negaowl(this.game, this.game.world.width - 379,
 				0); 
 		this.game.add.existing(this.boss);
+		// particles emitter
+		this.emitter = this.game.add.emitter(this.boss.position.x, this.game.height/2, 15);
+		this.emitter.height = 400;
+		this.emitter.makeParticles('guitar');
 
+		this.emitter.minParticleSpeed.set(THROWING_VELOCITY_GUITAR_MIN, 0);
+		this.emitter.maxParticleSpeed.set(THROWING_VELOCITY_GUITAR_MAX, 0);
+		this.emitter.gravity = -this.game.physics.arcade.gravity.y;
+		this.emitter.minRotation = -720;
+	    this.emitter.maxRotation = -720;
+		
+		
+	    
+		this.emitter.start(false, 10000, this.game.rnd.integerInRange(
+				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
 		// level animation
 		if (first_try) {
 			this.start_animation();	
-//			music = this.game.add.audio('play', 1, true);
-//			music.play();
+// music = this.game.add.audio('play', 1, true);
+// music.play();
 		}
 		else {
 		}
-//		 on_animation = false // DEBUG
+// on_animation = false // DEBUG
 		gameover_music = this.game.add.audio('gameover');
 		this.ampliGroup = this.game.add.group();
 		this.guitarGroup = this.game.add.group();
+		this.throwableGroup = this.game.add.group();
+		this.throwableGroup.add(this.ampliGroup);
+		this.throwableGroup.add(this.guitarGroup);
 
 		// Send another thing soon
+		
 		this.guitarLoopTimer = this.game.time.events.loop(1000,
-				throwingGuitars, this);
-		this.ampliLoopTimer = this.game.time.events.loop(1000, throwingAmplis,
-				this);
+				randomEmitterFrequency, this);
+//		this.ampliLoopTimer = this.game.time.events.loop(1000, throwingAmplis,
+//				this);
 
 	},
 	update : function() {
@@ -148,7 +166,7 @@ Play.prototype = {
 	back_to_game : function() {
 		this.game.camera.unfollow();
 		this.game.camera.follow(this.owl);
-//		music.stop();
+// music.stop();
 		music = this.game.add.audio('play', 1, true);
 		music.play();
 		on_animation = false;
@@ -158,6 +176,11 @@ Play.prototype = {
 		music.play();
 	},
 };
+
+function randomEmitterFrequency() {
+	this.emitter.frequency = this.game.rnd.integerInRange(
+			THROWING_DELAY_MIN, THROWING_DELAY_MAX);
+}
 
 function touchingBoss(player, enemy) {
 	music.stop();
@@ -172,7 +195,7 @@ function onAmpliCollision(obj, ampli) {
 }
 
 function onThrowableCollision(player, obj) {
-//	music.stop();
+// music.stop();
 	first_try = false;
 	
 	gameover_music.play();
@@ -191,8 +214,8 @@ function throwingGuitars() {
 	this.game.add.existing(guitar);
 	this.guitarGroup.add(guitar);
 
-	this.guitarLoopTimer.delay = this.game.rnd.integerInRange(
-			THROWING_DELAY_MIN, THROWING_DELAY_MAX);
+//	this.guitarLoopTimer.delay = this.game.rnd.integerInRange(
+//			THROWING_DELAY_MIN, THROWING_DELAY_MAX);
 }
 
 function throwingAmplis() {
