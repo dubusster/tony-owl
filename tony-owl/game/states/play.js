@@ -81,15 +81,16 @@ Play.prototype = {
 				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
 		
 	    // ampli emitter
-	    this.ampliEmitter = this.game.add.emitter(this.boss.position.x, 2*this.boss.height/3, 50);
+	    this.ampliEmitter = this.game.add.emitter(this.boss.position.x, 2*this.boss.height/3, 10);
 	    this.ampliEmitter.height = 100;
 	    this.ampliEmitter.makeParticles('ampli',0,10, true);
 	    this.ampliEmitter.minParticleSpeed.set(THROWING_VELOCITY_AMPLI_MIN, 0);
 		this.ampliEmitter.maxParticleSpeed.set(THROWING_VELOCITY_AMPLI_MAX, 0);
+		this.ampliEmitter.gravity = 1200;
 		this.ampliEmitter.minRotation = 0;
 	    this.ampliEmitter.maxRotation = 0;
 	    
-		this.ampliEmitter.start(false, 10000, this.game.rnd.integerInRange(
+		this.ampliEmitter.start(false, 5000, this.game.rnd.integerInRange(
 				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
 		// level animation
 		if (first_try) {
