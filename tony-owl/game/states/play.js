@@ -19,9 +19,6 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_VELOCITY_GUITAR_MIN = -100;
 var THROWING_VELOCITY_GUITAR_MAX = -300;
 
-var THROWING_VELOCITY_AMPLI_MIN = -300;
-var THROWING_VELOCITY_AMPLI_MAX = -800;
-
 var GUITAR_PER_ROW_MAX = 5;
 
 var THROWING_GUITAR_DELAY_MIN = 2 * Phaser.Timer.SECOND;
@@ -90,14 +87,7 @@ Play.prototype = {
 	    this.guitarGroup.add(this.guitarDown.emitter);
 	    
 	    // ampli emitter
-	    this.ampliEmitter = this.game.add.emitter(this.boss.position.x, 2*this.boss.height/3, 10);
-	    this.ampliEmitter.height = 100;
-	    this.ampliEmitter.makeParticles('ampli',0,10, true);
-	    this.ampliEmitter.minParticleSpeed.set(THROWING_VELOCITY_AMPLI_MIN, 0);
-		this.ampliEmitter.maxParticleSpeed.set(THROWING_VELOCITY_AMPLI_MAX, 0);
-		this.ampliEmitter.gravity = 1200;
-		this.ampliEmitter.minRotation = 0;
-	    this.ampliEmitter.maxRotation = 0;
+	    this.ampliEmitter = this.boss.ampliEmitter; 
 	    
 		this.ampliEmitter.start(false, 5000, this.game.rnd.integerInRange(
 				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
@@ -127,12 +117,7 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.ampliEmitter, this.ground,
 				onAmpliCollision);
 		
-		// enabling gameover callback for all guitars.
-		for (var i = 0; i < this.guitarGroup.children.length; i++) {
-			var guitar = this.guitarGroup.children[i];
-			this.game.physics.arcade.collide(this.owl, guitar,
-					onThrowableCollision);	
-		}
+		collideGroup(this.game, this.guitarGroup, this.owl, onThrowableCollision);
 		
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
 		this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
@@ -197,6 +182,15 @@ Play.prototype = {
 		music.play();
 	},
 };
+
+function collideGroup(game, group, other, callback) {
+	// enabling gameover callback for all guitars.
+	for (var i = 0; i < group.children.length; i++) {
+		var item = group.children[i];
+		game.physics.arcade.collide(other, item,
+				callback);	
+	}
+}
 
 function randomEmitterFrequency(emitter) {
 	emitter.frequency = this.game.rnd.integerInRange(

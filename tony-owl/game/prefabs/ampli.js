@@ -6,10 +6,7 @@ var Ampli = function(velocity, game, x, y, frame) {
   	//enable physics on the enemy sprite
 	// this is needed for collision detection.
 	this.game.physics.arcade.enableBody(this);
-	this.body.allowGravity = true;
-	this.body.velocity.x = -Math.abs(velocity);
-	this.body.velocity.y = -300;
-	this.lifespan = 5 * Phaser.Timer.SECOND;
+
   
 };
 
