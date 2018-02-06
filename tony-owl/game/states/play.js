@@ -176,6 +176,7 @@ Play.prototype = {
 	back_to_game : function() {
 		this.game.camera.unfollow();
 		this.game.camera.follow(this.owl);
+		this.game.camera.targetOffset.x = 200;
 		music = this.game.add.audio('play', 1, true);
 		music.play();
 		on_animation = false;
