@@ -2,7 +2,6 @@
 
 var Guitar = function(velocity, game, x, y, frame) {
   Phaser.Sprite.call(this, game, x, y, 'guitar', frame);
-
   	//enable physics on the enemy sprite
 	// this is needed for collision detection.
 	this.game.physics.arcade.enableBody(this);
@@ -11,6 +10,8 @@ var Guitar = function(velocity, game, x, y, frame) {
 	this.body.allowGravity = false;
 	this.body.velocity.x = -Math.abs(velocity);
 	this.animations.play('fly');
+	
+	
   
 };
 

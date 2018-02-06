@@ -76,6 +76,8 @@ Play.prototype = {
 		this.guitarEmitter.gravity = -this.game.physics.arcade.gravity.y;
 		this.guitarEmitter.minRotation = -720;
 	    this.guitarEmitter.maxRotation = -720;
+	    this.guitarEmitter.minParticleScale = 2;
+	    this.guitarEmitter.maxParticleScale = 2;
 	    
 	    this.guitarEmitter.start(false, 10000, this.game.rnd.integerInRange(
 				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
@@ -191,7 +193,7 @@ function touchingBoss(player, enemy) {
 }
 
 function onAmpliCollision(obj, ampli) {
-	ampli.body.velocity.x *= 0.98;
+	ampli.body.velocity.x *= 0.95;
 }
 
 function onThrowableCollision(player, obj) {
