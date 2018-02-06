@@ -22,6 +22,11 @@ var THROWING_VELOCITY_GUITAR_MAX = -300;
 var THROWING_VELOCITY_AMPLI_MIN = -300;
 var THROWING_VELOCITY_AMPLI_MAX = -800;
 
+var GUITAR_PER_ROW_MAX = 5;
+
+var THROWING_GUITAR_DELAY_MIN = 2 * Phaser.Timer.SECOND;
+var THROWING_GUITAR_DELAY_MAX = 4 * Phaser.Timer.SECOND;
+
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
@@ -67,21 +72,18 @@ Play.prototype = {
 				0); 
 		this.game.add.existing(this.boss);
 		// particles emitter
-		this.guitarEmitter = this.game.add.emitter(this.boss.position.x, this.boss.height/2, 100);
-		this.guitarEmitter.height = 400;
-		this.guitarEmitter.makeParticles('guitar',0,50, true);
-
-		this.guitarEmitter.minParticleSpeed.set(THROWING_VELOCITY_GUITAR_MIN, 0);
-		this.guitarEmitter.maxParticleSpeed.set(THROWING_VELOCITY_GUITAR_MAX, 0);
-		this.guitarEmitter.gravity = -this.game.physics.arcade.gravity.y;
-		this.guitarEmitter.minRotation = -720;
-	    this.guitarEmitter.maxRotation = -720;
-	    this.guitarEmitter.minParticleScale = 2;
-	    this.guitarEmitter.maxParticleScale = 2;
-	    
-	    this.guitarEmitter.start(false, 10000, this.game.rnd.integerInRange(
-				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
 		
+		this.guitarUp = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 100, GUITAR_PER_ROW_MAX);
+		this.guitarMiddle = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 250, GUITAR_PER_ROW_MAX);
+		this.guitarDown = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.boss.position.x, 400, GUITAR_PER_ROW_MAX);
+
+	    this.guitarUp.emitter.start(false, 10000, this.game.rnd.integerInRange(
+	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));
+	    this.guitarMiddle.emitter.start(false, 10000, this.game.rnd.integerInRange(
+	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));
+	    this.guitarDown.emitter.start(false, 10000, this.game.rnd.integerInRange(
+	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));
+	    
 	    // ampli emitter
 	    this.ampliEmitter = this.game.add.emitter(this.boss.position.x, 2*this.boss.height/3, 10);
 	    this.ampliEmitter.height = 100;
@@ -103,8 +105,12 @@ Play.prototype = {
 
 		// Send another thing soon
 		
-		this.guitarLoopTimer = this.game.time.events.loop(1000,
-				randomEmitterFrequency, this, this.guitarEmitter);
+		this.guitarUpLoopTimer = this.game.time.events.loop(1000,
+				randomEmitterFrequency, this, this.guitarUp.emitter);
+		this.guitarMiddleLoopTimer = this.game.time.events.loop(1000,
+				randomEmitterFrequency, this, this.guitarMiddle.emitter);
+		this.guitarDownLoopTimer = this.game.time.events.loop(1000,
+				randomEmitterFrequency, this, this.guitarDown.emitter);
 		this.ampliLoopTimer = this.game.time.events.loop(1000,
 				randomEmitterFrequency, this, this.ampliEmitter);
 
@@ -182,7 +188,7 @@ Play.prototype = {
 
 function randomEmitterFrequency(emitter) {
 	emitter.frequency = this.game.rnd.integerInRange(
-			THROWING_DELAY_MIN, THROWING_DELAY_MAX);
+			THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX);
 }
 
 function touchingBoss(player, enemy) {
