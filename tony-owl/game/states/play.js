@@ -76,36 +76,30 @@ Play.prototype = {
 		this.guitarEmitter.gravity = -this.game.physics.arcade.gravity.y;
 		this.guitarEmitter.minRotation = -720;
 	    this.guitarEmitter.maxRotation = -720;
+	    this.guitarEmitter.minParticleScale = 2;
+	    this.guitarEmitter.maxParticleScale = 2;
 	    
 	    this.guitarEmitter.start(false, 10000, this.game.rnd.integerInRange(
 				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
 		
 	    // ampli emitter
-	    this.ampliEmitter = this.game.add.emitter(this.boss.position.x, 2*this.boss.height/3, 50);
+	    this.ampliEmitter = this.game.add.emitter(this.boss.position.x, 2*this.boss.height/3, 10);
 	    this.ampliEmitter.height = 100;
 	    this.ampliEmitter.makeParticles('ampli',0,10, true);
 	    this.ampliEmitter.minParticleSpeed.set(THROWING_VELOCITY_AMPLI_MIN, 0);
 		this.ampliEmitter.maxParticleSpeed.set(THROWING_VELOCITY_AMPLI_MAX, 0);
+		this.ampliEmitter.gravity = 1200;
 		this.ampliEmitter.minRotation = 0;
 	    this.ampliEmitter.maxRotation = 0;
 	    
-		this.ampliEmitter.start(false, 10000, this.game.rnd.integerInRange(
+		this.ampliEmitter.start(false, 5000, this.game.rnd.integerInRange(
 				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
 		// level animation
 		if (first_try) {
-			this.start_animation();	
-// music = this.game.add.audio('play', 1, true);
-// music.play();
+			this.start_animation();
 		}
-		else {
-		}
-// on_animation = false // DEBUG
+
 		gameover_music = this.game.add.audio('gameover');
-//		this.ampliGroup = this.game.add.group();
-//		this.guitarGroup = this.game.add.group();
-//		this.throwableGroup = this.game.add.group();
-//		this.throwableGroup.add(this.ampliGroup);
-//		this.throwableGroup.add(this.guitarGroup);
 
 		// Send another thing soon
 		
@@ -113,8 +107,6 @@ Play.prototype = {
 				randomEmitterFrequency, this, this.guitarEmitter);
 		this.ampliLoopTimer = this.game.time.events.loop(1000,
 				randomEmitterFrequency, this, this.ampliEmitter);
-//		this.ampliLoopTimer = this.game.time.events.loop(1000, throwingAmplis,
-//				this);
 
 	},
 	update : function() {
@@ -178,7 +170,6 @@ Play.prototype = {
 	back_to_game : function() {
 		this.game.camera.unfollow();
 		this.game.camera.follow(this.owl);
-// music.stop();
 		music = this.game.add.audio('play', 1, true);
 		music.play();
 		on_animation = false;
@@ -202,11 +193,10 @@ function touchingBoss(player, enemy) {
 }
 
 function onAmpliCollision(obj, ampli) {
-	ampli.body.velocity.x *= 0.98;
+	ampli.body.velocity.x *= 0.95;
 }
 
 function onThrowableCollision(player, obj) {
-// music.stop();
 	first_try = false;
 	
 	gameover_music.play();
