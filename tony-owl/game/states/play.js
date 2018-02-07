@@ -17,6 +17,9 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
+var START_POSITION_X = 200;
+var START_POSITION_Y = GAME_HEIGHT - 150;
+
 var first_try = true;
 
 function Play() {
@@ -54,7 +57,7 @@ Play.prototype = {
 //		this.game.add.existing(this.ground);
 
 		// adding owl (player) to game
-		this.owl = new Owl(this.game, 200, this.game.height - 150);
+		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl);
 
@@ -113,10 +116,7 @@ Play.prototype = {
 		}
 		
 		if (this.owl.body.position.y > this.game.height) {
-			first_try = false;
-			
-			gameover_music.play();
-			this.game.state.start('play');
+			onThrowableCollision(this.owl, null);
 		}
 
 		// Player moves
@@ -195,7 +195,8 @@ function onThrowableCollision(player, obj) {
 	first_try = false;
 	
 	gameover_music.play();
-	player.game.state.start('play');
+	player.position.x = START_POSITION_X;
+	player.position.y = START_POSITION_Y;
 }
 
 
