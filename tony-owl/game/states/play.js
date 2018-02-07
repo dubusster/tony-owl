@@ -4,7 +4,6 @@ var Ground = require('../prefabs/ground.js')
 var Owl = require('../prefabs/owl.js')
 var Negaowl = require('../prefabs/negaowl.js')
 
-var on_animation = true;
 var music;
 var gameover_music;
 
@@ -64,6 +63,7 @@ Play.prototype = {
 		this.guitarGroup = this.boss.guitarGroup;
 
 		// level animation
+		this.cutscene = true;
 		if (first_try) {
 			this.start_animation();
 		}
@@ -92,7 +92,7 @@ Play.prototype = {
 		}
 
 		// Player moves
-		if (!on_animation) {
+		if (!this.cutscene) {
 			var cursors = this.game.input.keyboard.createCursorKeys();
 			if (cursors.right.isDown) {
 				this.owl.move("RIGHT");
@@ -134,7 +134,7 @@ Play.prototype = {
 		this.game.camera.targetOffset.x = 200;
 		music = this.game.add.audio('play', 1, true);
 		music.play();
-		on_animation = false;
+		this.cutscene = false;
 	},
 	play_music : function() {
 		music = this.game.add.audio('entering');
