@@ -3,6 +3,10 @@
 var Guitar = require('../prefabs/guitar.js')
 
 var PARTICLES_AMPLI = 15;
+var GUITAR_PER_ROW_MAX = 20;
+
+var GUITAR_LIFESPAN = 0;
+var AMPLI_LIFESPAN = 10000;
 
 var THROWING_VELOCITY_AMPLI_MIN = -300;
 var THROWING_VELOCITY_AMPLI_MAX = -800;
@@ -10,10 +14,8 @@ var THROWING_VELOCITY_AMPLI_MAX = -800;
 var THROWING_VELOCITY_GUITAR_MIN = -100;
 var THROWING_VELOCITY_GUITAR_MAX = -300;
 
-var GUITAR_PER_ROW_MAX = 5;
-
-var THROWING_GUITAR_DELAY_MIN = 2 * Phaser.Timer.SECOND;
-var THROWING_GUITAR_DELAY_MAX = 4 * Phaser.Timer.SECOND;
+var THROWING_GUITAR_DELAY_MIN = 5 * Phaser.Timer.SECOND;
+var THROWING_GUITAR_DELAY_MAX = 12 * Phaser.Timer.SECOND;
 
 var Negaowl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'negaowl', frame);
@@ -56,10 +58,9 @@ Negaowl.prototype.update = function() {
 Negaowl.prototype.release_hell = function(){
 	for (var i = 0; i < this.guitarGroup.children.length; i++) {
 		var guitar = this.guitarGroup.children[i];
-		guitar.start(false, 10000, this.game.rnd.integerInRange(
-	    		THROWING_GUITAR_DELAY_MIN, THROWING_GUITAR_DELAY_MAX));	
+		guitar.start(false, GUITAR_LIFESPAN, 10000);	
 	}
-	this.ampliEmitter.start(false, 5000, 2000);
+	this.ampliEmitter.start(false, AMPLI_LIFESPAN, 2000);
 };
 
 Negaowl.prototype.change_emitters_frequencies = function(min_speed, max_speed){
