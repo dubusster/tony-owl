@@ -29,32 +29,16 @@ Play.prototype = {
 		// Generating world and physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.game.physics.arcade.gravity.y = 1250;
-//		var level_width = 2000;
-//		this.game.world.setBounds(0, 0, level_width, 600);
-//		this.autoscroll_speed = 30;
-		
+
 		this.map = this.game.add.tilemap('level1');
 		this.map.addTilesetImage('tiles32', 'tiles');
-		
+
 		// settings collision with certain tiles of tilesets.
-		this.map.setCollisionBetween(0,5);
-		
-		
-		
+		this.map.setCollisionBetween(0, 5);
+
 		this.layer = this.map.createLayer('Calque1');
-//		this.layer.debug=true;
+		// this.layer.debug=true;
 		this.layer.resizeWorld();
-
-		// Generating backgrounds and landscape
-//		this.sky = this.add.tileSprite(0, 0, this.game.world.width,
-//				this.game.height, 'sky');
-//		this.background = this.add.tileSprite(0, 0, this.game.world.width,
-//				this.game.height, 'background');
-//		this.sky.autoScroll(-30, 0);
-
-//		this.ground = new Ground(this.game, 0,
-//				this.game.height - GROUND_HEIGHT, level_width, GROUND_HEIGHT);
-//		this.game.add.existing(this.ground);
 
 		// adding owl (player) to game
 		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
@@ -70,14 +54,14 @@ Play.prototype = {
 		trickKey.onDown.add(this.owl.trick, this.owl);
 
 		// add boss at the end of the map
-		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0); 
+		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
 		this.game.add.existing(this.boss);
 		// Boss starts to attack.
 		this.boss.release_hell()
-		
-	    // ampli emitter
-	    this.ampliEmitter = this.boss.ampliEmitter;
-	    this.guitarGroup = this.boss.guitarGroup;
+
+		// ampli emitter
+		this.ampliEmitter = this.boss.ampliEmitter;
+		this.guitarGroup = this.boss.guitarGroup;
 
 		// level animation
 		if (first_try) {
@@ -86,25 +70,13 @@ Play.prototype = {
 
 		gameover_music = this.game.add.audio('gameover');
 
-//		this.boss.change_emitters_frequencies(THROWING_DELAY_MIN, THROWING_DELAY_MAX);
-		
-
 	},
 	update : function() {
-//		var hit_platform = this.game.physics.arcade.collide(this.owl,
-//				this.ground);
-//		this.game.physics.arcade.collide(this.boss, this.ground);
-//		this.game.physics.arcade.collide(this.ampliEmitter, this.ground,
-//				onAmpliCollision);
-//		
-//		collideGroup(this.game, this.guitarGroup, this.owl, onThrowableCollision);
-//		
-//		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
-//		this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
-//				onThrowableCollision);
+
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
-		collideGroup(this.game, this.boss.guitarGroup, this.owl, onThrowableCollision);
+		collideGroup(this.game, this.boss.guitarGroup, this.owl,
+				onThrowableCollision);
 		this.game.physics.arcade.collide(this.boss.ampliEmitter, this.layer);
 
 		if (this.owl.body.position.x < 0) {
@@ -114,7 +86,7 @@ Play.prototype = {
 			this.owl.body.position.x = this.game.world.width
 					- this.owl.body.width;
 		}
-		
+
 		if (this.owl.body.position.y > this.game.height) {
 			onThrowableCollision(this.owl, null);
 		}
@@ -137,9 +109,8 @@ Play.prototype = {
 
 	start_animation : function() {
 
-		
-		this.game.time.events.add(Phaser.Timer.SECOND * 0.5, this.focus_on_boss,
-				this);
+		this.game.time.events.add(Phaser.Timer.SECOND * 0.5,
+				this.focus_on_boss, this);
 		this.game.time.events.add(Phaser.Timer.SECOND * 2, this.play_music,
 				this);
 		this.game.time.events.add(Phaser.Timer.SECOND * 4,
@@ -165,7 +136,7 @@ Play.prototype = {
 		music.play();
 		on_animation = false;
 	},
-	play_music : function(){
+	play_music : function() {
 		music = this.game.add.audio('entering');
 		music.play();
 	},
@@ -175,8 +146,7 @@ function collideGroup(game, group, other, callback) {
 	// enabling gameover callback for all guitars.
 	for (var i = 0; i < group.children.length; i++) {
 		var item = group.children[i];
-		game.physics.arcade.collide(other, item,
-				callback);	
+		game.physics.arcade.collide(other, item, callback);
 	}
 }
 
@@ -193,11 +163,10 @@ function onAmpliCollision(obj, ampli) {
 
 function onThrowableCollision(player, obj) {
 	first_try = false;
-	
+
 	gameover_music.play();
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
 }
-
 
 module.exports = Play;
