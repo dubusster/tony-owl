@@ -2,7 +2,7 @@
 
 var Owl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'owl', frame);
-
+	
 	// initialize your prefab here
 	this.game.physics.arcade.enableBody(this);
 	this.jumping = false;
@@ -17,6 +17,8 @@ var Owl = function(game, x, y, frame) {
 	this.animations.play('right-standing');
 	// TODO: add trick animation
 
+	this.isLastDirectionLeft = false;
+
 };
 
 Owl.prototype = Object.create(Phaser.Sprite.prototype);
@@ -27,24 +29,25 @@ Owl.prototype.update = function() {
 };
 
 Owl.prototype.move = function(direction) {
-	var left = false;
+	
 	if (direction == "RIGHT") {
 		this.body.velocity.x = this.walking_speed;
 		this.animations.play('right');
+		this.isLastDirectionLeft = false;
 	}
 	else if (direction == "LEFT") {
 		this.body.velocity.x = -this.walking_speed;
 		this.animations.play('left');
-		left = true;
+		this.isLastDirectionLeft = true;
 		
 	}
 	if (direction == "UP") {
 		this.body.velocity.y = -this.jumping_height;
-		console.log('jump!');
 	}
 	if (direction == null) {
 		this.body.velocity.x = 0;
-		if (left) {
+		
+		if (this.isLastDirectionLeft) {
 			this.animations.play('left-standing');
 		}
 		else {
