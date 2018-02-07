@@ -3,8 +3,9 @@
 var Ground = require('../prefabs/ground.js')
 var Owl = require('../prefabs/owl.js')
 var Negaowl = require('../prefabs/negaowl.js')
+var Animation = require('../animations/cut1.js')
 
-var music;
+
 var gameover_music;
 
 var GAME_HEIGHT = 600;
@@ -61,11 +62,19 @@ Play.prototype = {
 		// ampli emitter
 		this.ampliEmitter = this.boss.ampliEmitter;
 		this.guitarGroup = this.boss.guitarGroup;
+		
+		// game music
+		this.music;
 
 		// level animation
 		this.cutscene = true;
+		var animation = new Animation(this.game, this.boss, this.owl, this.music);
+		console.log(animation);
 		if (first_try) {
-			this.start_animation();
+			
+			animation.start();
+			this.cutscene = false;
+			
 		}
 
 		gameover_music = this.game.add.audio('gameover');
@@ -105,40 +114,6 @@ Play.prototype = {
 				this.owl.move("UP");
 			}
 		}
-	},
-
-	start_animation : function() {
-
-		this.game.time.events.add(Phaser.Timer.SECOND * 0.5,
-				this.focus_on_boss, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 2, this.play_music,
-				this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 4,
-				this.focus_on_player, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 5, this.back_to_game,
-				this);
-
-	},
-
-	focus_on_boss : function() {
-		this.game.camera.follow(this.boss, 0, 0.05);
-	},
-
-	focus_on_player : function() {
-		this.game.camera.follow(this.owl, 0, 0.05);
-	},
-
-	back_to_game : function() {
-		this.game.camera.unfollow();
-		this.game.camera.follow(this.owl);
-		this.game.camera.targetOffset.x = 200;
-		music = this.game.add.audio('play', 1, true);
-		music.play();
-		this.cutscene = false;
-	},
-	play_music : function() {
-		music = this.game.add.audio('entering');
-		music.play();
 	},
 };
 
