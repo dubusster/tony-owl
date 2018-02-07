@@ -41,7 +41,7 @@ Play.prototype = {
 		this.layer.resizeWorld();
 
 		// adding owl (player) to game
-		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
+		this.owl = new Owl(this.game, 15000, START_POSITION_Y);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl);
 
@@ -64,7 +64,7 @@ Play.prototype = {
 		this.guitarGroup = this.boss.guitarGroup;
 		
 		// game music
-		this.music;
+		this.music
 
 		// level animation
 		this.cutscene = true;
@@ -72,21 +72,25 @@ Play.prototype = {
 		console.log(animation);
 		if (first_try) {
 			
-			animation.start();
-			this.cutscene = false;
+			this.cutscene, this.music = animation.start();
+			console.log('coucou');
+			console.log('animation.music:',animation.music)
+//			this.cutscene = false;
+//			this.music = animation.music
 			
 		}
-
+		console.log(this.music);
 		gameover_music = this.game.add.audio('gameover');
 
 	},
 	update : function() {
-
+		console.log(this.music);
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
-		collideGroup(this.game, this.boss.guitarGroup, this.owl,
-				onThrowableCollision);
+//		collideGroup(this.game, this.boss.guitarGroup, this.owl,
+//				onThrowableCollision);
 		this.game.physics.arcade.collide(this.boss.ampliEmitter, this.layer);
+		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss, null, this);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -123,18 +127,19 @@ function collideGroup(game, group, other, callback) {
 		var item = group.children[i];
 		game.physics.arcade.collide(other, item, callback);
 	}
-}
+};
 
-function touchingBoss(player, enemy) {
-	music.stop();
+function touchingBoss(player, boss) {
+	console.log(this);
+	this.music.stop();
 	console.log('WIIIIIN');
 	player.game.state.start('win');
 
-}
+};
 
 function onAmpliCollision(obj, ampli) {
 	ampli.body.velocity.x *= 0.95;
-}
+};
 
 function onThrowableCollision(player, obj) {
 	first_try = false;
@@ -142,6 +147,6 @@ function onThrowableCollision(player, obj) {
 	gameover_music.play();
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
-}
+};
 
 module.exports = Play;

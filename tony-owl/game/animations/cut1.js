@@ -12,7 +12,6 @@ var Animation = function (game, boss, owl, music) {
 // Animation.prototype = Object.prototype;
 Animation.prototype = {
 	start : function() {
-		console.log(this.game);
 		this.game.time.events.add(Phaser.Timer.SECOND * 0.5,
 				this.focus_on_boss, this);
 		this.game.time.events.add(Phaser.Timer.SECOND * 2, this.play_music,
@@ -21,11 +20,12 @@ Animation.prototype = {
 				this.focus_on_player, this);
 		this.game.time.events.add(Phaser.Timer.SECOND * 5, this.back_to_game,
 				this);
+		
+		return false, this.music;
 
 	},
 
 	focus_on_boss : function() {
-		console.log(this.game);
 		this.game.camera.follow(this.boss, 0, 0.05);
 	},
 
