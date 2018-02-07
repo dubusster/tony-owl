@@ -69,6 +69,8 @@ Play.prototype = {
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0); 
 		this.game.add.existing(this.boss);
+		// Boss starts to attack.
+		this.boss.release_hell()
 		
 	    // ampli emitter
 	    this.ampliEmitter = this.boss.ampliEmitter;
@@ -81,9 +83,7 @@ Play.prototype = {
 
 		gameover_music = this.game.add.audio('gameover');
 
-		// Boss starts to attack.
-		this.boss.release_hell()
-		this.boss.change_emitters_frequencies(THROWING_DELAY_MIN, THROWING_DELAY_MAX);
+//		this.boss.change_emitters_frequencies(THROWING_DELAY_MIN, THROWING_DELAY_MAX);
 		
 
 	},
@@ -102,6 +102,7 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
 		collideGroup(this.game, this.boss.guitarGroup, this.owl, onThrowableCollision);
+		this.game.physics.arcade.collide(this.boss.ampliEmitter, this.layer);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -109,6 +110,13 @@ Play.prototype = {
 				- this.owl.body.width) {
 			this.owl.body.position.x = this.game.world.width
 					- this.owl.body.width;
+		}
+		
+		if (this.owl.body.position.y > this.game.height) {
+			first_try = false;
+			
+			gameover_music.play();
+			this.game.state.start('play');
 		}
 
 		// Player moves
