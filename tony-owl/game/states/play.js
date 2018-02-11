@@ -16,7 +16,7 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
-var START_POSITION_X = 200;
+var START_POSITION_X = 15000;
 var START_POSITION_Y = GAME_HEIGHT - 150;
 
 var first_try = true;
@@ -77,7 +77,8 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.owl, this.layer);
 		collideGroup(this.game, this.boss.guitarGroup, this.owl,
 				onThrowableCollision);
-		this.game.physics.arcade.collide(this.boss.ampliEmitter, this.layer);
+//		this.game.physics.arcade.collide(this.boss.ampliEmitter, this.layer);
+		this.game.physics.arcade.collide(this.ampliEmitter, this.layer, onAmpliCollisionWithGround);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -157,8 +158,11 @@ function touchingBoss(player, enemy) {
 
 }
 
-function onAmpliCollision(obj, ampli) {
-	ampli.body.velocity.x *= 0.95;
+function onAmpliCollisionWithGround(ampli, obj) {
+	ampli.animations.play('roll');
+//	console.log("ampli : ", ampli);
+//	console.log(obj);
+//	ampli.body.velocity.x *= 0.95;
 }
 
 function onThrowableCollision(player, obj) {

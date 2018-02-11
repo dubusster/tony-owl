@@ -1,6 +1,7 @@
 'use strict';
 
 var Guitar = require('../prefabs/guitar.js')
+var AmpliParticle = require('../prefabs/ampli_particle.js')
 
 var PARTICLES_AMPLI = 15;
 var GUITAR_PER_ROW_MAX = 20;
@@ -29,12 +30,14 @@ var Negaowl = function(game, x, y, frame) {
 	// ampli emitter
     this.ampliEmitter = this.game.add.emitter(this.position.x, 2*this.height/3, PARTICLES_AMPLI);
     this.ampliEmitter.height = 100;
+    this.ampliEmitter.particleClass = AmpliParticle;
     this.ampliEmitter.makeParticles('ampli',0,PARTICLES_AMPLI, true);
     this.ampliEmitter.minParticleSpeed.set(THROWING_VELOCITY_AMPLI_MIN, 0);
 	this.ampliEmitter.maxParticleSpeed.set(THROWING_VELOCITY_AMPLI_MAX, 0);
 	this.ampliEmitter.gravity = 1200;
 	this.ampliEmitter.minRotation = 0;
     this.ampliEmitter.maxRotation = 0;
+    
     
     this.guitarUp = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.position.x, 100, GUITAR_PER_ROW_MAX);
 	this.guitarMiddle = new Guitar(THROWING_VELOCITY_GUITAR_MIN, THROWING_VELOCITY_GUITAR_MAX, this.game,this.position.x, 250, GUITAR_PER_ROW_MAX);
