@@ -2,9 +2,10 @@
 
 var Owl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'owl', frame);
-
 	// initialize your prefab here
 	this.game.physics.arcade.enableBody(this);
+
+	this.trickCounter = 0;
 	this.jumping = false;
 	this.walking_speed = 500;
 	this.jumping_height = 700;
@@ -63,6 +64,15 @@ Owl.prototype.trick = function() {
 	if (!this.body.touching.down) {
 		console.log('trick!');
 		this.animations.play('trick');
+		this.trickCounter++;
+	}
+};
+
+Owl.prototype.attack = function() {
+	if (this.trickCounter > 2) {
+		console.log('attack');
+		this.animations.play('attack');
+		this.trickCounter = 0;
 	}
 };
 
