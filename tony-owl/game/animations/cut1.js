@@ -1,17 +1,16 @@
 'use strict';
 
-var music;
-
-var Animation = function (game, boss, owl, music) {
+var Animation = function (game) {
 	this.game = game;
-	this.boss = boss;
-	this.owl = owl;
-	this.music = music;
+	this.current_state = this.game.state.getCurrentState();
+	this.boss = this.current_state.boss;
+	this.owl = this.current_state.owl;
 };
-//
-// Animation.prototype = Object.prototype;
+
 Animation.prototype = {
 	start : function() {
+		
+		
 		this.game.time.events.add(Phaser.Timer.SECOND * 0.5,
 				this.focus_on_boss, this);
 		this.game.time.events.add(Phaser.Timer.SECOND * 2, this.play_music,
@@ -20,12 +19,11 @@ Animation.prototype = {
 				this.focus_on_player, this);
 		this.game.time.events.add(Phaser.Timer.SECOND * 5, this.back_to_game,
 				this);
-		
-		return false, this.music;
 
 	},
 
 	focus_on_boss : function() {
+		console.log(this.game);
 		this.game.camera.follow(this.boss, 0, 0.05);
 	},
 
@@ -36,10 +34,10 @@ Animation.prototype = {
 	back_to_game : function() {
 		this.game.camera.unfollow();
 		this.game.camera.follow(this.owl);
-		this.game.camera.targetOffset.x = 200;
+		this.game.camera.targetOffset.x = this.game.width/3;
 		this.music = this.game.add.audio('play', 1, true);
 		this.music.play();
-		
+		this.current_state.cutscene = false;
 	},
 	play_music : function() {
 		this.music = this.game.add.audio('entering');

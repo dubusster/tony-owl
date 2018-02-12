@@ -62,29 +62,24 @@ Play.prototype = {
 		// ampli emitter
 		this.ampliEmitter = this.boss.ampliEmitter;
 		this.guitarGroup = this.boss.guitarGroup;
-		
-		// game music
-		this.music
 
 		// level animation
 		this.cutscene = true;
-		var animation = new Animation(this.game, this.boss, this.owl, this.music);
+		var animation = new Animation(this.game, this.boss, this.owl);
 		console.log(animation);
 		if (first_try) {
 			
-			this.cutscene, this.music = animation.start();
-			console.log('coucou');
-			console.log('animation.music:',animation.music)
+			animation.start();
+			
 //			this.cutscene = false;
 //			this.music = animation.music
 			
 		}
-		console.log(this.music);
+		
 		gameover_music = this.game.add.audio('gameover');
 
 	},
 	update : function() {
-		console.log(this.music);
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
 //		collideGroup(this.game, this.boss.guitarGroup, this.owl,
@@ -131,7 +126,7 @@ function collideGroup(game, group, other, callback) {
 
 function touchingBoss(player, boss) {
 	console.log(this);
-	this.music.stop();
+	this.game.sound.stopAll();
 	console.log('WIIIIIN');
 	player.game.state.start('win');
 
