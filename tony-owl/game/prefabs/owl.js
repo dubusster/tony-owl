@@ -69,10 +69,10 @@ Owl.prototype.trick = function() {
 };
 
 Owl.prototype.attack = function() {
-	if (this.trickCounter > 2) {
+	if (this.trickCounter > 0) {
 		console.log('attack');
 		this.animations.play('attack');
-		this.trickCounter = 0;
+		this.trickCounter--;
 	}
 };
 
