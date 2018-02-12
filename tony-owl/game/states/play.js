@@ -64,7 +64,7 @@ Play.prototype = {
 
 		// level animation
 		this.cutscene = true;
-		var animation = new Animation(this.game, this.boss, this.owl);
+		var animation = new Animation(this.game);
 		console.log(animation);
 		if (first_try) {
 			animation.start();
