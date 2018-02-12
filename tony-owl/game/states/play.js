@@ -3,8 +3,9 @@
 var Ground = require('../prefabs/ground.js')
 var Owl = require('../prefabs/owl.js')
 var Negaowl = require('../prefabs/negaowl.js')
+var Animation = require('../animations/cut1.js')
 
-var music;
+
 var gameover_music;
 
 var GAME_HEIGHT = 600;
@@ -40,7 +41,7 @@ Play.prototype = {
 		this.layer.resizeWorld();
 
 		// adding owl (player) to game
-		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
+		this.owl = new Owl(this.game, 15000, START_POSITION_Y);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl);
 
@@ -64,21 +65,25 @@ Play.prototype = {
 
 		// level animation
 		this.cutscene = true;
+		var animation = new Animation(this.game, this.boss, this.owl);
+		console.log(animation);
 		if (first_try) {
-			this.start_animation();
+			
+			animation.start();
+			
+//			this.cutscene = false;
+//			this.music = animation.music
+			
 		}
-
+		
 		gameover_music = this.game.add.audio('gameover');
 
 	},
 	update : function() {
-
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
-		collideGroup(this.game, this.boss.guitarGroup, this.owl,
-				onThrowableCollision);
-//		this.game.physics.arcade.collide(this.boss.ampliEmitter, this.layer);
 		this.game.physics.arcade.collide(this.ampliEmitter, this.layer, onAmpliCollisionWithGround);
+		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss, null, this);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -107,40 +112,6 @@ Play.prototype = {
 			}
 		}
 	},
-
-	start_animation : function() {
-
-		this.game.time.events.add(Phaser.Timer.SECOND * 0.5,
-				this.focus_on_boss, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 2, this.play_music,
-				this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 4,
-				this.focus_on_player, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 5, this.back_to_game,
-				this);
-
-	},
-
-	focus_on_boss : function() {
-		this.game.camera.follow(this.boss, 0, 0.05);
-	},
-
-	focus_on_player : function() {
-		this.game.camera.follow(this.owl, 0, 0.05);
-	},
-
-	back_to_game : function() {
-		this.game.camera.unfollow();
-		this.game.camera.follow(this.owl);
-		this.game.camera.targetOffset.x = 200;
-		music = this.game.add.audio('play', 1, true);
-		music.play();
-		this.cutscene = false;
-	},
-	play_music : function() {
-		music = this.game.add.audio('entering');
-		music.play();
-	},
 };
 
 function collideGroup(game, group, other, callback) {
@@ -149,14 +120,15 @@ function collideGroup(game, group, other, callback) {
 		var item = group.children[i];
 		game.physics.arcade.collide(other, item, callback);
 	}
-}
+};
 
-function touchingBoss(player, enemy) {
-	music.stop();
+function touchingBoss(player, boss) {
+	console.log(this);
+	this.game.sound.stopAll();
 	console.log('WIIIIIN');
 	player.game.state.start('win');
 
-}
+};
 
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
@@ -164,7 +136,11 @@ function onAmpliCollisionWithGround(ampli, obj) {
 //	console.log("ampli : ", ampli);
 //	console.log(obj);
 //	ampli.body.velocity.x *= 0.95;
-}
+};
+
+function onAmpliCollision(obj, ampli) {
+	ampli.body.velocity.x *= 0.95;
+};
 
 function onThrowableCollision(player, obj) {
 	first_try = false;
@@ -172,6 +148,6 @@ function onThrowableCollision(player, obj) {
 	gameover_music.play();
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
-}
+};
 
 module.exports = Play;
