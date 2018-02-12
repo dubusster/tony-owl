@@ -159,7 +159,8 @@ function touchingBoss(player, enemy) {
 }
 
 function onAmpliCollisionWithGround(ampli, obj) {
-	ampli.animations.play('roll');
+	ampli.animations.stop('emitting');
+	ampli.animations.play('roll-and-burn');
 //	console.log("ampli : ", ampli);
 //	console.log(obj);
 //	ampli.body.velocity.x *= 0.95;
