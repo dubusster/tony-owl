@@ -40,8 +40,7 @@ Play.prototype = {
 		this.collisionLayer.visible = false;
 		this.map.setCollision(1, true, 1);
 		console.log("layer : ", this.collisionLayer);
-		// this.collision.
-		// this.layer.debug=true;
+
 		this.layer.resizeWorld();
 
 		// adding owl (player) to game
@@ -136,9 +135,6 @@ function touchingBoss(player, boss) {
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
 	ampli.animations.play('roll-and-burn', null, true );
-	// console.log("ampli : ", ampli);
-	// console.log(obj);
-	// ampli.body.velocity.x *= 0.95;
 };
 
 function onThrowableCollision(player, obj) {
