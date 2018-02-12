@@ -5,7 +5,6 @@ var Owl = require('../prefabs/owl.js')
 var Negaowl = require('../prefabs/negaowl.js')
 var Animation = require('../animations/cut1.js')
 
-
 var gameover_music;
 
 var GAME_HEIGHT = 600;
@@ -68,22 +67,19 @@ Play.prototype = {
 		var animation = new Animation(this.game, this.boss, this.owl);
 		console.log(animation);
 		if (first_try) {
-			
 			animation.start();
-			
-//			this.cutscene = false;
-//			this.music = animation.music
-			
 		}
-		
+
 		gameover_music = this.game.add.audio('gameover');
 
 	},
 	update : function() {
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
-		this.game.physics.arcade.collide(this.ampliEmitter, this.layer, onAmpliCollisionWithGround);
-		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss, null, this);
+		this.game.physics.arcade.collide(this.ampliEmitter, this.layer,
+				onAmpliCollisionWithGround);
+		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss,
+				null, this);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -133,13 +129,9 @@ function touchingBoss(player, boss) {
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
 	ampli.animations.play('roll-and-burn');
-//	console.log("ampli : ", ampli);
-//	console.log(obj);
-//	ampli.body.velocity.x *= 0.95;
-};
-
-function onAmpliCollision(obj, ampli) {
-	ampli.body.velocity.x *= 0.95;
+	// console.log("ampli : ", ampli);
+	// console.log(obj);
+	// ampli.body.velocity.x *= 0.95;
 };
 
 function onThrowableCollision(player, obj) {
