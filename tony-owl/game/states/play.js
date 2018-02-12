@@ -16,7 +16,7 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
-var START_POSITION_X = 15000;
+var START_POSITION_X = 12000;
 var START_POSITION_Y = GAME_HEIGHT - 150;
 
 var first_try = true;
@@ -36,11 +36,16 @@ Play.prototype = {
 		this.map.setCollisionBetween(0, 5);
 
 		this.layer = this.map.createLayer('Calque1');
+		this.collisionLayer = this.map.createLayer('invisible walls');
+		this.collisionLayer.visible = false;
+		this.map.setCollision(1, true, 1);
+		console.log("layer : ", this.collisionLayer);
+		// this.collision.
 		// this.layer.debug=true;
 		this.layer.resizeWorld();
 
 		// adding owl (player) to game
-		this.owl = new Owl(this.game, 15000, START_POSITION_Y);
+		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl);
 
@@ -76,8 +81,10 @@ Play.prototype = {
 	update : function() {
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
-		this.game.physics.arcade.collide(this.ampliEmitter, this.layer,
+		this.game.physics.arcade.collide(this.ampliEmitter, this.collisionLayer,
 				onAmpliCollisionWithGround);
+		this.game.physics.arcade
+				.collide(this.ampliEmitter, this.collisionLayer);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss,
 				null, this);
 
@@ -128,7 +135,7 @@ function touchingBoss(player, boss) {
 
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
-	ampli.animations.play('roll-and-burn');
+	ampli.animations.play('roll-and-burn', null, true );
 	// console.log("ampli : ", ampli);
 	// console.log(obj);
 	// ampli.body.velocity.x *= 0.95;
