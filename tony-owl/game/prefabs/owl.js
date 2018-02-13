@@ -32,7 +32,12 @@ Owl.prototype = Object.create(Phaser.Sprite.prototype);
 Owl.prototype.constructor = Owl;
 
 Owl.prototype.update = function() {
-
+	if (this.nextAttack > this.game.time.now) {
+		this.attacking = true;
+	}
+	else {
+		this.attacking = false;
+	}
 };
 
 Owl.prototype.move = function(direction) {
@@ -73,16 +78,20 @@ Owl.prototype.trick = function() {
 Owl.prototype.attack = function() {
 
 	if (this.nextAttack > this.game.time.now) {
+		this.attacking = false;
 		return;
 	} // too early
+	
 	 /* make shot */
 	 if (this.trickCounter > 0) {
 		 console.log('attack');
+		 this.attacking = true;
 		 this.animations.play('attack');
 		 this.trickCounter--;
 	 }
 
-	 this.nextAttack = this.game.time.now + this.ATTACK_DELAY; 
+	 this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
+	 
 	 
 };
 

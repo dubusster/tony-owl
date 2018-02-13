@@ -16,7 +16,7 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
-var START_POSITION_X = 12000;
+var START_POSITION_X = 15000;
 var START_POSITION_Y = GAME_HEIGHT - 150;
 
 var first_try = true;
@@ -69,10 +69,10 @@ Play.prototype = {
 		this.guitarGroup = this.boss.guitarGroup;
 
 		// level animation
-		this.cutscene = true;
+		this.cutscene = false;
 		var animation = new Animation(this.game);
 		console.log(animation);
-		if (first_try) {
+		if (first_try && this.cutscene) {
 			animation.start();
 		}
 
@@ -84,8 +84,8 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.owl, this.layer);
 		this.game.physics.arcade.collide(this.ampliEmitter, this.collisionLayer,
 				onAmpliCollisionWithGround);
-		this.game.physics.arcade
-				.collide(this.ampliEmitter, this.collisionLayer);
+//		this.game.physics.arcade
+//				.collide(this.ampliEmitter, this.collisionLayer);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss,
 				null, this);
 
@@ -115,7 +115,11 @@ Play.prototype = {
 				this.owl.move("UP");
 			}
 		}
-		
+//		console.log(this.owl.attacking);
+		if (this.owl.attacking) {
+			this.game.physics.arcade.collide(this.owl, this.ampliEmitter, onAttack)
+			collideGroup(this.game, this.guitarGroup, this.owl, onAttack);
+		}
 	},
 };
 
@@ -147,5 +151,11 @@ function onThrowableCollision(player, obj) {
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
 };
+
+function onAttack(player, obj) {
+	console.log(obj);
+	obj.body.velocity.x += 300 * Math.sin(obj.angle);
+	obj.body.velocity.y += 300 * Math.cos(obj.angle);
+}
 
 module.exports = Play;
