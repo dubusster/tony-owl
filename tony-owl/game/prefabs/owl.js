@@ -23,6 +23,8 @@ var Owl = function(game, x, y, frame) {
 	// TODO: add trick animation
 
 	this.isLastDirectionLeft = false;
+	this.ATTACK_DELAY = 500; // wait at least 1 second (1000ms) to next shot
+	this.nextAttack;
 
 };
 
@@ -69,11 +71,19 @@ Owl.prototype.trick = function() {
 };
 
 Owl.prototype.attack = function() {
-	if (this.trickCounter > 0) {
-		console.log('attack');
-		this.animations.play('attack');
-		this.trickCounter--;
-	}
+
+	if (this.nextAttack > this.game.time.now) {
+		return;
+	} // too early
+	 /* make shot */
+	 if (this.trickCounter > 0) {
+		 console.log('attack');
+		 this.animations.play('attack');
+		 this.trickCounter--;
+	 }
+
+	 this.nextAttack = this.game.time.now + this.ATTACK_DELAY; 
+	 
 };
 
 module.exports = Owl;

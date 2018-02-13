@@ -55,6 +55,8 @@ Play.prototype = {
 		// add keyboard controls
 		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		trickKey.onDown.add(this.owl.trick, this.owl);
+		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
+		attackKey.onDown.add(this.owl.attack, this.owl);
 
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
@@ -113,6 +115,7 @@ Play.prototype = {
 				this.owl.move("UP");
 			}
 		}
+		
 	},
 };
 
