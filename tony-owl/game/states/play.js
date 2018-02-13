@@ -71,7 +71,7 @@ Play.prototype = {
 		// level animation
 		this.cutscene = false;
 		var animation = new Animation(this.game);
-		console.log(animation);
+//		console.log(animation);
 		if (first_try && this.cutscene) {
 			animation.start();
 		}
@@ -121,6 +121,12 @@ Play.prototype = {
 			collideGroup(this.game, this.guitarGroup, this.owl, onAttack);
 		}
 	},
+	
+	render : function() {
+		this.game.debug.text('attacking : '+this.owl.attacking, 10, 50);
+		this.game.debug.text('trickCounter : '+this.owl.trickCounter, 10, 75);
+		this.game.debug.text('can_attack : '+this.owl.can_attack, 10, 100);
+	},
 };
 
 function collideGroup(game, group, other, callback) {
@@ -132,7 +138,7 @@ function collideGroup(game, group, other, callback) {
 };
 
 function touchingBoss(player, boss) {
-	console.log(this);
+//	console.log(this);
 	this.game.sound.stopAll();
 	console.log('WIIIIIN');
 	player.game.state.start('win');
@@ -153,7 +159,7 @@ function onThrowableCollision(player, obj) {
 };
 
 function onAttack(player, obj) {
-	console.log(obj);
+//	console.log(obj);
 	obj.body.velocity.x += 300 * Math.sin(obj.angle);
 	obj.body.velocity.y += 300 * Math.cos(obj.angle);
 }
