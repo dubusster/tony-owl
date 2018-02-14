@@ -119,7 +119,8 @@ Play.prototype = {
 		if (this.owl.attacking) {
 
 			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
-					onAttack)
+					onAttackAmpli);
+			
 			collideGroup(this.game, this.guitarGroup, this.owl, onAttack);
 
 		}
@@ -129,10 +130,20 @@ Play.prototype = {
 		this.game.debug.text('attacking : ' + this.owl.attacking, 10, 50);
 		this.game.debug.text('trickCounter : ' + this.owl.trickCounter, 10, 75);
 		this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
-		
-		this.game.debug.body(this.ampliEmitter);
+
+		this.game.debug.body(this.owl);
 		this.game.debug.body(this.guitarGroup);
 		
+		var game = this.game;
+		this.ampliEmitter.forEachAlive(function(particle) {
+			game.debug.body(particle, 'red', false);
+			game.debug.text(particle.body.velocity, 10, 125);
+		});
+		this.guitarGroup.forEach(function(emitter){
+			emitter.forEachAlive(function(particle) {
+			game.debug.body(particle, 'green', false);})
+		});
+
 	},
 };
 
@@ -167,8 +178,17 @@ function onThrowableCollision(player, obj) {
 
 function onAttack(player, obj) {
 	// console.log(obj);
+//	obj.body.bounce.x = 1;
 	obj.body.velocity.x += player.STRENGTH * Math.sin(obj.angle);
 	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
 }
+
+function onAttackAmpli(player, obj) {
+	// console.log(obj);
+//	obj.body.bounce.x = 1;
+	obj.body.velocity.x = player.STRENGTH
+	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
+}
+
 
 module.exports = Play;
