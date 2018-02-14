@@ -23,9 +23,13 @@ var Negaowl = function(game, x, y, frame) {
 
 	// TODO: add boss animation
 	game.physics.arcade.enableBody(this);
-
+	this.body.immovable = true;
+//	this.body.moves = false;
 	this.animations.add('standing', null, 10, true);
 	this.animations.play('standing');
+	
+	// HEALTH
+	this.health = 5;
 
 	// ampli emitter
 	this.ampliEmitter = this.game.add.emitter(this.position.x,

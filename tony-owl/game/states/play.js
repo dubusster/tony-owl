@@ -86,7 +86,7 @@ Play.prototype = {
 				this.collisionLayer, onAmpliCollisionWithGround);
 		// this.game.physics.arcade
 		// .collide(this.ampliEmitter, this.collisionLayer);
-		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss,
+		this.game.physics.arcade.collide(this.ampliEmitter, this.boss, touchingBossWithAmpli,
 				null, this);
 
 		if (this.owl.body.position.x < 0) {
@@ -137,7 +137,7 @@ Play.prototype = {
 		var game = this.game;
 		this.ampliEmitter.forEachAlive(function(particle) {
 			game.debug.body(particle, 'red', false);
-			game.debug.text(particle.body.velocity, 10, 125);
+//			game.debug.text(particle.body.velocity, 10, 125);
 		});
 		this.guitarGroup.forEach(function(emitter){
 			emitter.forEachAlive(function(particle) {
@@ -155,13 +155,24 @@ function collideGroup(game, group, other, callback) {
 	}
 };
 
-function touchingBoss(player, boss) {
+function touchingBossWithAmpli(boss, ampli) {
+	// console.log(this);
+//	this.game.sound.stopAll();
+	console.log('boss is touched !');
+	boss.health--;
+	console.log('health boss : ', boss.health);
+	ampli.destroy();
+
+};
+
+function winning(player, boss) {
 	// console.log(this);
 	this.game.sound.stopAll();
 	console.log('WIIIIIN');
 	player.game.state.start('win');
 
 };
+
 
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
