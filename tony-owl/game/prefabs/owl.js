@@ -6,9 +6,11 @@ var Owl = function(game, x, y, frame) {
 	this.game.physics.arcade.enableBody(this);
 
 	this.trickCounter = 0;
+	this.TRICK_TRIGGER = 1;
 	this.jumping = false;
 	this.walking_speed = 500;
 	this.jumping_height = 700;
+	this.STRENGTH = 500;
 
 	// animations
 	this.animations.add('left-standing', [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ], 20,
@@ -23,8 +25,9 @@ var Owl = function(game, x, y, frame) {
 	// TODO: add trick animation
 
 	this.isLastDirectionLeft = false;
-	this.ATTACK_DELAY = 500; // wait at least 1 second (1000ms) to next shot
-	this.nextAttack;
+	this.ATTACK_DELAY = 500; // wait at least 0.5 second (500ms) to next shot
+
+	this.nextAttack = this.game.time.now;
 
 };
 
@@ -32,12 +35,8 @@ Owl.prototype = Object.create(Phaser.Sprite.prototype);
 Owl.prototype.constructor = Owl;
 
 Owl.prototype.update = function() {
-	if (this.nextAttack > this.game.time.now) {
-		this.attacking = true;
-	}
-	else {
-		this.attacking = false;
-	}
+	this.can_attack = this.game.time.now > this.nextAttack;
+	this.attacking = this.game.time.now < this.nextAttack;
 };
 
 Owl.prototype.move = function(direction) {
@@ -76,23 +75,15 @@ Owl.prototype.trick = function() {
 };
 
 Owl.prototype.attack = function() {
+	if (this.trickCounter >= this.TRICK_TRIGGER) {
+		this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
 
-	if (this.nextAttack > this.game.time.now) {
-		this.attacking = false;
-		return;
-	} // too early
-	
-	 /* make shot */
-	 if (this.trickCounter > 0) {
-		 console.log('attack');
-		 this.attacking = true;
-		 this.animations.play('attack');
-		 this.trickCounter--;
-	 }
+		console.log('attack');
+		// this.attacking = true;
+		this.animations.play('attack');
+		this.trickCounter--;
+	}
 
-	 this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
-	 
-	 
 };
 
 module.exports = Owl;

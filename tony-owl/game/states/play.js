@@ -71,7 +71,7 @@ Play.prototype = {
 		// level animation
 		this.cutscene = false;
 		var animation = new Animation(this.game);
-//		console.log(animation);
+		// console.log(animation);
 		if (first_try && this.cutscene) {
 			animation.start();
 		}
@@ -82,10 +82,10 @@ Play.prototype = {
 	update : function() {
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
-		this.game.physics.arcade.collide(this.ampliEmitter, this.collisionLayer,
-				onAmpliCollisionWithGround);
-//		this.game.physics.arcade
-//				.collide(this.ampliEmitter, this.collisionLayer);
+		this.game.physics.arcade.collide(this.ampliEmitter,
+				this.collisionLayer, onAmpliCollisionWithGround);
+		// this.game.physics.arcade
+		// .collide(this.ampliEmitter, this.collisionLayer);
 		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss,
 				null, this);
 
@@ -115,17 +115,24 @@ Play.prototype = {
 				this.owl.move("UP");
 			}
 		}
-//		console.log(this.owl.attacking);
+
 		if (this.owl.attacking) {
-			this.game.physics.arcade.collide(this.owl, this.ampliEmitter, onAttack)
+
+			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
+					onAttack)
 			collideGroup(this.game, this.guitarGroup, this.owl, onAttack);
+
 		}
 	},
-	
+
 	render : function() {
-		this.game.debug.text('attacking : '+this.owl.attacking, 10, 50);
-		this.game.debug.text('trickCounter : '+this.owl.trickCounter, 10, 75);
-		this.game.debug.text('can_attack : '+this.owl.can_attack, 10, 100);
+		this.game.debug.text('attacking : ' + this.owl.attacking, 10, 50);
+		this.game.debug.text('trickCounter : ' + this.owl.trickCounter, 10, 75);
+		this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
+		
+		this.game.debug.body(this.ampliEmitter);
+		this.game.debug.body(this.guitarGroup);
+		
 	},
 };
 
@@ -138,7 +145,7 @@ function collideGroup(game, group, other, callback) {
 };
 
 function touchingBoss(player, boss) {
-//	console.log(this);
+	// console.log(this);
 	this.game.sound.stopAll();
 	console.log('WIIIIIN');
 	player.game.state.start('win');
@@ -147,7 +154,7 @@ function touchingBoss(player, boss) {
 
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
-	ampli.animations.play('roll-and-burn', null, true );
+	ampli.animations.play('roll-and-burn', null, true);
 };
 
 function onThrowableCollision(player, obj) {
@@ -159,9 +166,9 @@ function onThrowableCollision(player, obj) {
 };
 
 function onAttack(player, obj) {
-//	console.log(obj);
-	obj.body.velocity.x += 300 * Math.sin(obj.angle);
-	obj.body.velocity.y += 300 * Math.cos(obj.angle);
+	// console.log(obj);
+	obj.body.velocity.x += player.STRENGTH * Math.sin(obj.angle);
+	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
 }
 
 module.exports = Play;
