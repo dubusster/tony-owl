@@ -117,13 +117,11 @@ Play.prototype = {
 		}
 
 		if (this.owl.attacking) {
-
 			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
 					onAttackAmpli);
-			
 			collideGroup(this.game, this.guitarGroup, this.owl, onAttack);
-
 		}
+
 	},
 
 	render : function() {
@@ -162,6 +160,11 @@ function touchingBossWithAmpli(boss, ampli) {
 	boss.health--;
 	console.log('health boss : ', boss.health);
 	ampli.destroy();
+	if (boss.health <= 0) {
+//		this.boss.animations.play('dying');
+		console.log('boss dying!');
+		
+	}
 
 };
 
