@@ -163,16 +163,18 @@ function touchingBossWithAmpli(boss, ampli) {
 	if (boss.health <= 0) {
 //		this.boss.animations.play('dying');
 		console.log('boss dying!');
+		this.boss.tweenKill.onComplete.add(winning, boss.game)
+		this.boss.tweenKill.start();
 		
 	}
 
 };
 
-function winning(player, boss) {
+function winning(game) {
 	// console.log(this);
-	this.game.sound.stopAll();
+	this.sound.stopAll();
 	console.log('WIIIIIN');
-	player.game.state.start('win');
+	this.state.start('win');
 
 };
 

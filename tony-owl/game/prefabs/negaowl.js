@@ -24,12 +24,15 @@ var Negaowl = function(game, x, y, frame) {
 	// TODO: add boss animation
 	game.physics.arcade.enableBody(this);
 	this.body.immovable = true;
-//	this.body.moves = false;
+	// this.body.moves = false;
 	this.animations.add('standing', null, 10, true);
 	this.animations.play('standing');
-	
+	this.tweenKill = this.game.add.tween(this).to({
+		alpha : 0
+	}, 2000, Phaser.Easing.Linear.None)
+
 	// HEALTH
-	this.health = 5;
+	this.health = 1;
 
 	// ampli emitter
 	this.ampliEmitter = this.game.add.emitter(this.position.x,
@@ -59,7 +62,7 @@ var Negaowl = function(game, x, y, frame) {
 	this.guitarGroup.add(this.guitarUp.emitter);
 	this.guitarGroup.add(this.guitarMiddle.emitter);
 	this.guitarGroup.add(this.guitarDown.emitter);
-	
+
 	this.guitarGroup.forEach(EmitterKillOutOfBound, this);
 
 };
@@ -95,7 +98,7 @@ function randomEmitterFrequency(emitter, min_speed, max_speed) {
 	emitter.frequency = this.game.rnd.integerInRange(min_speed, max_speed);
 }
 
-function EmitterKillOutOfBound(emitter){
+function EmitterKillOutOfBound(emitter) {
 	emitter.forEach(killParticle, this);
 }
 
