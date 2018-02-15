@@ -47,6 +47,7 @@ Play.prototype = {
 		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl);
+		this.owl.events.onKilled.add(respawn, this.owl);
 
 		// keep the spacebar from propagating up to the browser
 		this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR,
@@ -61,6 +62,7 @@ Play.prototype = {
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
 		this.game.add.existing(this.boss);
+		this.boss.events.onKilled.add(winning, this)
 		// Boss starts to attack.
 		this.boss.release_hell()
 
@@ -86,8 +88,9 @@ Play.prototype = {
 				this.collisionLayer, onAmpliCollisionWithGround);
 		// this.game.physics.arcade
 		// .collide(this.ampliEmitter, this.collisionLayer);
-		this.game.physics.arcade.collide(this.ampliEmitter, this.boss, touchingBossWithAmpli,
+		this.game.physics.arcade.collide(this.ampliEmitter, this.boss, hurtBoss,
 				null, this);
+		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl, null, this);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -128,6 +131,8 @@ Play.prototype = {
 		this.game.debug.text('attacking : ' + this.owl.attacking, 10, 50);
 		this.game.debug.text('trickCounter : ' + this.owl.trickCounter, 10, 75);
 		this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
+		this.game.debug.text('owl : '+this.owl.health, 10,125);
+		this.game.debug.text('boss : '+this.boss.health, 10,150);
 
 		this.game.debug.body(this.owl);
 		this.game.debug.body(this.guitarGroup);
@@ -157,9 +162,10 @@ function touchingBossWithAmpli(boss, ampli) {
 	// console.log(this);
 //	this.game.sound.stopAll();
 	console.log('boss is touched !');
-	boss.health--;
-	console.log('health boss : ', boss.health);
+//	boss.health--;
 	ampli.destroy();
+	boss.damage(1);
+	console.log('health boss : ', boss.health);
 	if (boss.health <= 0) {
 //		this.boss.animations.play('dying');
 		console.log('boss dying!');
@@ -171,11 +177,14 @@ function touchingBossWithAmpli(boss, ampli) {
 };
 
 function winning(game) {
-	// console.log(this);
-	this.sound.stopAll();
+	
+	this.boss.tweenKill.onComplete.add(function(){
+	this.game.sound.stopAll();
 	console.log('WIIIIIN');
-	this.state.start('win');
-
+	this.game.state.start('win');
+	});
+	
+	this.boss.tweenKill.start();
 };
 
 
@@ -184,12 +193,14 @@ function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.play('roll-and-burn', null, true);
 };
 
-function onThrowableCollision(player, obj) {
+function respawn(player) {
 	first_try = false;
 
 	gameover_music.play();
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
+	
+	player.revive();
 };
 
 function onAttack(player, obj) {
@@ -206,5 +217,39 @@ function onAttackAmpli(player, obj) {
 	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
 }
 
+function hurtOwl(owl, enemy) {
+	if (!owl.immune && !owl.attacking) {
+		owl.immune = true;
+        owl.alpha = 0.5;
+        owl.damage(1);
+//        if (owl.body.position.x < enemy.body.position.x) {
+//            owl.body.velocity.x = -300;
+//        } else {
+//            owl.body.velocity.x = 300;
+//        }
+        this.game.time.events.add(800, function() {
+            owl.immune = false;
+            owl.alpha = 1;
+        }, this);
+    }
+     
+}
+
+function hurtBoss(boss, throwable) {
+	// console.log(this);
+//	this.game.sound.stopAll();
+	console.log('boss is touched !');
+//	boss.health--;
+	throwable.destroy();
+	boss.damage(1);
+	console.log('health boss : ', boss.health);
+//	if (boss.health <= 0) {
+////		this.boss.animations.play('dying');
+//		console.log('boss dying!');
+//		
+//		boss.tweenKill.start();
+//		
+//	}
+}
 
 module.exports = Play;

@@ -1,5 +1,7 @@
 'use strict';
 
+var PLAYER_HEALTH = 5;
+
 var Owl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'owl', frame);
 	// initialize your prefab here
@@ -11,6 +13,8 @@ var Owl = function(game, x, y, frame) {
 	this.walking_speed = 500;
 	this.jumping_height = 700;
 	this.STRENGTH = 500;
+	this.health = PLAYER_HEALTH;
+	this.maxHealth = PLAYER_HEALTH;
 
 	// animations
 	this.animations.add('left-standing', [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ], 20,
@@ -37,6 +41,12 @@ Owl.prototype.constructor = Owl;
 Owl.prototype.update = function() {
 	this.can_attack = this.game.time.now > this.nextAttack;
 	this.attacking = this.game.time.now < this.nextAttack;
+//	if (this.attacking) {
+//		this.immune = true;
+//	}
+//	else {
+//		this.immune = false;
+//	}
 };
 
 Owl.prototype.move = function(direction) {

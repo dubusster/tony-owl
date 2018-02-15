@@ -18,6 +18,8 @@ var THROWING_VELOCITY_GUITAR_MAX = -300;
 var THROWING_GUITAR_DELAY_MIN = 5 * Phaser.Timer.SECOND;
 var THROWING_GUITAR_DELAY_MAX = 12 * Phaser.Timer.SECOND;
 
+var BOSS_HEALTH = 5;
+
 var Negaowl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'negaowl', frame);
 
@@ -29,10 +31,13 @@ var Negaowl = function(game, x, y, frame) {
 	this.animations.play('standing');
 	this.tweenKill = this.game.add.tween(this).to({
 		alpha : 0
-	}, 2000, Phaser.Easing.Linear.None)
+	}, 2000, Phaser.Easing.Linear.None);
+	
+	this.tweenHurt = this.game.add.tween(this)
 
 	// HEALTH
-	this.health = 1;
+	this.health = BOSS_HEALTH;
+	this.maxHealth = BOSS_HEALTH;
 
 	// ampli emitter
 	this.ampliEmitter = this.game.add.emitter(this.position.x,
