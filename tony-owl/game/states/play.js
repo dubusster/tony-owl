@@ -59,6 +59,7 @@ Play.prototype = {
 		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
 		attackKey.onDown.add(this.owl.attack, this.owl);
 
+		// PAUSE CONFIGURATION
 		var pauseButton;
 		pauseButton = this.game.add.text(700, 10, 'Pause', {
 			font : "25px Arial",
@@ -69,10 +70,18 @@ Play.prototype = {
 			this.game.paused = true;
 		}, this);
 		this.game.input.onDown.add(function() {
-			if (this.game.paused)
+			if (this.game.paused){
 				this.game.paused = false;
+			}
 		}, this);
 		pauseButton.fixedToCamera = true;
+		
+		this.pausedText = this.game.add.text(this.game.width/2, this.game.height/2, 'PAUSE', {
+			font : "65px Arial",
+			fill : "#ff0044"
+		});
+		this.pausedText.visible=false;
+		this.pausedText.fixedToCamera = true;
 
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
@@ -140,6 +149,13 @@ Play.prototype = {
 					onAttackAmpli);
 			collideGroup(this.game, this.guitarGroup, this.owl, onAttackAmpli);
 		}
+		
+		if (this.game.paused) {
+			this.pausedText.visible = true;
+		}
+		else {
+			this.pausedText.visible = false;
+		}
 
 	},
 
@@ -165,6 +181,9 @@ Play.prototype = {
 		});
 
 	},
+	paused : function(){
+		this.pausedText.visible = true
+	}
 };
 
 function collideGroup(game, group, other, callback) {
