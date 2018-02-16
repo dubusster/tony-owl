@@ -59,6 +59,21 @@ Play.prototype = {
 		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
 		attackKey.onDown.add(this.owl.attack, this.owl);
 
+		var pauseButton;
+		pauseButton = this.game.add.text(700, 10, 'Pause', {
+			font : "25px Arial",
+			fill : "#ff0044"
+		});
+		pauseButton.inputEnabled = true;
+		pauseButton.events.onInputUp.add(function() {
+			this.game.paused = true;
+		}, this);
+		this.game.input.onDown.add(function() {
+			if (this.game.paused)
+				this.game.paused = false;
+		}, this);
+		pauseButton.fixedToCamera = true;
+
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
 		this.game.add.existing(this.boss);
@@ -88,9 +103,10 @@ Play.prototype = {
 				this.collisionLayer, onAmpliCollisionWithGround);
 
 		collideGroup(this.game, this.guitarGroup, this.boss, hurtBoss)
-		this.game.physics.arcade.collide(this.ampliEmitter, this.boss, hurtBoss,
+		this.game.physics.arcade.collide(this.ampliEmitter, this.boss,
+				hurtBoss, null, this);
+		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl,
 				null, this);
-		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl, null, this);
 
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
@@ -131,20 +147,21 @@ Play.prototype = {
 		this.game.debug.text('attacking : ' + this.owl.attacking, 10, 50);
 		this.game.debug.text('trickCounter : ' + this.owl.trickCounter, 10, 75);
 		this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
-		this.game.debug.text('owl : '+this.owl.health, 10,125);
-		this.game.debug.text('boss : '+this.boss.health, 10,150);
+		this.game.debug.text('owl : ' + this.owl.health, 10, 125);
+		this.game.debug.text('boss : ' + this.boss.health, 10, 150);
 
 		this.game.debug.body(this.owl);
 		this.game.debug.body(this.guitarGroup);
-		
+
 		var game = this.game;
 		this.ampliEmitter.forEachAlive(function(particle) {
 			game.debug.body(particle, 'red', false);
-//			game.debug.text(particle.body.velocity, 10, 125);
+			// game.debug.text(particle.body.velocity, 10, 125);
 		});
-		this.guitarGroup.forEach(function(emitter){
+		this.guitarGroup.forEach(function(emitter) {
 			emitter.forEachAlive(function(particle) {
-			game.debug.body(particle, 'green', false);})
+				game.debug.body(particle, 'green', false);
+			})
 		});
 
 	},
@@ -160,18 +177,18 @@ function collideGroup(game, group, other, callback) {
 
 function touchingBossWithAmpli(boss, ampli) {
 	// console.log(this);
-//	this.game.sound.stopAll();
+	// this.game.sound.stopAll();
 	console.log('boss is touched !');
-//	boss.health--;
+	// boss.health--;
 	ampli.destroy();
 	boss.damage(1);
 	console.log('health boss : ', boss.health);
 	if (boss.health <= 0) {
-//		this.boss.animations.play('dying');
+		// this.boss.animations.play('dying');
 		console.log('boss dying!');
 		this.boss.tweenKill.onComplete.add(winning, boss.game)
 		this.boss.tweenKill.start();
-		
+
 	}
 
 };
@@ -181,7 +198,6 @@ function winning() {
 	console.log('WIIIIIN');
 	this.game.state.start('win');
 };
-
 
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
@@ -194,58 +210,58 @@ function respawn(player) {
 	gameover_music.play();
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
-	
+
 	player.revive();
 };
 
 function onAttack(player, obj) {
 	// console.log(obj);
-//	obj.body.bounce.x = 1;
+	// obj.body.bounce.x = 1;
 	obj.body.velocity.x += player.STRENGTH * Math.sin(obj.angle);
 	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
 }
 
 function onAttackAmpli(player, obj) {
 	// console.log(obj);
-//	obj.body.bounce.x = 1;
+	// obj.body.bounce.x = 1;
 	obj.body.velocity.x = player.STRENGTH
-//	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
+	// obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
 	obj.body.velocity.y += 0
 }
 
 function hurtOwl(owl, enemy) {
 	if (!owl.immune && !owl.attacking) {
 		owl.immune = true;
-        owl.alpha = 0.5;
-        owl.damage(1);
-//        if (owl.body.position.x < enemy.body.position.x) {
-//            owl.body.velocity.x = -300;
-//        } else {
-//            owl.body.velocity.x = 300;
-//        }
-        this.game.time.events.add(800, function() {
-            owl.immune = false;
-            owl.alpha = 1;
-        }, this);
-    }
-     
+		owl.alpha = 0.5;
+		owl.damage(1);
+		// if (owl.body.position.x < enemy.body.position.x) {
+		// owl.body.velocity.x = -300;
+		// } else {
+		// owl.body.velocity.x = 300;
+		// }
+		this.game.time.events.add(800, function() {
+			owl.immune = false;
+			owl.alpha = 1;
+		}, this);
+	}
+
 }
 
 function hurtBoss(boss, throwable) {
 	// console.log(this);
-//	this.game.sound.stopAll();
+	// this.game.sound.stopAll();
 	console.log('boss is touched !');
-//	boss.health--;
+	// boss.health--;
 	throwable.destroy();
 	boss.damage(1);
 	console.log('health boss : ', boss.health);
-//	if (boss.health <= 0) {
-////		this.boss.animations.play('dying');
-//		console.log('boss dying!');
-//		
-//		boss.tweenKill.start();
-//		
-//	}
+	// if (boss.health <= 0) {
+	// // this.boss.animations.play('dying');
+	// console.log('boss dying!');
+	//		
+	// boss.tweenKill.start();
+	//		
+	// }
 }
 
 module.exports = Play;
