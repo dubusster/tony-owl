@@ -28,10 +28,12 @@ var Negaowl = function(game, x, y, frame) {
 	this.body.immovable = true;
 	// this.body.moves = false;
 	this.animations.add('standing', null, 10, true);
+//	this.animations.add('dead', null, 10, false);
 	this.animations.play('standing');
 	this.tweenKill = this.game.add.tween(this).to({
 		alpha : 0
-	}, 2000, Phaser.Easing.Linear.None);
+	}, 1000, Phaser.Easing.Linear.None);
+	
 	
 	this.tweenHurt = this.game.add.tween(this)
 
@@ -78,6 +80,18 @@ Negaowl.prototype.constructor = Negaowl;
 Negaowl.prototype.update = function() {
 
 };
+
+Negaowl.prototype.kill = function(){
+	
+	// Stop all emitters from launching throwables
+	this.ampliEmitter.destroy();
+	this.guitarGroup.destroy();
+	
+	// tween animation when boss is killed
+	// TODO: replace with proper animation
+	this.tweenKill.onComplete.addOnce(Phaser.Sprite.prototype.kill, this)
+	this.tweenKill.start();
+}
 
 Negaowl.prototype.release_hell = function() {
 	for (var i = 0; i < this.guitarGroup.children.length; i++) {

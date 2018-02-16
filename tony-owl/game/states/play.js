@@ -62,9 +62,9 @@ Play.prototype = {
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
 		this.game.add.existing(this.boss);
-		this.boss.events.onKilled.add(winning, this)
+		this.boss.events.onKilled.add(winning, this);
 		// Boss starts to attack.
-		this.boss.release_hell()
+		this.boss.release_hell();
 
 		// ampli emitter
 		this.ampliEmitter = this.boss.ampliEmitter;
@@ -86,8 +86,8 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.owl, this.layer);
 		this.game.physics.arcade.collide(this.ampliEmitter,
 				this.collisionLayer, onAmpliCollisionWithGround);
-		// this.game.physics.arcade
-		// .collide(this.ampliEmitter, this.collisionLayer);
+
+		collideGroup(this.game, this.guitarGroup, this.boss, hurtBoss)
 		this.game.physics.arcade.collide(this.ampliEmitter, this.boss, hurtBoss,
 				null, this);
 		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl, null, this);
@@ -122,7 +122,7 @@ Play.prototype = {
 		if (this.owl.attacking) {
 			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
 					onAttackAmpli);
-			collideGroup(this.game, this.guitarGroup, this.owl, onAttack);
+			collideGroup(this.game, this.guitarGroup, this.owl, onAttackAmpli);
 		}
 
 	},
@@ -176,15 +176,10 @@ function touchingBossWithAmpli(boss, ampli) {
 
 };
 
-function winning(game) {
-	
-	this.boss.tweenKill.onComplete.add(function(){
+function winning() {
 	this.game.sound.stopAll();
 	console.log('WIIIIIN');
 	this.game.state.start('win');
-	});
-	
-	this.boss.tweenKill.start();
 };
 
 
@@ -214,7 +209,8 @@ function onAttackAmpli(player, obj) {
 	// console.log(obj);
 //	obj.body.bounce.x = 1;
 	obj.body.velocity.x = player.STRENGTH
-	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
+//	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
+	obj.body.velocity.y += 0
 }
 
 function hurtOwl(owl, enemy) {
