@@ -133,7 +133,7 @@ Play.prototype = {
 					- this.owl.body.width;
 		}
 		if (this.owl.body.position.y > this.game.height) {
-			onThrowableCollision(this.owl, null);
+			respawn(this.owl);
 		}
 
 		// Player moves
