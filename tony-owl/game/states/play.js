@@ -59,6 +59,32 @@ Play.prototype = {
 		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
 		attackKey.onDown.add(this.owl.attack, this.owl);
 
+		// PAUSE CONFIGURATION
+		var pauseButton;
+		pauseButton = this.game.add.text(700, 10, 'Pause', {
+			font : "25px Arial",
+			fill : "#ff0044"
+		});
+		pauseButton.inputEnabled = true;
+		pauseButton.events.onInputUp.add(function() {
+			this.game.paused = true;
+		}, this);
+		this.game.input.onDown.add(function() {
+			if (this.game.paused){
+				this.game.paused = false;
+			}
+		}, this);
+		pauseButton.fixedToCamera = true;
+		
+		this.pausedText = this.game.add.text(this.game.width/2, this.game.height/2, 'PAUSE', {
+			font : "65px Arial",
+			fill : "#ff0044"
+		});
+		this.pausedText.visible=false;
+		this.pausedText.fixedToCamera = true;
+		this.pausedText.anchor.x=0.5;
+		this.pausedText.anchor.y=0.5;
+
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
 		this.game.add.existing(this.boss);
@@ -90,12 +116,13 @@ Play.prototype = {
 
 		// collision for boss with throwables
 		collideGroup(this.game, this.guitarGroup, this.boss, hurtBoss, this)
-		this.game.physics.arcade.collide(this.ampliEmitter, this.boss, hurtBoss,
+		this.game.physics.arcade.collide(this.ampliEmitter, this.boss,
+				hurtBoss, null, this);
+		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl,
 				null, this);
 		
 		// collision for player (owl) with throwables
 		collideGroup(this.game, this.guitarGroup, this.owl, hurtOwl, this)
-		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl, null, this);
 
 		// constraints to keep player in game
 		if (this.owl.body.position.x < 0) {
@@ -130,6 +157,13 @@ Play.prototype = {
 					onAttackToThrowables);
 			collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
 		}
+		
+		if (this.game.paused) {
+			this.pausedText.visible = true;
+		}
+		else {
+			this.pausedText.visible = false;
+		}
 
 	},
 
@@ -137,23 +171,27 @@ Play.prototype = {
 		this.game.debug.text('attacking : ' + this.owl.attacking, 10, 50);
 		this.game.debug.text('trickCounter : ' + this.owl.trickCounter, 10, 75);
 		this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
-		this.game.debug.text('owl : '+this.owl.health, 10,125);
-		this.game.debug.text('boss : '+this.boss.health, 10,150);
+		this.game.debug.text('owl : ' + this.owl.health, 10, 125);
+		this.game.debug.text('boss : ' + this.boss.health, 10, 150);
 
 		this.game.debug.body(this.owl);
 		this.game.debug.body(this.guitarGroup);
-		
+
 		var game = this.game;
 		this.ampliEmitter.forEachAlive(function(particle) {
 			game.debug.body(particle, 'red', false);
-//			game.debug.text(particle.body.velocity, 10, 125);
+			// game.debug.text(particle.body.velocity, 10, 125);
 		});
-		this.guitarGroup.forEach(function(emitter){
+		this.guitarGroup.forEach(function(emitter) {
 			emitter.forEachAlive(function(particle) {
-			game.debug.body(particle, 'green', false);})
+				game.debug.body(particle, 'green', false);
+			})
 		});
 
 	},
+	paused : function(){
+		this.pausedText.visible = true
+	}
 };
 
 function collideGroup(game, group, other, callback, context) {
@@ -170,7 +208,6 @@ function winning() {
 	this.game.state.start('win');
 };
 
-
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
 	ampli.animations.play('roll-and-burn', null, true);
@@ -182,33 +219,31 @@ function respawn(player) {
 	gameover_music.play();
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
-	
+
 	player.revive();
 };
 
 function onAttackToThrowables(player, obj) {
-	// console.log(obj);
-//	obj.body.bounce.x = 1;
 	obj.body.velocity.x = player.STRENGTH
-//	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
+	// obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
 }
 
 function hurtOwl(owl, enemy) {
 	if (!owl.immune && !owl.attacking) {
 		owl.immune = true;
-        owl.alpha = 0.5;
-        owl.damage(1);
-//        if (owl.body.position.x < enemy.body.position.x) {
-//            owl.body.velocity.x = -300;
-//        } else {
-//            owl.body.velocity.x = 300;
-//        }
-        this.game.time.events.add(800, function() {
-            owl.immune = false;
-            owl.alpha = 1;
-        }, this);
-    }
-     
+		owl.alpha = 0.5;
+		owl.damage(1);
+		// if (owl.body.position.x < enemy.body.position.x) {
+		// owl.body.velocity.x = -300;
+		// } else {
+		// owl.body.velocity.x = 300;
+		// }
+		this.game.time.events.add(800, function() {
+			owl.immune = false;
+			owl.alpha = 1;
+		}, this);
+	}
+
 }
 
 function hurtBoss(boss, throwable) {
