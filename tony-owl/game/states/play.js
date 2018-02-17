@@ -82,6 +82,8 @@ Play.prototype = {
 		});
 		this.pausedText.visible=false;
 		this.pausedText.fixedToCamera = true;
+		this.pausedText.anchor.x=0.5;
+		this.pausedText.anchor.y=0.5;
 
 		// add boss at the end of the map
 		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
