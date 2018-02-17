@@ -82,16 +82,22 @@ Play.prototype = {
 
 	},
 	update : function() {
+		// collision with environment
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
 		this.game.physics.arcade.collide(this.ampliEmitter,
 				this.collisionLayer, onAmpliCollisionWithGround);
 
-		collideGroup(this.game, this.guitarGroup, this.boss, hurtBoss)
+		// collision for boss with throwables
+		collideGroup(this.game, this.guitarGroup, this.boss, hurtBoss, this)
 		this.game.physics.arcade.collide(this.ampliEmitter, this.boss, hurtBoss,
 				null, this);
+		
+		// collision for player (owl) with throwables
+		collideGroup(this.game, this.guitarGroup, this.owl, hurtOwl, this)
 		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl, null, this);
 
+		// constraints to keep player in game
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
 		} else if (this.owl.body.position.x > this.game.world.width
@@ -99,7 +105,6 @@ Play.prototype = {
 			this.owl.body.position.x = this.game.world.width
 					- this.owl.body.width;
 		}
-
 		if (this.owl.body.position.y > this.game.height) {
 			onThrowableCollision(this.owl, null);
 		}
@@ -119,10 +124,11 @@ Play.prototype = {
 			}
 		}
 
+		// When player attacks he is immuned and throw things to the boss.
 		if (this.owl.attacking) {
 			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
-					onAttackAmpli);
-			collideGroup(this.game, this.guitarGroup, this.owl, onAttackAmpli);
+					onAttackToThrowables);
+			collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
 		}
 
 	},
@@ -150,30 +156,12 @@ Play.prototype = {
 	},
 };
 
-function collideGroup(game, group, other, callback) {
+function collideGroup(game, group, other, callback, context) {
 	// enabling gameover callback for all guitars.
 	for (var i = 0; i < group.children.length; i++) {
 		var item = group.children[i];
-		game.physics.arcade.collide(other, item, callback);
+		game.physics.arcade.collide(other, item, callback, null, context);
 	}
-};
-
-function touchingBossWithAmpli(boss, ampli) {
-	// console.log(this);
-//	this.game.sound.stopAll();
-	console.log('boss is touched !');
-//	boss.health--;
-	ampli.destroy();
-	boss.damage(1);
-	console.log('health boss : ', boss.health);
-	if (boss.health <= 0) {
-//		this.boss.animations.play('dying');
-		console.log('boss dying!');
-		this.boss.tweenKill.onComplete.add(winning, boss.game)
-		this.boss.tweenKill.start();
-		
-	}
-
 };
 
 function winning() {
@@ -198,19 +186,11 @@ function respawn(player) {
 	player.revive();
 };
 
-function onAttack(player, obj) {
-	// console.log(obj);
-//	obj.body.bounce.x = 1;
-	obj.body.velocity.x += player.STRENGTH * Math.sin(obj.angle);
-	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
-}
-
-function onAttackAmpli(player, obj) {
+function onAttackToThrowables(player, obj) {
 	// console.log(obj);
 //	obj.body.bounce.x = 1;
 	obj.body.velocity.x = player.STRENGTH
 //	obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
-	obj.body.velocity.y += 0
 }
 
 function hurtOwl(owl, enemy) {
@@ -232,20 +212,10 @@ function hurtOwl(owl, enemy) {
 }
 
 function hurtBoss(boss, throwable) {
-	// console.log(this);
-//	this.game.sound.stopAll();
 	console.log('boss is touched !');
-//	boss.health--;
 	throwable.destroy();
 	boss.damage(1);
 	console.log('health boss : ', boss.health);
-//	if (boss.health <= 0) {
-////		this.boss.animations.play('dying');
-//		console.log('boss dying!');
-//		
-//		boss.tweenKill.start();
-//		
-//	}
 }
 
 module.exports = Play;
