@@ -121,8 +121,8 @@ Play.prototype = {
 		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl,
 				null, this);
 		
-		// collision for player (owl) with throwables
-		collideGroup(this.game, this.guitarGroup, this.owl, hurtOwl, this)
+		// overlapping guitars for player (owl) with throwables hurts.
+		overlapGroup(this.game, this.guitarGroup, this.owl, hurtOwl, this)
 
 		// constraints to keep player in game
 		if (this.owl.body.position.x < 0) {
@@ -199,6 +199,14 @@ function collideGroup(game, group, other, callback, context) {
 	for (var i = 0; i < group.children.length; i++) {
 		var item = group.children[i];
 		game.physics.arcade.collide(other, item, callback, null, context);
+	}
+};
+
+function overlapGroup(game, group, other, callback, context) {
+	// enabling gameover callback for all guitars.
+	for (var i = 0; i < group.children.length; i++) {
+		var item = group.children[i];
+		game.physics.arcade.overlap(other, item, callback, null, context);
 	}
 };
 
