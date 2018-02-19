@@ -47,7 +47,7 @@ Play.prototype = {
 		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl);
-		this.owl.events.onKilled.add(respawn, this.owl);
+		this.owl.events.onKilled.add(onDie, this.owl);
 
 		// keep the spacebar from propagating up to the browser
 		this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR,
@@ -58,7 +58,19 @@ Play.prototype = {
 		trickKey.onDown.add(this.owl.trick, this.owl);
 		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
 		attackKey.onDown.add(this.owl.attack, this.owl);
-
+		
+		// RETRY BUTTON
+		var retryButton;
+		retryButton = this.game.add.text(700, 50, 'retry',{
+			font : "25px Arial",
+			fill : "#ff0044"
+		});
+		retryButton.inputEnabled = true;
+		retryButton.events.onInputUp.add(function(){
+			respawn(this.owl);
+		}, this);
+		retryButton.fixedToCamera = true;
+		
 		// PAUSE CONFIGURATION
 		var pauseButton;
 		pauseButton = this.game.add.text(700, 10, 'Pause', {
@@ -133,7 +145,7 @@ Play.prototype = {
 					- this.owl.body.width;
 		}
 		if (this.owl.body.position.y > this.game.height) {
-			respawn(this.owl);
+			onDie(this.owl);
 		}
 
 		// Player moves
@@ -221,10 +233,15 @@ function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.play('roll-and-burn', null, true);
 };
 
-function respawn(player) {
+function onDie(player) {
 	first_try = false;
 
 	gameover_music.play();
+	respawn(player);
+}
+
+function respawn(player) {
+	
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
 
