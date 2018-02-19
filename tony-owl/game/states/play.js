@@ -16,6 +16,8 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
+var PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK = 5 * Phaser.Timer.SECOND;
+
 var START_POSITION_X = 15000; // DEBUG : 15000
 var START_POSITION_Y = GAME_HEIGHT - 200;
 
@@ -258,13 +260,16 @@ function respawn(player) {
 
 function onAttackToThrowables(player, obj) {
 	obj.isSentByPlayer = true;
+	obj.lifespan = PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK;
+	obj.body.angularVelocity = -obj.body.angularVelocity;
+//	console.log(obj);
 	obj.body.velocity.x = player.STRENGTH;
 	
 	// obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
 };
 
 function slowDownThrowable(particle) {
-	if (particle.isSentByPlayer) {		
+	if (particle.isSentByPlayer) {	
 		particle.body.velocity.x -= particle.body.velocity.x *0.01;
 	}
 };
