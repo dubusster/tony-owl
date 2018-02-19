@@ -77,7 +77,7 @@ Owl.prototype.move = function(direction) {
 };
 
 Owl.prototype.trick = function() {
-	if (!this.body.touching.down) {
+	if (!this.body.blocked.down) {
 		console.log('trick!');
 		this.animations.play('trick');
 		this.trickCounter++;
