@@ -116,7 +116,7 @@ Play.prototype = {
 		this.guitarGroup = this.boss.guitarGroup;
 
 		// level animation
-		this.cutscene = false;
+		this.cutscene = true;
 		var animation = new Animation(this.game);
 		if (first_try && this.cutscene) {
 			animation.start();
