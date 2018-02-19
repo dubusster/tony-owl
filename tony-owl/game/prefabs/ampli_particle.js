@@ -5,7 +5,7 @@ var AmpliParticle = function(game, x, y) {
   this.animations.add('emitting');
   this.animations.add('roll-and-burn',[4,5,6,7,8,9,10,11], 10);
   
-
+  this.isSentByPlayer = false;
   // initialize your prefab here
   
 };
