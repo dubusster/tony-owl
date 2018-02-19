@@ -18,7 +18,7 @@ var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
 var PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK = 5 * Phaser.Timer.SECOND;
 
-var START_POSITION_X = 15000; // DEBUG : 15000
+var START_POSITION_X = 200; // DEBUG : 15000
 var START_POSITION_Y = GAME_HEIGHT - 200;
 
 var first_try = true;
@@ -36,6 +36,11 @@ Play.prototype = {
 
 		// settings collision with certain tiles of tilesets.
 		this.map.setCollisionBetween(0, 5);
+		// not colliding from the bottom
+		this.map.forEach(function(tile) {
+			if (tile.index === 1 || tile.index === 2 || tile.index === 3 || tile.index === 4) {
+				tile.collideDown = false;  }
+			})
 
 		this.layer = this.map.createLayer('Calque1');
 		this.collisionLayer = this.map.createLayer('invisible walls');
@@ -262,7 +267,7 @@ function onAttackToThrowables(player, obj) {
 	obj.isSentByPlayer = true;
 	obj.lifespan = PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK;
 	obj.body.angularVelocity = -obj.body.angularVelocity;
-//	console.log(obj);
+// console.log(obj);
 	obj.body.velocity.x = player.STRENGTH;
 	
 	// obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
@@ -270,7 +275,7 @@ function onAttackToThrowables(player, obj) {
 
 function slowDownThrowable(particle) {
 	if (particle.isSentByPlayer) {	
-		particle.body.velocity.x -= particle.body.velocity.x *0.01;
+		particle.body.velocity.x -= particle.body.velocity.x * 0.01;
 	}
 };
 
