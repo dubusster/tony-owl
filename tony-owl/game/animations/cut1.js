@@ -13,11 +13,11 @@ Animation.prototype = {
 		
 		this.game.time.events.add(Phaser.Timer.SECOND * 0.5,
 				this.focus_on_boss, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 2, this.play_music,
+		this.game.time.events.add(Phaser.Timer.SECOND * 0.5, this.play_music,
 				this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 4,
+		this.game.time.events.add(Phaser.Timer.SECOND * 6,
 				this.focus_on_player, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 5, this.back_to_game,
+		this.game.time.events.add(Phaser.Timer.SECOND * 6.5, this.back_to_game,
 				this);
 
 	},

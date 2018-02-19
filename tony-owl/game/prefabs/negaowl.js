@@ -3,8 +3,8 @@
 var Guitar = require('../prefabs/guitar.js')
 var AmpliParticle = require('../prefabs/ampli_particle.js')
 
-var PARTICLES_AMPLI = 15;
-var GUITAR_PER_ROW_MAX = 20;
+var PARTICLES_AMPLI = 50;
+var GUITAR_PER_ROW_MAX = 50;
 
 var GUITAR_LIFESPAN = 0;
 var AMPLI_LIFESPAN = 0;
@@ -15,8 +15,8 @@ var THROWING_VELOCITY_AMPLI_MAX = -250;
 var THROWING_VELOCITY_GUITAR_MIN = -100;
 var THROWING_VELOCITY_GUITAR_MAX = -300;
 
-var THROWING_GUITAR_DELAY_MIN = 5 * Phaser.Timer.SECOND;
-var THROWING_GUITAR_DELAY_MAX = 12 * Phaser.Timer.SECOND;
+var THROWING_GUITAR_DELAY_MIN = 3 * Phaser.Timer.SECOND;
+var THROWING_GUITAR_DELAY_MAX = 10 * Phaser.Timer.SECOND;
 
 var BOSS_HEALTH = 5;
 

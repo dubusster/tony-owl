@@ -16,8 +16,8 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
-var START_POSITION_X = 15000;
-var START_POSITION_Y = GAME_HEIGHT - 150;
+var START_POSITION_X = 200; // DEBUG : 15000
+var START_POSITION_Y = GAME_HEIGHT - 200;
 
 var first_try = true;
 
@@ -27,7 +27,7 @@ Play.prototype = {
 	create : function() {
 		// Generating world and physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-		this.game.physics.arcade.gravity.y = 1250;
+		this.game.physics.arcade.gravity.y = 3000;
 
 		this.map = this.game.add.tilemap('level1');
 		this.map.addTilesetImage('tiles32', 'tiles');
@@ -97,7 +97,7 @@ Play.prototype = {
 		this.guitarGroup = this.boss.guitarGroup;
 
 		// level animation
-		this.cutscene = false;
+		this.cutscene = true;
 		var animation = new Animation(this.game);
 		// console.log(animation);
 		if (first_try && this.cutscene) {
@@ -168,25 +168,25 @@ Play.prototype = {
 	},
 
 	render : function() {
-		this.game.debug.text('attacking : ' + this.owl.attacking, 10, 50);
-		this.game.debug.text('trickCounter : ' + this.owl.trickCounter, 10, 75);
-		this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
-		this.game.debug.text('owl : ' + this.owl.health, 10, 125);
-		this.game.debug.text('boss : ' + this.boss.health, 10, 150);
-
-		this.game.debug.body(this.owl);
-		this.game.debug.body(this.guitarGroup);
-
-		var game = this.game;
-		this.ampliEmitter.forEachAlive(function(particle) {
-			game.debug.body(particle, 'red', false);
-			// game.debug.text(particle.body.velocity, 10, 125);
-		});
-		this.guitarGroup.forEach(function(emitter) {
-			emitter.forEachAlive(function(particle) {
-				game.debug.body(particle, 'green', false);
-			})
-		});
+//		this.game.debug.text('attacking : ' + this.owl.attacking, 10, 50);
+//		this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
+		this.game.debug.text('tony : ' + this.owl.health, 10, 25);
+		this.game.debug.text('negaowl : ' + this.boss.health, 10, 50);
+		this.game.debug.text('tricksometer : ' + this.owl.trickCounter, 10, 75);
+//
+//		this.game.debug.body(this.owl);
+//		this.game.debug.body(this.guitarGroup);
+//
+//		var game = this.game;
+//		this.ampliEmitter.forEachAlive(function(particle) {
+//			game.debug.body(particle, 'red', false);
+//			// game.debug.text(particle.body.velocity, 10, 125);
+//		});
+//		this.guitarGroup.forEach(function(emitter) {
+//			emitter.forEachAlive(function(particle) {
+//				game.debug.body(particle, 'green', false);
+//			})
+//		});
 
 	},
 	paused : function(){
