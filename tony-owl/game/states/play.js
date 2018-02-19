@@ -2,12 +2,9 @@
 
 var Ground = require('../prefabs/ground.js')
 var Owl = require('../prefabs/owl.js')
-var Guitar = require('../prefabs/guitar.js')
-var Ampli = require('../prefabs/ampli.js')
 var Negaowl = require('../prefabs/negaowl.js')
+var Animation = require('../animations/cut1.js')
 
-var on_animation = true;
-var music;
 var gameover_music;
 
 var GAME_HEIGHT = 600;
@@ -16,14 +13,11 @@ var GROUND_HEIGHT = 50;
 var THROWING_HEIGHT_MIN = GAME_HEIGHT / 4;
 var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 
-var THROWING_VELOCITY_GUITAR_MIN = -100;
-var THROWING_VELOCITY_GUITAR_MAX = -300;
-
-var THROWING_VELOCITY_AMPLI_MIN = -300;
-var THROWING_VELOCITY_AMPLI_MAX = -800;
-
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
+
+var START_POSITION_X = 200; // DEBUG : 15000
+var START_POSITION_Y = GAME_HEIGHT - 200;
 
 var first_try = true;
 
@@ -33,26 +27,27 @@ Play.prototype = {
 	create : function() {
 		// Generating world and physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-		this.game.physics.arcade.gravity.y = 8000;
-		var level_width = 2000;
-		this.game.world.setBounds(0, 0, level_width, 600);
-		this.autoscroll_speed = 30;
+		this.game.physics.arcade.gravity.y = 3000;
 
-		// Generating backgrounds and landscape
-		this.sky = this.add.tileSprite(0, 0, this.game.world.width,
-				this.game.height, 'sky');
-		this.background = this.add.tileSprite(0, 0, this.game.world.width,
-				this.game.height, 'background');
-		this.sky.autoScroll(-30, 0);
+		this.map = this.game.add.tilemap('level1');
+		this.map.addTilesetImage('tiles32', 'tiles');
 
-		this.ground = new Ground(this.game, 0,
-				this.game.height - GROUND_HEIGHT, level_width, GROUND_HEIGHT);
-		this.game.add.existing(this.ground);
+		// settings collision with certain tiles of tilesets.
+		this.map.setCollisionBetween(0, 5);
+
+		this.layer = this.map.createLayer('Calque1');
+		this.collisionLayer = this.map.createLayer('invisible walls');
+		this.collisionLayer.visible = false;
+		this.map.setCollision(1, true, 1);
+		console.log("layer : ", this.collisionLayer);
+
+		this.layer.resizeWorld();
 
 		// adding owl (player) to game
-		this.owl = new Owl(this.game, 100, this.game.height - 150);
+		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
 		this.game.add.existing(this.owl);
 		this.game.camera.follow(this.owl);
+		this.owl.events.onKilled.add(onDie, this.owl);
 
 		// keep the spacebar from propagating up to the browser
 		this.game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR,
@@ -61,66 +56,87 @@ Play.prototype = {
 		// add keyboard controls
 		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		trickKey.onDown.add(this.owl.trick, this.owl);
+		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
+		attackKey.onDown.add(this.owl.attack, this.owl);
+		
+		// RETRY BUTTON
+		var retryButton;
+		retryButton = this.game.add.text(700, 50, 'retry',{
+			font : "25px Arial",
+			fill : "#ff0044"
+		});
+		retryButton.inputEnabled = true;
+		retryButton.events.onInputUp.add(function(){
+			respawn(this.owl);
+		}, this);
+		retryButton.fixedToCamera = true;
+		
+		// PAUSE CONFIGURATION
+		var pauseButton;
+		pauseButton = this.game.add.text(700, 10, 'Pause', {
+			font : "25px Arial",
+			fill : "#ff0044"
+		});
+		pauseButton.inputEnabled = true;
+		pauseButton.events.onInputUp.add(function() {
+			this.game.paused = true;
+		}, this);
+		this.game.input.onDown.add(function() {
+			if (this.game.paused){
+				this.game.paused = false;
+			}
+		}, this);
+		pauseButton.fixedToCamera = true;
+		
+		this.pausedText = this.game.add.text(this.game.width/2, this.game.height/2, 'PAUSE', {
+			font : "65px Arial",
+			fill : "#ff0044"
+		});
+		this.pausedText.visible=false;
+		this.pausedText.fixedToCamera = true;
+		this.pausedText.anchor.x=0.5;
+		this.pausedText.anchor.y=0.5;
 
 		// add boss at the end of the map
-		this.boss = new Negaowl(this.game, this.game.world.width - 379,
-				0); 
+		this.boss = new Negaowl(this.game, this.game.world.width - 379, 0);
 		this.game.add.existing(this.boss);
-		// particles emitter
-		this.guitarEmitter = this.game.add.emitter(this.boss.position.x, this.boss.height/2, 100);
-		this.guitarEmitter.height = 400;
-		this.guitarEmitter.makeParticles('guitar',0,50, true);
+		this.boss.events.onKilled.add(winning, this);
+		// Boss starts to attack.
+		this.boss.release_hell();
 
-		this.guitarEmitter.minParticleSpeed.set(THROWING_VELOCITY_GUITAR_MIN, 0);
-		this.guitarEmitter.maxParticleSpeed.set(THROWING_VELOCITY_GUITAR_MAX, 0);
-		this.guitarEmitter.gravity = -this.game.physics.arcade.gravity.y;
-		this.guitarEmitter.minRotation = -720;
-	    this.guitarEmitter.maxRotation = -720;
-	    this.guitarEmitter.minParticleScale = 2;
-	    this.guitarEmitter.maxParticleScale = 2;
-	    
-	    this.guitarEmitter.start(false, 10000, this.game.rnd.integerInRange(
-				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
-		
-	    // ampli emitter
-	    this.ampliEmitter = this.game.add.emitter(this.boss.position.x, 2*this.boss.height/3, 10);
-	    this.ampliEmitter.height = 100;
-	    this.ampliEmitter.makeParticles('ampli',0,10, true);
-	    this.ampliEmitter.minParticleSpeed.set(THROWING_VELOCITY_AMPLI_MIN, 0);
-		this.ampliEmitter.maxParticleSpeed.set(THROWING_VELOCITY_AMPLI_MAX, 0);
-		this.ampliEmitter.gravity = 1200;
-		this.ampliEmitter.minRotation = 0;
-	    this.ampliEmitter.maxRotation = 0;
-	    
-		this.ampliEmitter.start(false, 5000, this.game.rnd.integerInRange(
-				THROWING_DELAY_MIN, THROWING_DELAY_MAX));
+		// ampli emitter
+		this.ampliEmitter = this.boss.ampliEmitter;
+		this.guitarGroup = this.boss.guitarGroup;
+
 		// level animation
-		if (first_try) {
-			this.start_animation();
+		this.cutscene = true;
+		var animation = new Animation(this.game);
+		// console.log(animation);
+		if (first_try && this.cutscene) {
+			animation.start();
 		}
 
 		gameover_music = this.game.add.audio('gameover');
 
-		// Send another thing soon
-		
-		this.guitarLoopTimer = this.game.time.events.loop(1000,
-				randomEmitterFrequency, this, this.guitarEmitter);
-		this.ampliLoopTimer = this.game.time.events.loop(1000,
-				randomEmitterFrequency, this, this.ampliEmitter);
-
 	},
 	update : function() {
-		var hit_platform = this.game.physics.arcade.collide(this.owl,
-				this.ground);
-		this.game.physics.arcade.collide(this.boss, this.ground);
-		this.game.physics.arcade.collide(this.ampliEmitter, this.ground,
-				onAmpliCollision);
-		this.game.physics.arcade.collide(this.owl, this.guitarEmitter,
-				onThrowableCollision);
-		this.game.physics.arcade.collide(this.owl, this.boss, touchingBoss);
-		this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
-				onThrowableCollision);
+		// collision with environment
+		this.game.physics.arcade.collide(this.boss, this.layer);
+		this.game.physics.arcade.collide(this.owl, this.layer);
+		this.game.physics.arcade.collide(this.ampliEmitter,
+				this.collisionLayer, onAmpliCollisionWithGround);
 
+		// collision for boss with throwables
+		collideGroup(this.game, this.guitarGroup, this.boss, hurtBoss, this)
+		this.game.physics.arcade.collide(this.ampliEmitter, this.boss,
+				hurtBoss, null, this);
+		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl,
+				null, this);
+		
+		// overlapping guitars for player (owl) with throwables hurts.
+		overlapGroup(this.game, this.guitarGroup, this.owl, hurtOwl, this)
+
+		// constraints to keep player in game
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
 		} else if (this.owl.body.position.x > this.game.world.width
@@ -128,9 +144,12 @@ Play.prototype = {
 			this.owl.body.position.x = this.game.world.width
 					- this.owl.body.width;
 		}
+		if (this.owl.body.position.y > this.game.height) {
+			onDie(this.owl);
+		}
 
 		// Player moves
-		if (!on_animation) {
+		if (!this.cutscene) {
 			var cursors = this.game.input.keyboard.createCursorKeys();
 			if (cursors.right.isDown) {
 				this.owl.move("RIGHT");
@@ -139,69 +158,124 @@ Play.prototype = {
 			} else {
 				this.owl.move(null);
 			}
-			if (cursors.up.isDown && this.owl.body.touching.down) {
+			if (cursors.up.isDown && this.owl.body.blocked.down) {
 				this.owl.move("UP");
 			}
 		}
-	},
 
-	start_animation : function() {
-
+		// When player attacks he is immuned and throw things to the boss.
+		if (this.owl.attacking) {
+			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
+					onAttackToThrowables);
+			collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
+		}
 		
-		this.game.time.events.add(Phaser.Timer.SECOND * 0.5, this.focus_on_boss,
-				this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 2, this.play_music,
-				this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 4,
-				this.focus_on_player, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 5, this.back_to_game,
-				this);
+		if (this.game.paused) {
+			this.pausedText.visible = true;
+		}
+		else {
+			this.pausedText.visible = false;
+		}
 
 	},
 
-	focus_on_boss : function() {
-		this.game.camera.follow(this.boss, 0, 0.05);
-	},
+	render : function() {
+//		this.game.debug.text('attacking : ' + this.owl.attacking, 10, 50);
+//		this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
+		this.game.debug.text('tony : ' + this.owl.health, 10, 25);
+		this.game.debug.text('negaowl : ' + this.boss.health, 10, 50);
+		this.game.debug.text('tricksometer : ' + this.owl.trickCounter, 10, 75);
+//
+//		this.game.debug.body(this.owl);
+//		this.game.debug.body(this.guitarGroup);
+//
+//		var game = this.game;
+//		this.ampliEmitter.forEachAlive(function(particle) {
+//			game.debug.body(particle, 'red', false);
+//			// game.debug.text(particle.body.velocity, 10, 125);
+//		});
+//		this.guitarGroup.forEach(function(emitter) {
+//			emitter.forEachAlive(function(particle) {
+//				game.debug.body(particle, 'green', false);
+//			})
+//		});
 
-	focus_on_player : function() {
-		this.game.camera.follow(this.owl, 0, 0.05);
 	},
-
-	back_to_game : function() {
-		this.game.camera.unfollow();
-		this.game.camera.follow(this.owl);
-		music = this.game.add.audio('play', 1, true);
-		music.play();
-		on_animation = false;
-	},
-	play_music : function(){
-		music = this.game.add.audio('entering');
-		music.play();
-	},
+	paused : function(){
+		this.pausedText.visible = true
+	}
 };
 
-function randomEmitterFrequency(emitter) {
-	emitter.frequency = this.game.rnd.integerInRange(
-			THROWING_DELAY_MIN, THROWING_DELAY_MAX);
-}
+function collideGroup(game, group, other, callback, context) {
+	// enabling gameover callback for all guitars.
+	for (var i = 0; i < group.children.length; i++) {
+		var item = group.children[i];
+		game.physics.arcade.collide(other, item, callback, null, context);
+	}
+};
 
-function touchingBoss(player, enemy) {
-	music.stop();
+function overlapGroup(game, group, other, callback, context) {
+	// enabling gameover callback for all guitars.
+	for (var i = 0; i < group.children.length; i++) {
+		var item = group.children[i];
+		game.physics.arcade.overlap(other, item, callback, null, context);
+	}
+};
+
+function winning() {
+	this.game.sound.stopAll();
 	console.log('WIIIIIN');
-	player.game.state.start('win');
+	this.game.state.start('win');
+};
 
-}
+function onAmpliCollisionWithGround(ampli, obj) {
+	ampli.animations.stop('emitting');
+	ampli.animations.play('roll-and-burn', null, true);
+};
 
-function onAmpliCollision(obj, ampli) {
-	ampli.body.velocity.x *= 0.95;
-}
-
-function onThrowableCollision(player, obj) {
+function onDie(player) {
 	first_try = false;
-	
+
 	gameover_music.play();
-	player.game.state.start('play');
+	respawn(player);
 }
 
+function respawn(player) {
+	
+	player.position.x = START_POSITION_X;
+	player.position.y = START_POSITION_Y;
+
+	player.revive();
+};
+
+function onAttackToThrowables(player, obj) {
+	obj.body.velocity.x = player.STRENGTH
+	// obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
+}
+
+function hurtOwl(owl, enemy) {
+	if (!owl.immune && !owl.attacking) {
+		owl.immune = true;
+		owl.alpha = 0.5;
+		owl.damage(1);
+		// if (owl.body.position.x < enemy.body.position.x) {
+		// owl.body.velocity.x = -300;
+		// } else {
+		// owl.body.velocity.x = 300;
+		// }
+		this.game.time.events.add(800, function() {
+			owl.immune = false;
+			owl.alpha = 1;
+		}, this);
+	}
+
+}
+
+function hurtBoss(boss, throwable) {
+	console.log('boss is touched !');
+	throwable.destroy();
+	boss.damage(1);
+	console.log('health boss : ', boss.health);
+}
 
 module.exports = Play;
