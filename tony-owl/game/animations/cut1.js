@@ -2,9 +2,10 @@
 
 var Animation = function (game) {
 	this.game = game;
-	this.current_state = this.game.state.getCurrentState();
+//	this.current_state = this.game.state.getCurrentState();
 	this.boss = this.current_state.boss;
 	this.owl = this.current_state.owl;
+	this.onComplete = new Phaser.Signal();
 };
 
 Animation.prototype = {
@@ -37,7 +38,8 @@ Animation.prototype = {
 		this.game.camera.targetOffset.x = this.game.width/3;
 		this.music = this.game.add.audio('play', 1, true);
 		this.music.play();
-		this.current_state.cutscene = false;
+//		this.current_state.cutscene = false;
+		this.onComplete.dispatch();
 	},
 	play_music : function() {
 		this.music = this.game.add.audio('entering');

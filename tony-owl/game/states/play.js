@@ -118,6 +118,7 @@ Play.prototype = {
 		// level animation
 		this.cutscene = true;
 		var animation = new Animation(this.game);
+		animation.onComplete.add(function(){this.cutscene = false}, this);
 		if (first_try && this.cutscene) {
 			animation.start();
 		}
@@ -160,8 +161,8 @@ Play.prototype = {
 			onDie(this.owl);
 		}
 
-		// Player moves
 		if (!this.cutscene) {
+			// Player moves
 			var cursors = this.game.input.keyboard.createCursorKeys();
 			if (cursors.right.isDown) {
 				this.owl.move("RIGHT");
