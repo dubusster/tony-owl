@@ -189,6 +189,7 @@ Play.prototype = {
 		else {
 			this.pausedText.visible = false;
 		}
+	},
 
 	start_animation : function() {
 		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss,

@@ -2,7 +2,7 @@
 
 var Animation = function (game) {
 	this.game = game;
-//	this.current_state = this.game.state.getCurrentState();
+	this.current_state = this.game.state.getCurrentState();
 	this.boss = this.current_state.boss;
 	this.owl = this.current_state.owl;
 	this.onComplete = new Phaser.Signal();
