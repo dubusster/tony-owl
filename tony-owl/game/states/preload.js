@@ -41,7 +41,7 @@ Preload.prototype = {
     // Audio
     this.load.audio('menu', 'assets/audio/music/menu.ogg');
     this.load.audio('entering', 'assets/audio/music/entering.ogg');
-    this.load.audio('gameover', 'assets/audio/music/gameover.ogg');
+    this.load.audio('die', 'assets/audio/music/die.ogg');
     this.load.audio('win', 'assets/audio/music/win.ogg');
     this.load.audio('play', 'assets/audio/music/play.ogg');
     

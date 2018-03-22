@@ -5,7 +5,7 @@ var Owl = require('../prefabs/owl.js')
 var Negaowl = require('../prefabs/negaowl.js')
 var Animation = require('../animations/cut1.js')
 
-var gameover_music;
+var die_music;
 
 var GAME_HEIGHT = 600;
 var GROUND_HEIGHT = 50;
@@ -125,7 +125,7 @@ Play.prototype = {
 			animation.start();
 		}
 
-		gameover_music = this.game.add.audio('gameover');
+		die_music = this.game.add.audio('die');
 
 	},
 	update : function() {
@@ -271,7 +271,7 @@ function onAmpliCollisionWithGround(ampli, obj) {
 function onDie(player) {
 	first_try = false;
 
-	gameover_music.play();
+	die_music.play();
 	respawn(player);
 }
 
