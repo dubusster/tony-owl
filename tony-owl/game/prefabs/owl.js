@@ -1,6 +1,7 @@
 'use strict';
 
 var PLAYER_HEALTH = 5;
+var TRICKS_LIMIT = 10;
 
 var Owl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'owl', frame);
@@ -77,7 +78,7 @@ Owl.prototype.jump = function(){
 };
 
 Owl.prototype.trick = function() {
-	if (!this.body.blocked.down) {
+	if (!this.body.blocked.down && this.trickCounter < TRICKS_LIMIT) {
 		console.log('trick!');
 		this.animations.play('trick');
 		this.trickCounter++;
