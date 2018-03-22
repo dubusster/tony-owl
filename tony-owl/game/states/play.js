@@ -65,6 +65,8 @@ Play.prototype = {
 		trickKey.onDown.add(this.owl.trick, this.owl);
 		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
 		attackKey.onDown.add(this.owl.attack, this.owl);
+		var jumpKey = this.input.keyboard.addKey(Phaser.Keyboard.UP);
+		jumpKey.onDown.add(this.owl.jump, this.owl);
 		
 		// RETRY BUTTON
 		var retryButton;
@@ -171,9 +173,7 @@ Play.prototype = {
 			} else {
 				this.owl.move(null);
 			}
-			if (cursors.up.isDown && this.owl.body.blocked.down) {
-				this.owl.move("UP");
-			}
+			
 		}
 
 		// When player attacks he is immuned and throw things to the boss.
@@ -189,16 +189,6 @@ Play.prototype = {
 		else {
 			this.pausedText.visible = false;
 		}
-	},
-
-	start_animation : function() {
-		this.game.time.events.add(Phaser.Timer.SECOND * 1, this.focus_on_boss,
-				this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 3,
-				this.focus_on_player, this);
-		this.game.time.events.add(Phaser.Timer.SECOND * 3.5, this.back_to_game,
-				this);
-
 	},
 
 	render : function() {

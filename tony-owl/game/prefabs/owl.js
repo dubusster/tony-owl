@@ -76,6 +76,12 @@ Owl.prototype.move = function(direction) {
 	}
 };
 
+Owl.prototype.jump = function(){
+	if (this.body.blocked.down) {
+		this.move("UP");
+	}
+};
+
 Owl.prototype.trick = function() {
 	if (!this.body.blocked.down) {
 		console.log('trick!');
