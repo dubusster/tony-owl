@@ -44,10 +44,10 @@ Play.prototype = {
 			})
 
 		this.layer = this.map.createLayer('Calque1');
-		this.collisionLayer = this.map.createLayer('invisible walls');
-		this.collisionLayer.visible = false;
-		this.map.setCollision(1, true, 1);
-		console.log("layer : ", this.collisionLayer);
+		this.invisibleLayer = this.map.createLayer('invisible walls');
+		this.invisibleLayer.visible = false;
+		this.map.setCollision(5, true, this.invisibleLayer);
+		console.log("layer : ", this.invisibleLayer);
 
 		this.layer.resizeWorld();
 
@@ -137,7 +137,7 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
 		this.game.physics.arcade.collide(this.ampliEmitter,
-				this.collisionLayer, onAmpliCollisionWithGround);
+				this.invisibleLayer, onAmpliCollisionWithGround);
 		
 		// slowing down particles once player hit throwable to hurt the boss
 		this.boss.ampliEmitter.forEachAlive(slowDownThrowable, this);
