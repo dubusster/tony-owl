@@ -3,6 +3,8 @@
 var PLAYER_HEALTH = 5;
 var TRICKS_LIMIT = 10;
 
+var attack_animation;
+
 var Owl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'owl', frame);
 	// initialize your prefab here
@@ -29,6 +31,9 @@ var Owl = function(game, x, y, frame) {
 			20);
 	this.animations.add('right',
 			[ 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39 ], 20);
+	attack_animation = this.animations.add('protect', [ 40, 41, 42, 43, 44, 45,
+			46, 47, 48, 49, 50, 51, 52, 53, 54, 55 ], 20);
+
 	this.animations.play('right-standing');
 	// TODO: add trick animation
 
@@ -68,11 +73,13 @@ Owl.prototype.move = function(direction) {
 	}
 	if (direction == null) {
 		this.body.velocity.x = 0;
+		if (attack_animation.isFinished) {
 
-		if (this.isLastDirectionLeft) {
-			this.animations.play('left-standing');
-		} else {
-			this.animations.play('right-standing');
+			if (this.isLastDirectionLeft) {
+				this.animations.play('left-standing');
+			} else {
+				this.animations.play('right-standing');
+			}
 		}
 
 	}
@@ -98,7 +105,8 @@ Owl.prototype.protect = function() {
 
 		console.log('protect');
 		// this.attacking = true;
-		this.animations.play('protect');
+
+		attack_animation = this.animations.play('protect');
 		this.trickCounter -= this.PROTECT_TRICK_TRIGGER;
 		this.protecting = true;
 	}
