@@ -64,8 +64,10 @@ Play.prototype = {
 		// add keyboard controls
 		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.S);
 		trickKey.onDown.add(this.owl.trick, this.owl);
-		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
-		attackKey.onDown.add(this.owl.attack, this.owl);
+		var protectKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
+		protectKey.onDown.add(this.owl.protect, this.owl);
+		var blastKey = this.input.keyboard.addKey(Phaser.Keyboard.Z);
+		blastKey.onDown.add(this.owl.blast, this.owl);
 		var jumpKey = this.input.keyboard.addKey(Phaser.Keyboard.UP);
 		jumpKey.onDown.add(this.owl.jump, this.owl);
 		
@@ -167,14 +169,11 @@ Play.prototype = {
 
 		if (!this.cutscene) {
 			// emitter position update
-//			console.log(this.game.camera.x);
-//			console.log(this.game.camera.x + this.game.width);
-//			console.log(this.boss.position.x);
 			
 			if ((this.game.camera.x + this.game.width) < this.boss.position.x) {
-				this.ampliEmitter.emitX  = this.game.camera.x + 5/3*this.game.width;
+				this.ampliEmitter.emitX  = this.game.camera.x + 4/3*this.game.width;
 				this.guitarGroup.forEach(function(emitter){
-					emitter.emitX  = this.game.camera.x + 5/3*this.game.width;
+					emitter.emitX  = this.game.camera.x + 4/3*this.game.width;
 				}, this);
 			}
 			else{
@@ -198,9 +197,14 @@ Play.prototype = {
 		
 		// When player attacks he is immuned and throw things to the boss.
 		if (this.owl.attacking) {
-			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
-					onAttackToThrowables);
-			collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
+			if (this.owl.protecting) {
+				this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
+						onAttackToThrowables);
+				collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
+			}
+			else if (this.owl.blasting) {
+				
+			}
 		}
 		
 		// pause menu
@@ -218,7 +222,8 @@ Play.prototype = {
 		this.game.debug.text('tony : ' + this.owl.health, 10, 25);
 		this.game.debug.text('negaowl : ' + this.boss.health, 10, 50);
 		this.game.debug.text('tricksometer : ' + this.owl.trickCounter, 10, 75);
-		this.game.debug.text('condition : ' + ((this.game.camera.x + this.game.width) < this.boss.position.x), 10, 100);
+// this.game.debug.text('condition : ' + ((this.game.camera.x + this.game.width)
+// < this.boss.position.x), 10, 100);
 //
 // this.game.debug.body(this.owl);
 // this.game.debug.body(this.guitarGroup);
