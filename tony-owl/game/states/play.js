@@ -171,9 +171,15 @@ Play.prototype = {
 			
 			if ((this.game.camera.x + this.game.width) < this.boss.position.x) {
 				this.ampliEmitter.emitX  = this.game.camera.x + 5/3*this.game.width;
+				this.guitarGroup.forEach(function(emitter){
+					emitter.emitX  = this.game.camera.x + 5/3*this.game.width;
+				}, this);
 			}
 			else{
-				this.ampliEmitter.emitX = this.boss.position.x;				
+				this.ampliEmitter.emitX = this.boss.position.x;		
+				this.guitarGroup.forEach(function(emitter){
+					emitter.emitX  = this.boss.position.x;
+				}, this);
 			}
 			// Player moves
 			var cursors = this.game.input.keyboard.createCursorKeys();
