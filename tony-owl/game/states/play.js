@@ -222,6 +222,10 @@ Play.prototype = {
 		this.game.debug.text('tony : ' + this.owl.health, 10, 25);
 		this.game.debug.text('negaowl : ' + this.boss.health, 10, 50);
 		this.game.debug.text('tricksometer : ' + this.owl.trickCounter, 10, 75);
+		this.game.debug.text('arrows : move', 200, 25);
+		this.game.debug.text('S in mid air : trick', 200, 50);
+		this.game.debug.text('A : Protect', 200, 75);
+		this.game.debug.text('Z : Blast', 200, 100);
 // this.game.debug.text('condition : ' + ((this.game.camera.x + this.game.width)
 // < this.boss.position.x), 10, 100);
 //
