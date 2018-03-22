@@ -61,7 +61,7 @@ Play.prototype = {
 				Phaser.Keyboard.UP ]);
 
 		// add keyboard controls
-		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.S);
 		trickKey.onDown.add(this.owl.trick, this.owl);
 		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
 		attackKey.onDown.add(this.owl.attack, this.owl);
