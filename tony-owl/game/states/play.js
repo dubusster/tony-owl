@@ -120,7 +120,7 @@ Play.prototype = {
 		// level animation
 		this.cutscene = true;
 		var animation = new Animation(this.game);
-		animation.onComplete.add(function(){this.cutscene = false}, this);
+		animation.onComplete.add(function(){this.cutscene = false;}, this);
 		if (first_try && this.cutscene) {
 			animation.start();
 		}
@@ -164,6 +164,17 @@ Play.prototype = {
 		}
 
 		if (!this.cutscene) {
+			// emitter position update
+//			console.log(this.game.camera.x);
+//			console.log(this.game.camera.x + this.game.width);
+//			console.log(this.boss.position.x);
+			
+			if ((this.game.camera.x + this.game.width) < this.boss.position.x) {
+				this.ampliEmitter.emitX  = this.game.camera.x + 5/3*this.game.width;
+			}
+			else{
+				this.ampliEmitter.emitX = this.boss.position.x;				
+			}
 			// Player moves
 			var cursors = this.game.input.keyboard.createCursorKeys();
 			if (cursors.right.isDown) {
@@ -175,7 +186,8 @@ Play.prototype = {
 			}
 			
 		}
-
+		
+		
 		// When player attacks he is immuned and throw things to the boss.
 		if (this.owl.attacking) {
 			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
@@ -183,6 +195,7 @@ Play.prototype = {
 			collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
 		}
 		
+		// pause menu
 		if (this.game.paused) {
 			this.pausedText.visible = true;
 		}
@@ -197,6 +210,7 @@ Play.prototype = {
 		this.game.debug.text('tony : ' + this.owl.health, 10, 25);
 		this.game.debug.text('negaowl : ' + this.boss.health, 10, 50);
 		this.game.debug.text('tricksometer : ' + this.owl.trickCounter, 10, 75);
+		this.game.debug.text('condition : ' + ((this.game.camera.x + this.game.width) < this.boss.position.x), 10, 100);
 //
 // this.game.debug.body(this.owl);
 // this.game.debug.body(this.guitarGroup);

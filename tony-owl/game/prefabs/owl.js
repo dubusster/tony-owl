@@ -41,12 +41,6 @@ Owl.prototype.constructor = Owl;
 Owl.prototype.update = function() {
 	this.can_attack = this.game.time.now > this.nextAttack;
 	this.attacking = this.game.time.now < this.nextAttack;
-//	if (this.attacking) {
-//		this.immune = true;
-//	}
-//	else {
-//		this.immune = false;
-//	}
 };
 
 Owl.prototype.move = function(direction) {
