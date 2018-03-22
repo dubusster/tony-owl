@@ -6,6 +6,7 @@ var Negaowl = require('../prefabs/negaowl.js')
 var Animation = require('../animations/cut1.js')
 
 var die_music;
+var hurt_music;
 
 var GAME_HEIGHT = 600;
 var GROUND_HEIGHT = 50;
@@ -126,6 +127,7 @@ Play.prototype = {
 		}
 
 		die_music = this.game.add.audio('die');
+		hurt_music = this.game.add.audio('hurt');
 
 	},
 	update : function() {
@@ -304,6 +306,7 @@ function hurtOwl(owl, enemy) {
 		owl.immune = true;
 		owl.alpha = 0.5;
 		owl.damage(1);
+		hurt_music.play();
 		// if (owl.body.position.x < enemy.body.position.x) {
 		// owl.body.velocity.x = -300;
 		// } else {
