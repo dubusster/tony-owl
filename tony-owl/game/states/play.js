@@ -90,14 +90,8 @@ Play.prototype = {
 			fill : "#ff0044"
 		});
 		pauseButton.inputEnabled = true;
-		pauseButton.events.onInputUp.add(function() {
-			this.game.paused = true;
-		}, this);
-		this.game.input.onDown.add(function() {
-			if (this.game.paused){
-				this.game.paused = false;
-			}
-		}, this);
+		pauseButton.events.onInputUp.add(pause, this);
+		this.game.input.onDown.add(unpause, this);
 		pauseButton.fixedToCamera = true;
 		
 		this.pausedText = this.game.add.text(this.game.width/2, this.game.height/2, 'PAUSE', {
@@ -221,7 +215,7 @@ Play.prototype = {
 // this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
 		this.game.debug.text('tony : ' + this.owl.health, 10, 25);
 		this.game.debug.text('negaowl : ' + this.boss.health, 10, 50);
-		this.game.debug.text('tricksometer : ' + this.owl.trickCounter, 10, 75);
+		this.game.debug.text('tricksometer : ' + this.owl.tricks, 10, 75);
 		this.game.debug.text('arrows : move', 200, 25);
 		this.game.debug.text('SPACEBAR in mid air : trick', 200, 50);
 		this.game.debug.text('A : Protect', 200, 75);
@@ -271,6 +265,16 @@ function winning() {
 	this.game.state.start('win');
 };
 
+function pause() {
+		this.game.paused = true;
+};
+
+function unpause() {
+	if (this.game.paused){
+		this.game.paused = false;
+	}
+}
+
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
 	ampli.animations.play('roll-and-burn', null, true);
@@ -287,7 +291,7 @@ function onDie(player) {
 }
 
 function respawn(player) {
-	
+	player.tricks = 0;
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
 
@@ -327,7 +331,7 @@ function hurtOwl(owl, enemy) {
 		}, this);
 	}
 
-};
+}; 
 
 function hurtBoss(boss, throwable) {
 	console.log('boss is touched !');
