@@ -10,7 +10,7 @@ var Owl = function(game, x, y, frame) {
 	// initialize your prefab here
 	this.game.physics.arcade.enableBody(this);
 
-	this.trickCounter = 0;
+	this.tricks = 0;
 	this.PROTECT_TRICK_TRIGGER = 1;
 	this.BLAST_TRICK_TRIGGER = 3;
 	this.SUPER_TRICK_TRIGGER = 5;
@@ -92,35 +92,35 @@ Owl.prototype.jump = function() {
 };
 
 Owl.prototype.trick = function() {
-	if (!this.body.blocked.down && this.trickCounter < TRICKS_LIMIT) {
+	if (!this.body.blocked.down && this.tricks < TRICKS_LIMIT) {
 		console.log('trick!');
 		this.animations.play('trick');
-		this.trickCounter++;
+		this.tricks++;
 	}
 };
 
 Owl.prototype.protect = function() {
-	if (this.trickCounter >= this.PROTECT_TRICK_TRIGGER) {
+	if (this.tricks >= this.PROTECT_TRICK_TRIGGER) {
 		this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
 
 		console.log('protect');
 		// this.attacking = true;
 
 		attack_animation = this.animations.play('protect');
-		this.trickCounter -= this.PROTECT_TRICK_TRIGGER;
+		this.tricks -= this.PROTECT_TRICK_TRIGGER;
 		this.protecting = true;
 	}
 
 };
 
 Owl.prototype.blast = function() {
-	if (this.trickCounter >= this.BLAST_TRICK_TRIGGER) {
+	if (this.tricks >= this.BLAST_TRICK_TRIGGER) {
 		this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
 
 		console.log('blast');
 		// this.attacking = true;
 		this.animations.play('blast');
-		this.trickCounter -= this.BLAST_TRICK_TRIGGER;
+		this.tricks -= this.BLAST_TRICK_TRIGGER;
 		this.blasting = true;
 	}
 };
