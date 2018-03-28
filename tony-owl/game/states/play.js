@@ -320,16 +320,11 @@ function slowDownThrowable(particle) {
 };
 
 function hurtOwl(owl, enemy) {
-	if (!owl.immune && !owl.attacking) {
+	if (!owl.immune && !owl.attacking && !enemy.isSentByPlayer) {
 		owl.immune = true;
 		owl.alpha = 0.5;
 		owl.damage(1);
 		hurt_music.play();
-		// if (owl.body.position.x < enemy.body.position.x) {
-		// owl.body.velocity.x = -300;
-		// } else {
-		// owl.body.velocity.x = 300;
-		// }
 		this.game.time.events.add(800, function() {
 			owl.immune = false;
 			owl.alpha = 1;
