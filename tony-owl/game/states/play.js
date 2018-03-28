@@ -152,6 +152,11 @@ Play.prototype = {
 		// constraints to keep player in game
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
+			if (this.owl.body.position.y < 80) {
+				// Cheat code !
+				this.owl.body.position.x = 15000;
+				this.owl.body.position.y = 100;
+			}
 		} else if (this.owl.body.position.x > this.game.world.width
 				- this.owl.body.width) {
 			this.owl.body.position.x = this.game.world.width
