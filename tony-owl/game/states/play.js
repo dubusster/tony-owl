@@ -62,7 +62,7 @@ Play.prototype = {
 				Phaser.Keyboard.UP ]);
 
 		// add keyboard controls
-		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.S);
+		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		trickKey.onDown.add(this.owl.trick, this.owl);
 		var protectKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
 		protectKey.onDown.add(this.owl.protect, this.owl);
@@ -223,7 +223,7 @@ Play.prototype = {
 		this.game.debug.text('negaowl : ' + this.boss.health, 10, 50);
 		this.game.debug.text('tricksometer : ' + this.owl.trickCounter, 10, 75);
 		this.game.debug.text('arrows : move', 200, 25);
-		this.game.debug.text('S in mid air : trick', 200, 50);
+		this.game.debug.text('SPACEBAR in mid air : trick', 200, 50);
 		this.game.debug.text('A : Protect', 200, 75);
 		this.game.debug.text('Z : Blast', 200, 100);
 // this.game.debug.text('condition : ' + ((this.game.camera.x + this.game.width)
