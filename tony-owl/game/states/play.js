@@ -17,7 +17,7 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
-var PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK = 5 * Phaser.Timer.SECOND;
+var PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK = 3 * Phaser.Timer.SECOND;
 
 var START_POSITION_X = 200; // DEBUG : 15000
 var START_POSITION_Y = GAME_HEIGHT - 200;
@@ -110,10 +110,10 @@ Play.prototype = {
 		// Boss starts to attack.
 		this.boss.release_hell();
 
-		// ampli emitter
+		// emitters
 		this.ampliEmitter = this.boss.ampliEmitter;
 		this.guitarGroup = this.boss.guitarGroup;
-
+		
 		// level animation
 		this.cutscene = true;
 		var animation = new Animation(this.game);
@@ -152,8 +152,8 @@ Play.prototype = {
 		// constraints to keep player in game
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
+			// Cheat code !
 			if (this.owl.body.position.y < 80) {
-				// Cheat code !
 				this.owl.body.position.x = 15000;
 				this.owl.body.position.y = 100;
 			}
@@ -213,6 +213,14 @@ Play.prototype = {
 		else {
 			this.pausedText.visible = false;
 		}
+		
+		// setting back to normal dead particles
+		this.ampliEmitter.forEachDead(function(particle){
+			particle.isSentByPlayer = false;
+			}, this);
+		this.guitarGroup.forEach(function(emitter){emitter.forEachDead(function(particle){
+			particle.isSentByPlayer = false;
+			}, this)}, this);
 	},
 
 	render : function() {
@@ -225,22 +233,6 @@ Play.prototype = {
 		this.game.debug.text('SPACEBAR in mid air : trick', 200, 50);
 		this.game.debug.text('A : Protect', 200, 75);
 		this.game.debug.text('Z : Blast', 200, 100);
-// this.game.debug.text('condition : ' + ((this.game.camera.x + this.game.width)
-// < this.boss.position.x), 10, 100);
-//
-// this.game.debug.body(this.owl);
-// this.game.debug.body(this.guitarGroup);
-//
-// var game = this.game;
-// this.ampliEmitter.forEachAlive(function(particle) {
-// game.debug.body(particle, 'red', false);
-// // game.debug.text(particle.body.velocity, 10, 125);
-// });
-// this.guitarGroup.forEach(function(emitter) {
-// emitter.forEachAlive(function(particle) {
-// game.debug.body(particle, 'green', false);
-// })
-// });
 
 	},
 	paused : function(){
@@ -283,9 +275,6 @@ function unpause() {
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
 	ampli.animations.play('roll-and-burn', null, true);
-	if (ampli.isSentByPlayer) {
-		ampli.body.velocity.x -= ampli.body.velocity.x * 0.01;
-	}
 };
 
 function onDie(player) {
@@ -299,7 +288,6 @@ function respawn(player) {
 	player.tricks = 0;
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
-
 	player.revive();
 };
 
@@ -307,10 +295,11 @@ function onAttackToThrowables(player, obj) {
 	obj.isSentByPlayer = true;
 	obj.lifespan = PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK;
 	obj.body.angularVelocity = -obj.body.angularVelocity;
-// console.log(obj);
 	obj.body.velocity.x = player.STRENGTH;
-	
-	// obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
+};
+
+function velocity(vx, vy){
+	return Math.sqrt(vx^2+vy^2);
 };
 
 function slowDownThrowable(particle) {
