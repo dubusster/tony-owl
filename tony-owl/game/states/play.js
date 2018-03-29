@@ -5,7 +5,8 @@ var Owl = require('../prefabs/owl.js')
 var Negaowl = require('../prefabs/negaowl.js')
 var Animation = require('../animations/cut1.js')
 
-var gameover_music;
+var die_music;
+var hurt_music;
 
 var GAME_HEIGHT = 600;
 var GROUND_HEIGHT = 50;
@@ -16,7 +17,7 @@ var THROWING_HEIGHT_MAX = GAME_HEIGHT - GROUND_HEIGHT;
 var THROWING_DELAY_MIN = 0.5 * Phaser.Timer.SECOND;
 var THROWING_DELAY_MAX = 2 * Phaser.Timer.SECOND;
 
-var PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK = 5 * Phaser.Timer.SECOND;
+var PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK = 3 * Phaser.Timer.SECOND;
 
 var START_POSITION_X = 200; // DEBUG : 15000
 var START_POSITION_Y = GAME_HEIGHT - 200;
@@ -43,10 +44,10 @@ Play.prototype = {
 			})
 
 		this.layer = this.map.createLayer('Calque1');
-		this.collisionLayer = this.map.createLayer('invisible walls');
-		this.collisionLayer.visible = false;
-		this.map.setCollision(1, true, 1);
-		console.log("layer : ", this.collisionLayer);
+		this.invisibleLayer = this.map.createLayer('invisible walls');
+		this.invisibleLayer.visible = false;
+		this.map.setCollision(5, true, this.invisibleLayer);
+		console.log("layer : ", this.invisibleLayer);
 
 		this.layer.resizeWorld();
 
@@ -63,8 +64,12 @@ Play.prototype = {
 		// add keyboard controls
 		var trickKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		trickKey.onDown.add(this.owl.trick, this.owl);
-		var attackKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
-		attackKey.onDown.add(this.owl.attack, this.owl);
+		var protectKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
+		protectKey.onDown.add(this.owl.protect, this.owl);
+		var blastKey = this.input.keyboard.addKey(Phaser.Keyboard.Z);
+		blastKey.onDown.add(this.owl.blast, this.owl);
+		var jumpKey = this.input.keyboard.addKey(Phaser.Keyboard.UP);
+		jumpKey.onDown.add(this.owl.jump, this.owl);
 		
 		// RETRY BUTTON
 		var retryButton;
@@ -85,14 +90,8 @@ Play.prototype = {
 			fill : "#ff0044"
 		});
 		pauseButton.inputEnabled = true;
-		pauseButton.events.onInputUp.add(function() {
-			this.game.paused = true;
-		}, this);
-		this.game.input.onDown.add(function() {
-			if (this.game.paused){
-				this.game.paused = false;
-			}
-		}, this);
+		pauseButton.events.onInputUp.add(pause, this);
+		this.game.input.onDown.add(unpause, this);
 		pauseButton.fixedToCamera = true;
 		
 		this.pausedText = this.game.add.text(this.game.width/2, this.game.height/2, 'PAUSE', {
@@ -111,18 +110,20 @@ Play.prototype = {
 		// Boss starts to attack.
 		this.boss.release_hell();
 
-		// ampli emitter
+		// emitters
 		this.ampliEmitter = this.boss.ampliEmitter;
 		this.guitarGroup = this.boss.guitarGroup;
-
+		
 		// level animation
 		this.cutscene = true;
 		var animation = new Animation(this.game);
+		animation.onComplete.add(function(){this.cutscene = false;}, this);
 		if (first_try && this.cutscene) {
 			animation.start();
 		}
 
-		gameover_music = this.game.add.audio('gameover');
+		die_music = this.game.add.audio('die');
+		hurt_music = this.game.add.audio('hurt');
 
 	},
 	update : function() {
@@ -130,7 +131,7 @@ Play.prototype = {
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
 		this.game.physics.arcade.collide(this.ampliEmitter,
-				this.collisionLayer, onAmpliCollisionWithGround);
+				this.invisibleLayer, onAmpliCollisionWithGround);
 		
 		// slowing down particles once player hit throwable to hurt the boss
 		this.boss.ampliEmitter.forEachAlive(slowDownThrowable, this);
@@ -151,6 +152,11 @@ Play.prototype = {
 		// constraints to keep player in game
 		if (this.owl.body.position.x < 0) {
 			this.owl.body.position.x = 0;
+			// Cheat code !
+			if (this.owl.body.position.y < 80) {
+				this.owl.body.position.x = 15000;
+				this.owl.body.position.y = 100;
+			}
 		} else if (this.owl.body.position.x > this.game.world.width
 				- this.owl.body.width) {
 			this.owl.body.position.x = this.game.world.width
@@ -160,8 +166,22 @@ Play.prototype = {
 			onDie(this.owl);
 		}
 
-		// Player moves
 		if (!this.cutscene) {
+			// emitter position update
+			
+			if ((this.game.camera.x + this.game.width) < this.boss.position.x) {
+				this.ampliEmitter.emitX  = this.game.camera.x + 4/3*this.game.width;
+				this.guitarGroup.forEach(function(emitter){
+					emitter.emitX  = this.game.camera.x + 4/3*this.game.width;
+				}, this);
+			}
+			else{
+				this.ampliEmitter.emitX = this.boss.position.x;		
+				this.guitarGroup.forEach(function(emitter){
+					emitter.emitX  = this.boss.position.x;
+				}, this);
+			}
+			// Player moves
 			var cursors = this.game.input.keyboard.createCursorKeys();
 			if (cursors.right.isDown) {
 				this.owl.move("RIGHT");
@@ -170,25 +190,37 @@ Play.prototype = {
 			} else {
 				this.owl.move(null);
 			}
-			if (cursors.up.isDown && this.owl.body.blocked.down) {
-				this.owl.move("UP");
-			}
-		}
-
-		// When player attacks he is immuned and throw things to the boss.
-		if (this.owl.attacking) {
-			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
-					onAttackToThrowables);
-			collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
+			
 		}
 		
+		
+		// When player attacks he is immuned and throw things to the boss.
+		if (this.owl.attacking) {
+			if (this.owl.protecting) {
+				this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
+						onAttackToThrowables);
+				collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
+			}
+			else if (this.owl.blasting) {
+				
+			}
+		}
+		
+		// pause menu
 		if (this.game.paused) {
 			this.pausedText.visible = true;
 		}
 		else {
 			this.pausedText.visible = false;
 		}
-
+		
+		// setting back to normal dead particles
+		this.ampliEmitter.forEachDead(function(particle){
+			particle.isSentByPlayer = false;
+			}, this);
+		this.guitarGroup.forEach(function(emitter){emitter.forEachDead(function(particle){
+			particle.isSentByPlayer = false;
+			}, this)}, this);
 	},
 
 	render : function() {
@@ -196,21 +228,11 @@ Play.prototype = {
 // this.game.debug.text('nextAttack : ' + this.owl.nextAttack, 10, 100);
 		this.game.debug.text('tony : ' + this.owl.health, 10, 25);
 		this.game.debug.text('negaowl : ' + this.boss.health, 10, 50);
-		this.game.debug.text('tricksometer : ' + this.owl.trickCounter, 10, 75);
-//
-// this.game.debug.body(this.owl);
-// this.game.debug.body(this.guitarGroup);
-//
-// var game = this.game;
-// this.ampliEmitter.forEachAlive(function(particle) {
-// game.debug.body(particle, 'red', false);
-// // game.debug.text(particle.body.velocity, 10, 125);
-// });
-// this.guitarGroup.forEach(function(emitter) {
-// emitter.forEachAlive(function(particle) {
-// game.debug.body(particle, 'green', false);
-// })
-// });
+		this.game.debug.text('tricksometer : ' + this.owl.tricks, 10, 75);
+		this.game.debug.text('arrows : move', 200, 25);
+		this.game.debug.text('SPACEBAR in mid air : trick', 200, 50);
+		this.game.debug.text('A : Protect', 200, 75);
+		this.game.debug.text('Z : Blast', 200, 100);
 
 	},
 	paused : function(){
@@ -240,26 +262,32 @@ function winning() {
 	this.game.state.start('win');
 };
 
+function pause() {
+		this.game.paused = true;
+};
+
+function unpause() {
+	if (this.game.paused){
+		this.game.paused = false;
+	}
+}
+
 function onAmpliCollisionWithGround(ampli, obj) {
 	ampli.animations.stop('emitting');
 	ampli.animations.play('roll-and-burn', null, true);
-	if (ampli.isSentByPlayer) {
-		ampli.body.velocity.x -= ampli.body.velocity.x * 0.01;
-	}
 };
 
 function onDie(player) {
 	first_try = false;
 
-	gameover_music.play();
+	die_music.play();
 	respawn(player);
 }
 
 function respawn(player) {
-	
+	player.tricks = 0;
 	player.position.x = START_POSITION_X;
 	player.position.y = START_POSITION_Y;
-
 	player.revive();
 };
 
@@ -267,10 +295,11 @@ function onAttackToThrowables(player, obj) {
 	obj.isSentByPlayer = true;
 	obj.lifespan = PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK;
 	obj.body.angularVelocity = -obj.body.angularVelocity;
-// console.log(obj);
 	obj.body.velocity.x = player.STRENGTH;
-	
-	// obj.body.velocity.y += player.STRENGTH * Math.cos(obj.angle);
+};
+
+function velocity(vx, vy){
+	return Math.sqrt(vx^2+vy^2);
 };
 
 function slowDownThrowable(particle) {
@@ -280,22 +309,18 @@ function slowDownThrowable(particle) {
 };
 
 function hurtOwl(owl, enemy) {
-	if (!owl.immune && !owl.attacking) {
+	if (!owl.immune && !owl.attacking && !enemy.isSentByPlayer) {
 		owl.immune = true;
 		owl.alpha = 0.5;
 		owl.damage(1);
-		// if (owl.body.position.x < enemy.body.position.x) {
-		// owl.body.velocity.x = -300;
-		// } else {
-		// owl.body.velocity.x = 300;
-		// }
+		hurt_music.play();
 		this.game.time.events.add(800, function() {
 			owl.immune = false;
 			owl.alpha = 1;
 		}, this);
 	}
 
-};
+}; 
 
 function hurtBoss(boss, throwable) {
 	console.log('boss is touched !');

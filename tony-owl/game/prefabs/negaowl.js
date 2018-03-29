@@ -93,6 +93,14 @@ Negaowl.prototype.kill = function(){
 	this.tweenKill.start();
 }
 
+Negaowl.prototype.stop_hell = function() {
+	for (var i = 0; i < this.guitarGroup.children.length; i++) {
+		var guitar = this.guitarGroup.children[i];
+		guitar.on = false;
+	}
+	this.ampliEmitter.on = false;
+};
+
 Negaowl.prototype.release_hell = function() {
 	for (var i = 0; i < this.guitarGroup.children.length; i++) {
 		var guitar = this.guitarGroup.children[i];
