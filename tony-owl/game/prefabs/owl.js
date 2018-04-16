@@ -11,16 +11,19 @@ var Owl = function(game, x, y, frame) {
 	this.game.physics.arcade.enableBody(this);
 
 	this.tricks = 0;
-	this.PROTECT_TRICK_TRIGGER = 1;
-	this.BLAST_TRICK_TRIGGER = 3;
-	this.SUPER_TRICK_TRIGGER = 5;
+	this.PROTECT_TRICK_COST = 1;
+	this.BLAST_TRICK_COST = 3;
+	this.SUPER_TRICK_COST = 5;
 
 	this.jumping = false;
 	this.walking_speed = 400;
 	this.jumping_height = 900;
 	this.STRENGTH = 500;
+	this.BLAST_RADIUS = 100;
 	this.health = PLAYER_HEALTH;
 	this.maxHealth = PLAYER_HEALTH;
+	
+	this.explosion = this.game.add.emitter(this.centerX, this.centerY);
 
 	// animations
 	this.animations.add('left-standing', [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ], 20,
@@ -55,6 +58,9 @@ Owl.prototype.update = function() {
 		this.protecting = false;
 		this.blasting = false;
 	}
+	// emitter must follow player
+	this.explosion.emitX = this.centerX;
+	this.explosion.emitY = this.centerY;
 };
 
 Owl.prototype.move = function(direction) {
@@ -101,27 +107,27 @@ Owl.prototype.trick = function() {
 };
 
 Owl.prototype.protect = function() {
-	if (this.tricks >= this.PROTECT_TRICK_TRIGGER) {
+	if (this.tricks >= this.PROTECT_TRICK_COST) {
 		this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
 
 		console.log('protect');
 		// this.attacking = true;
 
 		attack_animation = this.animations.play('protect');
-		this.tricks -= this.PROTECT_TRICK_TRIGGER;
+		this.tricks -= this.PROTECT_TRICK_COST;
 		this.protecting = true;
 	}
 
 };
 
 Owl.prototype.blast = function() {
-	if (this.tricks >= this.BLAST_TRICK_TRIGGER) {
+	if (this.tricks >= this.BLAST_TRICK_COST) {
 		this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
 
 		console.log('blast');
 		// this.attacking = true;
 		this.animations.play('blast');
-		this.tricks -= this.BLAST_TRICK_TRIGGER;
+		this.tricks -= this.BLAST_TRICK_COST;
 		this.blasting = true;
 	}
 };

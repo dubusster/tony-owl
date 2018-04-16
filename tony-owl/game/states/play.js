@@ -167,8 +167,8 @@ Play.prototype = {
 		}
 
 		if (!this.cutscene) {
-			// emitter position update
 			
+			// emitter position update
 			if ((this.game.camera.x + this.game.width) < this.boss.position.x) {
 				this.ampliEmitter.emitX  = this.game.camera.x + 4/3*this.game.width;
 				this.guitarGroup.forEach(function(emitter){
