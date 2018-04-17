@@ -1,5 +1,7 @@
 'use strict';
 
+var BlastParticle = require('../prefabs/blast_particle.js');
+
 var PLAYER_HEALTH = 5;
 var TRICKS_LIMIT = 10;
 
@@ -20,12 +22,14 @@ var Owl = function(game, x, y, frame) {
 	this.jumping_height = 900;
 	this.STRENGTH = 500;
 	this.BLAST_RADIUS = 100;
+	this.BLAST_LIFESPAN = 4000;
 	this.health = PLAYER_HEALTH;
 	this.maxHealth = PLAYER_HEALTH;
 	
-	var MAX_PARTICLES = 20;
+	var MAX_PARTICLES = 200;
 	
 	this.explosionEmitter = this.game.add.emitter(0,0,MAX_PARTICLES);
+	this.explosionEmitter.particleClass = BlastParticle;
 	this.explosionEmitter.makeParticles('note',0,MAX_PARTICLES,true);
 	this.explosionEmitter.minParticleSpeed.set(-500, -500);
 	this.explosionEmitter.maxParticleSpeed.set(500, 500);
@@ -125,13 +129,13 @@ Owl.prototype.protect = function() {
 };
 
 Owl.prototype.blast = function() {
-	if (this.tricks >= this.BLAST_TRICK_COST ) {
-		this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
+	if (this.tricks >= this.BLAST_TRICK_COST) {
+		this.nextAttack = this.game.time.now + this.BLAST_LIFESPAN;
 
 		// emitter must follow player
 		this.explosionEmitter.emitX = this.centerX;
 		this.explosionEmitter.emitY = this.centerY;
-		this.explosionEmitter.explode(4000, 100);
+		this.explosionEmitter.explode(this.BLAST_LIFESPAN, 30);
 		
 		console.log('blast');
 		// this.attacking = true;

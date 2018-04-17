@@ -144,7 +144,7 @@ Play.prototype = {
 		// collision for boss with throwables
 		collideGroup(this.game, this.guitarGroup, this.boss, hurtBoss, this);
 		this.game.physics.arcade.collide(this.ampliEmitter, this.boss,
-				hurtBoss, null, this);
+				hurtBoss, checkSentByPlayerCallback, this);
 		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl,
 				null, this);
 		
@@ -197,18 +197,27 @@ Play.prototype = {
 		
 		
 		// When player attacks he is immuned and throw things to the boss.
-		if (this.owl.attacking) {
-			if (this.owl.protecting) {
-				this.game.physics.arcade.collide(this.owl.explosionEmitter, this.ampliEmitter,
-						onAttackToThrowables);
-				collideGroup(this.game, this.guitarGroup, this.owl.explosionEmitter, onAttackToThrowables, this);
-			}
-			else if (this.owl.blasting) {
-				this.game.physics.arcade.collide(this.owl.explosionEmitter, this.ampliEmitter,
-						onAttackToThrowables);
-				collideGroup(this.game, this.guitarGroup, this.owl.explosionEmitter, onAttackToThrowables, this);
-			}
+		
+		if (this.owl.protecting) {
+			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
+					onAttackToThrowables);
+			collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
 		}
+		this.game.physics.arcade.collide(this.owl.explosionEmitter, this.ampliEmitter, onAttackToThrowables, checkSentByPlayerCallback, this);
+		this.guitarGroup.forEachAlive(function(emitter){
+			this.game.physics.arcade.collide(this.owl.explosionEmitter, emitter, onAttackToThrowables, checkSentByPlayerCallback, this);
+		}, this)
+		
+//	    if (this.owl.blasting) {
+//			this.game.physics.arcade.collide(this.ampliEmitter,this.owl.explosionEmitter,
+//					onAttackToThrowables);
+//			this.guitarGroup.forEachAlive(function(emitter){
+//				this.game.physics.arcade.collide(emitter, this.owl.explosionEmitter,
+//					onAttackToThrowables);
+//					}, this)
+//			
+//		}
+		
 		
 		// pause menu
 		if (this.game.paused) {
@@ -240,12 +249,12 @@ Play.prototype = {
 		this.game.debug.text('explosionX : '+this.owl.explosionEmitter.emitX, 10, 100);
 		this.game.debug.text('explosionY : '+this.owl.explosionEmitter.emitY, 10, 125);
 		
-//		var game = this.game;
-//		this.owl.explosionEmitter.forEachAlive(function(particle) {
-//			game.debug.body(particle, 'red', false);
-//			game.debug.text(particle.body.velocity, 10, 150);
-//			}, this);
-//		this.owl.explosionEmitter.forEachAlive(this.game.debug.body, this);
+// var game = this.game;
+// this.owl.explosionEmitter.forEachAlive(function(particle) {
+// game.debug.body(particle, 'red', false);
+// game.debug.text(particle.body.velocity, 10, 150);
+// }, this);
+// this.owl.explosionEmitter.forEachAlive(this.game.debug.body, this);
 		this.game.debug.bodyInfo(this.owl, 10, 150);
 
 
@@ -256,7 +265,6 @@ Play.prototype = {
 };
 
 function collideGroup(game, group, other, callback, context) {
-	// enabling gameover callback for all guitars.
 	for (var i = 0; i < group.children.length; i++) {
 		var item = group.children[i];
 		game.physics.arcade.collide(other, item, callback, null, context);
@@ -309,11 +317,19 @@ function respawn(player) {
 	player.revive();
 };
 
+function checkSentByPlayerCallback(first, second) {
+	return first.isSentByPlayer || second.isSentByPlayer;
+}
+
 function onAttackToThrowables(player, obj) {
+//	if (obj.key in ['guitar', 'ampli']){
 	obj.isSentByPlayer = true;
 	obj.lifespan = PARTICLE_LIFESPAN_WHEN_COUNTER_ATTACK;
 	obj.body.angularVelocity = -obj.body.angularVelocity;
 	obj.body.velocity.x = player.STRENGTH;
+	if (player.key in ['note']){
+	console.log(obj);
+	}
 };
 
 function velocity(vx, vy){
