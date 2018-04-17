@@ -168,7 +168,7 @@ Play.prototype = {
 
 		if (!this.cutscene) {
 			
-			// emitter position update
+			// boss emitters position update
 			if ((this.game.camera.x + this.game.width) < this.boss.position.x) {
 				this.ampliEmitter.emitX  = this.game.camera.x + 4/3*this.game.width;
 				this.guitarGroup.forEach(function(emitter){
@@ -197,12 +197,14 @@ Play.prototype = {
 		// When player attacks he is immuned and throw things to the boss.
 		if (this.owl.attacking) {
 			if (this.owl.protecting) {
-				this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
+				this.game.physics.arcade.collide(this.owl.explosionEmitter, this.ampliEmitter,
 						onAttackToThrowables);
-				collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
+				collideGroup(this.game, this.guitarGroup, this.owl.explosionEmitter, onAttackToThrowables, this);
 			}
 			else if (this.owl.blasting) {
-				
+				this.game.physics.arcade.collide(this.owl.explosionEmitter, this.ampliEmitter,
+						onAttackToThrowables);
+				collideGroup(this.game, this.guitarGroup, this.owl.explosionEmitter, onAttackToThrowables, this);
 			}
 		}
 		
@@ -233,6 +235,17 @@ Play.prototype = {
 		this.game.debug.text('SPACEBAR in mid air : trick', 200, 50);
 		this.game.debug.text('A : Protect', 200, 75);
 		this.game.debug.text('Z : Blast', 200, 100);
+		this.game.debug.text('explosionX : '+this.owl.explosionEmitter.emitX, 10, 100);
+		this.game.debug.text('explosionY : '+this.owl.explosionEmitter.emitY, 10, 125);
+		
+//		var game = this.game;
+//		this.owl.explosionEmitter.forEachAlive(function(particle) {
+//			game.debug.body(particle, 'red', false);
+//			game.debug.text(particle.body.velocity, 10, 150);
+//			}, this);
+//		this.owl.explosionEmitter.forEachAlive(this.game.debug.body, this);
+		this.game.debug.bodyInfo(this.owl, 10, 150);
+
 
 	},
 	paused : function(){

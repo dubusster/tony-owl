@@ -8,7 +8,7 @@ var attack_animation;
 var Owl = function(game, x, y, frame) {
 	Phaser.Sprite.call(this, game, x, y, 'owl', frame);
 	// initialize your prefab here
-	this.game.physics.arcade.enableBody(this);
+	game.physics.arcade.enableBody(this);
 
 	this.tricks = 0;
 	this.PROTECT_TRICK_COST = 1;
@@ -23,7 +23,13 @@ var Owl = function(game, x, y, frame) {
 	this.health = PLAYER_HEALTH;
 	this.maxHealth = PLAYER_HEALTH;
 	
-	this.explosion = this.game.add.emitter(this.centerX, this.centerY);
+	var MAX_PARTICLES = 20;
+	
+	this.explosionEmitter = this.game.add.emitter(0,0,MAX_PARTICLES);
+	this.explosionEmitter.makeParticles('note',0,MAX_PARTICLES,true);
+	this.explosionEmitter.minParticleSpeed.set(-500, -500);
+	this.explosionEmitter.maxParticleSpeed.set(500, 500);
+	this.explosionEmitter.gravity = -this.game.physics.arcade.gravity.y;
 
 	// animations
 	this.animations.add('left-standing', [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ], 20,
@@ -58,9 +64,7 @@ Owl.prototype.update = function() {
 		this.protecting = false;
 		this.blasting = false;
 	}
-	// emitter must follow player
-	this.explosion.emitX = this.centerX;
-	this.explosion.emitY = this.centerY;
+	
 };
 
 Owl.prototype.move = function(direction) {
@@ -121,15 +125,22 @@ Owl.prototype.protect = function() {
 };
 
 Owl.prototype.blast = function() {
-	if (this.tricks >= this.BLAST_TRICK_COST) {
+	if (this.tricks >= this.BLAST_TRICK_COST ) {
 		this.nextAttack = this.game.time.now + this.ATTACK_DELAY;
 
+		// emitter must follow player
+		this.explosionEmitter.emitX = this.centerX;
+		this.explosionEmitter.emitY = this.centerY;
+		this.explosionEmitter.explode(4000, 100);
+		
 		console.log('blast');
 		// this.attacking = true;
 		this.animations.play('blast');
 		this.tricks -= this.BLAST_TRICK_COST;
 		this.blasting = true;
+//		this.game.time.events.add(2000, destroyEmitter, this);
 	}
 };
+
 
 module.exports = Owl;
