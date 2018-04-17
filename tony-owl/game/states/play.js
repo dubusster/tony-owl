@@ -347,6 +347,7 @@ function hurtOwl(owl, enemy) {
 		owl.immune = true;
 		owl.alpha = 0.5;
 		owl.damage(1);
+		this.boss.health++;
 		hurt_music.play();
 		this.game.time.events.add(800, function() {
 			owl.immune = false;
@@ -360,6 +361,7 @@ function hurtBoss(boss, throwable) {
 	console.log('boss is touched !');
 	throwable.destroy();
 	boss.damage(1);
+	this.owl.health++;
 	console.log('health boss : ', boss.health);
 };
 
