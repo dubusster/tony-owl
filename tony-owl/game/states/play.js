@@ -70,6 +70,8 @@ Play.prototype = {
 		blastKey.onDown.add(this.owl.blast, this.owl);
 		var jumpKey = this.input.keyboard.addKey(Phaser.Keyboard.UP);
 		jumpKey.onDown.add(this.owl.jump, this.owl);
+		this.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(toggle_pause, this);
+		
 		
 		// RETRY BUTTON
 		var retryButton;
@@ -283,6 +285,9 @@ function unpause() {
 	if (this.game.paused){
 		this.game.paused = false;
 	}
+}
+function toggle_pause(){
+	this.game.paused = !this.game.paused;
 }
 
 function onAmpliCollisionWithGround(ampli, obj) {
