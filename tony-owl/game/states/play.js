@@ -131,7 +131,7 @@ Play.prototype = {
 		// collision with environment
 		this.game.physics.arcade.collide(this.boss, this.layer);
 		this.game.physics.arcade.collide(this.owl, this.layer);
-		this.game.physics.arcade.collide(this.owl.explosionEmitter, this.layer);
+//		this.game.physics.arcade.collide(this.owl.explosionEmitter, this.layer);
 		this.game.physics.arcade.collide(this.ampliEmitter,
 				this.invisibleLayer, onAmpliCollisionWithGround);
 		
