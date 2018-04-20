@@ -3,12 +3,12 @@
 ## Tony Owl
 
 Tony Owl est un jeu de plateforme classique s'inspirant des évènements proposés
-par [la planque sonore](https://www.facebook.com/laplanquesonore Le meilleur du groove sur Aix en provence).
+par [la planque sonore](https://www.facebook.com/laplanquesonore "Le meilleur du groove sur Aix en provence").
 
 Tony, fier comme une chouette sur son skate rencontre son nemesis : Negaowl.
 Cet infâme personnage lance des instruments pour blesser Tony ! Le seul moyen 
 pour Tony d'en venir à bout est de renvoyer les projectiles sur Negaowl grâce
-à la puissance de son *chakraskate*. Les tricks c'est la vie
+à la puissance de son *chakraskate*. Les tricks c'est la vie.
 
 
 ## Installation
@@ -20,11 +20,6 @@ $ npm install
 $ bower install
 $ grunt
 ```
-
-### Pour les mecs qui veulent juste taper sur leur clavier
-
-Ouvrir le fichier `dist/index.html` dans un navigateur web
-
 
 ## Comment qu'on joue
 
