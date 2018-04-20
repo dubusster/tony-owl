@@ -28,7 +28,7 @@ Preload.prototype = {
     this.load.spritesheet('muteButton', 'assets/images/mute_button.png', 125, 125, 2);
     this.load.image('guitar', 'assets/images/guitar.png');
     this.load.image('note', 'assets/images/note.png');
-    this.load.spritesheet('ampli', 'assets/images/ampli-sheet.png', 37, 66, 12);
+    this.load.spritesheet('ampli', 'assets/images/ampli-sheet.png', 37, 66, 24);
     
     
     // characters

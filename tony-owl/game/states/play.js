@@ -300,8 +300,13 @@ function toggle_pause(){
 }
 
 function onAmpliCollisionWithGround(ampli, obj) {
-	ampli.animations.stop('emitting');
-	ampli.animations.play('roll-and-burn', null, true);
+//	ampli.animations.stop('emitting-nega');
+	if (ampli.isSentByPlayer) {
+		ampli.animations.play('roll-and-burn', null, true);		
+	}
+	else {
+		ampli.animations.play('roll-and-burn-nega', null, true);
+	}
 };
 
 function onDie(player) {
@@ -337,8 +342,9 @@ function processThrowablesInGame(particle) {
 	if (particle.isSentByPlayer) {	
 		particle.body.velocity.x -= particle.body.velocity.x * 0.01;
 		var anim = particle.animations.currentAnim;
-		if (!anim.name.endsWith("nega")) {
-			var nega_anim = particle.animations.getAnimation(anim.name+"-nega");
+		
+		if (anim && anim.name.endsWith("nega")) {
+			var nega_anim = particle.animations.getAnimation(anim.name.replace("-nega",""));
 			nega_anim.play(20, true);
 		}
 	}
