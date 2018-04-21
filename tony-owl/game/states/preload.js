@@ -12,16 +12,22 @@ function Preload() {
 
 Preload.prototype = {
   preload: function() {
-	  
+
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.asset = this.add.sprite(this.width/2, this.height/2, 'preloader');
     this.asset.anchor.setTo(0.5, 0.5);
     this.load.setPreloadSprite(this.asset);
-    
+
     this.load.image('logo', 'assets/images/logo.png');
-    
+    // Background menu
     this.load.image('background', 'assets/images/city.png');
     this.load.image('sky', 'assets/images/sky.png');
+
+    // Background level
+    this.load.image('sky-plan', 'assets/images/background/sky.png');
+    this.load.image('first-plan', 'assets/images/background/first.png');
+    this.load.image('second-plan', 'assets/images/background/second.png');
+    this.load.image('third-plan', 'assets/images/background/third.png');
     this.load.image('ground', 'assets/images/platform.png');
     this.load.image('title', 'assets/images/title.png');
     this.load.image('startButton', 'assets/images/start_button.png');
@@ -30,16 +36,18 @@ Preload.prototype = {
     this.load.spritesheet('guitar', 'assets/images/guitar-sheet.png', 50,18, 2);
     this.load.image('note', 'assets/images/note.png');
     this.load.spritesheet('ampli', 'assets/images/ampli-sheet.png', 37, 66, 24);
-    
-    
+
+
     // characters
     this.load.spritesheet('owl', 'assets/images/tony-owl-sheet.png', 78, 76, -1);
     this.load.spritesheet('negaowl', 'assets/images/negaowl-sheet.png', 379, 500, -1);
-    
+    this.load.image('head-tony', 'assets/images/head-tony.png');
+    this.load.image('head-boss', 'assets/images/head-boss.png');
+
     // maps
     this.load.tilemap('level1', 'assets/tilemaps/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('tiles', 'assets/tilemaps/tiles/tiles32.png');
-    
+
     // Audio
     this.load.audio('menu', 'assets/audio/music/menu.ogg');
     this.load.audio('entering', 'assets/audio/music/entering.ogg');
@@ -47,7 +55,7 @@ Preload.prototype = {
     this.load.audio('hurt', 'assets/audio/music/hurt.ogg');
     this.load.audio('win', 'assets/audio/music/win.ogg');
     this.load.audio('play', 'assets/audio/music/play.ogg');
-    
+
 
   },
   create: function() {
