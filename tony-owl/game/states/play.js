@@ -4,6 +4,7 @@ var Ground = require('../prefabs/ground.js')
 var Owl = require('../prefabs/owl.js')
 var Negaowl = require('../prefabs/negaowl.js')
 var Animation = require('../animations/cut1.js')
+var Lifebar = require('../prefabs/lifebar.js')
 
 var die_music;
 var hurt_music;
@@ -32,8 +33,20 @@ Play.prototype = {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		this.game.physics.arcade.gravity.y = 3000;
 
+		var keys = ["third-plan", "second-plan", "first-plan"];
+
+		this.backgrounds = [];
+		var sky = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, "sky")
+		for (let key of keys) {
+			this.backgrounds.push(this.game.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, key));
+		}
+		// var firstPlan = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, "first-plan");
+		// firstPlan.tileScale.setTo(2);
+
 		this.map = this.game.add.tilemap('level1');
 		this.map.addTilesetImage('tiles32', 'tiles');
+
+
 
 		// settings collision with certain tiles of tilesets.
 		this.map.setCollisionBetween(0, 5);
@@ -49,6 +62,13 @@ Play.prototype = {
 		this.map.setCollision(5, true, this.invisibleLayer);
 
 		this.layer.resizeWorld();
+		sky.width = this.game.world.width;
+		for (let background of this.backgrounds ) {
+			background.width = this.game.world.width;
+			background.tileScale.setTo(3);
+		}
+		console.log(this.backgrounds);
+
 
 		// adding owl (player) to game
 		this.owl = new Owl(this.game, START_POSITION_X, START_POSITION_Y);
@@ -70,8 +90,8 @@ Play.prototype = {
 		var jumpKey = this.input.keyboard.addKey(Phaser.Keyboard.UP);
 		jumpKey.onDown.add(this.owl.jump, this.owl);
 		this.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(toggle_pause, this);
-		
-		
+
+
 		// RETRY BUTTON
 		var retryButton;
 		retryButton = this.game.add.text(700, 50, 'retry',{
@@ -83,7 +103,7 @@ Play.prototype = {
 			respawn(this.owl);
 		}, this);
 		retryButton.fixedToCamera = true;
-		
+
 		// PAUSE CONFIGURATION
 		var pauseButton;
 		pauseButton = this.game.add.text(700, 10, 'Pause', {
@@ -94,7 +114,7 @@ Play.prototype = {
 		pauseButton.events.onInputUp.add(pause, this);
 		this.game.input.onDown.add(unpause, this);
 		pauseButton.fixedToCamera = true;
-		
+
 		this.pausedText = this.game.add.text(this.game.width/2, this.game.height/2, 'PAUSE', {
 			font : "65px Arial",
 			fill : "#ff0044"
@@ -111,10 +131,18 @@ Play.prototype = {
 		// Boss starts to attack.
 		this.boss.release_hell();
 
+		// health bars
+		// this.healthBarTony = Lifebar(10,20, 'head-tony', this.owl);
+		// // this.game.add.sprite(10, 20, 'head-tony');
+		// this.healthBarTony.fixedToCamera = true;
+		// this.healthBarBoss = this.game.add.sprite(10, 50, 'head-boss');
+		// this.healthBarBoss.scale.setTo(0.2);
+		// this.healthBarBoss.fixedToCamera = true;
+
 		// emitters
 		this.ampliEmitter = this.boss.ampliEmitter;
 		this.guitarGroup = this.boss.guitarGroup;
-		
+
 		// level animation
 		this.cutscene = true;
 		var animation = new Animation(this.game);
@@ -134,7 +162,7 @@ Play.prototype = {
 //		this.game.physics.arcade.collide(this.owl.explosionEmitter, this.layer);
 		this.game.physics.arcade.collide(this.ampliEmitter,
 				this.invisibleLayer, onAmpliCollisionWithGround);
-		
+
 		// slowing down particles once player hit throwable to hurt the boss
 		this.boss.ampliEmitter.forEachAlive(processThrowablesInGame, this);
 		this.guitarGroup.forEach(function(emitter){
@@ -147,7 +175,7 @@ Play.prototype = {
 				hurtBoss, checkSentByPlayerCallback, this);
 		this.game.physics.arcade.overlap(this.ampliEmitter, this.owl, hurtOwl,
 				null, this);
-		
+
 		// overlapping guitars for player (owl) with throwables hurts.
 		overlapGroup(this.game, this.guitarGroup, this.owl, hurtOwl, this)
 
@@ -169,7 +197,7 @@ Play.prototype = {
 		}
 
 		if (!this.cutscene) {
-			
+
 			// boss emitters position update
 			if ((this.game.camera.x + this.game.width) < this.boss.position.x) {
 				this.ampliEmitter.emitX  = this.game.camera.x + 4/3*this.game.width;
@@ -178,7 +206,7 @@ Play.prototype = {
 				}, this);
 			}
 			else{
-				this.ampliEmitter.emitX = this.boss.position.x;		
+				this.ampliEmitter.emitX = this.boss.position.x;
 				this.guitarGroup.forEach(function(emitter){
 					emitter.emitX  = this.boss.position.x;
 				}, this);
@@ -187,28 +215,37 @@ Play.prototype = {
 			var cursors = this.game.input.keyboard.createCursorKeys();
 			if (cursors.right.isDown) {
 				this.owl.move("RIGHT");
+				for (var i = 0; i < this.backgrounds.length; i++) {
+					this.backgrounds[i].tilePosition.x -= 0.2*(i+1);
+				}
 			} else if (cursors.left.isDown) {
 				this.owl.move("LEFT");
+				if (this.owl.body.position > 0) {
+					
+					for (var i = 0; i < this.backgrounds.length; i++) {
+						this.backgrounds[i].tilePosition.x += 0.2*(i+1);
+					}
+				}
 			} else {
 				this.owl.move(null);
 			}
-			
+
 		}
-		
-		
+
+
 		// When player attacks he is immuned and throw things to the boss.
-		
+
 		if (this.owl.protecting) {
 			this.game.physics.arcade.collide(this.owl, this.ampliEmitter,
 					onAttackToThrowables);
 			collideGroup(this.game, this.guitarGroup, this.owl, onAttackToThrowables, this);
 		}
-		
+
 		this.game.physics.arcade.collide(this.owl.explosionEmitter, this.ampliEmitter, onAttackToThrowables, checkSentByPlayerCallback, this);
 		this.guitarGroup.forEachAlive(function(emitter){
 			this.game.physics.arcade.collide(this.owl.explosionEmitter, emitter, onAttackToThrowables, checkSentByPlayerCallback, this);
 		}, this)
-		
+
 //	    if (this.owl.blasting) {
 //			this.game.physics.arcade.collide(this.ampliEmitter,this.owl.explosionEmitter,
 //					onAttackToThrowables);
@@ -216,10 +253,10 @@ Play.prototype = {
 //				this.game.physics.arcade.collide(emitter, this.owl.explosionEmitter,
 //					onAttackToThrowables);
 //					}, this)
-//			
+//
 //		}
-		
-		
+
+
 		// pause menu
 		if (this.game.paused) {
 			this.pausedText.visible = true;
@@ -227,7 +264,7 @@ Play.prototype = {
 		else {
 			this.pausedText.visible = false;
 		}
-		
+
 		// setting back to normal dead particles
 		this.ampliEmitter.forEachDead(function(particle){
 			particle.isSentByPlayer = false;
@@ -249,7 +286,7 @@ Play.prototype = {
 		this.game.debug.text('Z : Blast', 200, 100);
 //		this.game.debug.text('explosionX : '+this.owl.explosionEmitter.emitX, 10, 100);
 //		this.game.debug.text('explosionY : '+this.owl.explosionEmitter.emitY, 10, 125);
-		
+		this.game.debug.body(this.owl)
 // var game = this.game;
 // this.owl.explosionEmitter.forEachAlive(function(particle) {
 // game.debug.body(particle, 'red', false);
@@ -302,7 +339,7 @@ function toggle_pause(){
 function onAmpliCollisionWithGround(ampli, obj) {
 //	ampli.animations.stop('emitting-nega');
 	if (ampli.isSentByPlayer) {
-		ampli.animations.play('roll-and-burn', null, true);		
+		ampli.animations.play('roll-and-burn', null, true);
 	}
 	else {
 		ampli.animations.play('roll-and-burn-nega', null, true);
@@ -339,10 +376,10 @@ function velocity(vx, vy){
 };
 
 function processThrowablesInGame(particle) {
-	if (particle.isSentByPlayer) {	
+	if (particle.isSentByPlayer) {
 		particle.body.velocity.x -= particle.body.velocity.x * 0.01;
 		var anim = particle.animations.currentAnim;
-		
+
 		if (anim && anim.name.endsWith("nega")) {
 			var nega_anim = particle.animations.getAnimation(anim.name.replace("-nega",""));
 			nega_anim.play(20, true);
@@ -351,7 +388,7 @@ function processThrowablesInGame(particle) {
 }
 
 function slowDownThrowable(particle) {
-	if (particle.isSentByPlayer) {	
+	if (particle.isSentByPlayer) {
 		particle.body.velocity.x -= particle.body.velocity.x * 0.01;
 	}
 };
@@ -369,7 +406,7 @@ function hurtOwl(owl, enemy) {
 		}, this);
 	}
 
-}; 
+};
 
 function hurtBoss(boss, throwable) {
 	console.log('boss is touched !');
