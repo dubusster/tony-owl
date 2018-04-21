@@ -17,6 +17,7 @@ var Owl = function(game, x, y, frame) {
 	this.BLAST_TRICK_COST = 3;
 	this.SUPER_TRICK_COST = 5;
 
+	this.body.setSize(50, 76, 14);
 	this.jumping = false;
 	this.walking_speed = 400;
 	this.jumping_height = 900;
@@ -25,9 +26,9 @@ var Owl = function(game, x, y, frame) {
 	this.BLAST_LIFESPAN = 4000;
 	this.health = PLAYER_HEALTH;
 	this.maxHealth = PLAYER_HEALTH;
-	
+
 	var MAX_PARTICLES = 200;
-	
+
 	this.explosionEmitter = this.game.add.emitter(0,0,MAX_PARTICLES);
 	this.explosionEmitter.particleClass = BlastParticle;
 	this.explosionEmitter.makeParticles('note',0,MAX_PARTICLES,true);
@@ -68,7 +69,7 @@ Owl.prototype.update = function() {
 		this.protecting = false;
 		this.blasting = false;
 	}
-	
+
 };
 
 Owl.prototype.move = function(direction) {
@@ -136,7 +137,7 @@ Owl.prototype.blast = function() {
 		this.explosionEmitter.emitX = this.centerX;
 		this.explosionEmitter.emitY = this.centerY;
 		this.explosionEmitter.explode(this.BLAST_LIFESPAN, 30);
-		
+
 		console.log('blast');
 		// this.attacking = true;
 		this.animations.play('blast');
