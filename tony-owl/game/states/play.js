@@ -89,6 +89,7 @@ Play.prototype = {
 		blastKey.onDown.add(this.owl.blast, this.owl);
 		var jumpKey = this.input.keyboard.addKey(Phaser.Keyboard.UP);
 		jumpKey.onDown.add(this.owl.jump, this.owl);
+		
 		this.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(toggle_pause, this);
 
 
@@ -215,15 +216,17 @@ Play.prototype = {
 			var cursors = this.game.input.keyboard.createCursorKeys();
 			if (cursors.right.isDown) {
 				this.owl.move("RIGHT");
-				for (var i = 0; i < this.backgrounds.length; i++) {
-					this.backgrounds[i].tilePosition.x -= 0.2*(i+1);
+				if ((this.game.camera.position.x < (this.game.world.width-this.game.width)) && this.game.camera.position.x > 0) {
+					for (var i = 0; i < this.backgrounds.length; i++) {
+						this.backgrounds[i].tilePosition.x -= 0.15*(i+1);
+					}
 				}
 			} else if (cursors.left.isDown) {
 				this.owl.move("LEFT");
-				if (this.owl.body.position > 0) {
+				if (this.game.camera.position.x > 0 && (this.game.camera.position.x < (this.game.world.width-this.game.width))) {
 					
 					for (var i = 0; i < this.backgrounds.length; i++) {
-						this.backgrounds[i].tilePosition.x += 0.2*(i+1);
+						this.backgrounds[i].tilePosition.x += 0.15*(i+1);
 					}
 				}
 			} else {
